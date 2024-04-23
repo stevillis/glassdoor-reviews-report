@@ -152,6 +152,154 @@ def rating_star_analysis():
     st.pyplot(g)
 
 
+def rating_star_analysis2():
+    reviews_df = st.session_state.get("reviews_df")
+
+    st.subheader(
+        "Distribuição de Sentimentos por Quantidade de Estrelas em Avaliações, por Empresa"
+    )
+
+    st.markdown(
+        """
+        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas, revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
+    """
+    )
+
+    company = st.selectbox(
+        label="Empresa",
+        options=reviews_df["company"].unique().tolist(),
+        key="rating_star_company_input",
+    )
+
+    filtered_df = reviews_df[reviews_df["company"] == company][
+        [
+            "company",
+            "employee_role",
+            "employee_detail",
+            "review_text",
+            "review_date",
+            "star_rating",
+            "predicted_sentiment",
+        ]
+    ]
+    filtered_df.reset_index(drop=True, inplace=True)
+
+    sentiment_counts = (
+        filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
+        .size()
+        .reset_index(name="count")
+    )
+
+    fig, ax = plt.subplots(1, figsize=(12, 8))
+
+    sns.scatterplot(
+        data=sentiment_counts,
+        x="star_rating",
+        y="count",
+        hue="predicted_sentiment",
+        # style="company",
+        ax=ax,
+        palette=sns.color_palette(),
+    )
+
+    plt.title("Sentiment Counts by Star Rating and Company")
+    plt.xlabel("Star Rating")
+    plt.ylabel("Count")
+
+    plt.xticks(ticks=sorted(reviews_df["star_rating"].unique()))
+
+    handles, labels = ax.get_legend_handles_labels()
+    handles[0].set_color(["#ff7f0e"])
+    handles[1].set_color(["#2ca02c"])
+    handles[2].set_color(["#1f77b4"])
+
+    legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
+
+    plt.legend(
+        title="Sentiment",
+        labels=legend_labels,
+        bbox_to_anchor=(1.05, 1),
+        loc="upper left",
+    )
+
+    st.pyplot(fig)
+
+    st.write("Avaliações filtradas")
+    st.dataframe(filtered_df)
+
+
+def rating_star_analysis3():
+    reviews_df = st.session_state.get("reviews_df")
+
+    st.subheader(
+        "Distribuição de Sentimentos por Quantidade de Estrelas em Avaliações, por Empresa"
+    )
+
+    st.markdown(
+        """
+        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas, revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
+    """
+    )
+
+    company = st.selectbox(
+        label="Empresa",
+        options=reviews_df["company"].unique().tolist(),
+        key="rating_star_company_input2",
+    )
+
+    filtered_df = reviews_df[reviews_df["company"] == company][
+        [
+            "company",
+            "employee_role",
+            "employee_detail",
+            "review_text",
+            "review_date",
+            "star_rating",
+            "predicted_sentiment",
+        ]
+    ]
+    filtered_df.reset_index(drop=True, inplace=True)
+
+    sentiment_counts = (
+        filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
+        .size()
+        .reset_index(name="count")
+    )
+
+    fig, ax = plt.subplots(1, figsize=(12, 8))
+
+    sns.barplot(
+        data=sentiment_counts,
+        x="star_rating",
+        y="count",
+        hue="predicted_sentiment",
+        ax=ax,
+        palette=sns.color_palette(),
+    )
+
+    plt.title("Sentiment Counts by Star Rating and Company")
+    plt.xlabel("Star Rating")
+    plt.ylabel("Count")
+
+    legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
+    plt.legend(
+        title="Sentiment",
+        labels=legend_labels,
+        bbox_to_anchor=(1.05, 1),
+        loc="upper left",
+    )
+
+    leg = ax.get_legend()
+    leg.legendHandles[0].set_color("#3274a1")
+    leg.legendHandles[1].set_color("#e1812c")
+    leg.legendHandles[2].set_color("#3a923a")
+
+    st.pyplot(fig)
+
+    st.write("Avaliações filtradas")
+    st.dataframe(filtered_df)
+
+
 def employee_role_analysis():
     st.subheader("Sentimentos das Avaliações por Empresa e por Cargo")
 
@@ -254,6 +402,8 @@ if __name__ == "__main__":
     introduction()
     general_analysis()
     company_analisys()
-    rating_star_analysis()
+    # rating_star_analysis()
+    # rating_star_analysis2()
+    rating_star_analysis3()
     employee_role_analysis()
     conclusion()
