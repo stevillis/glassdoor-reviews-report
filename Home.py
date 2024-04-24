@@ -1,5 +1,6 @@
 import warnings
 
+import math
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -268,7 +269,7 @@ def rating_star_analysis3():
 
     fig, ax = plt.subplots(1, figsize=(12, 8))
 
-    sns.barplot(
+    bars = sns.barplot(
         data=sentiment_counts,
         x="star_rating",
         y="count",
@@ -276,6 +277,22 @@ def rating_star_analysis3():
         ax=ax,
         palette=sns.color_palette(),
     )
+
+    for p in bars.patches:
+        height = p.get_height()
+        if math.isnan(height):
+            height = 0.0
+
+        bars.annotate(
+            f"{int(height)}",
+            (p.get_x() + p.get_width() / 2.0, height),
+            ha="center",
+            va="center",
+            fontsize=11,
+            color="black",
+            xytext=(0, 5),
+            textcoords="offset points",
+        )
 
     plt.title("Sentiment Counts by Star Rating and Company")
     plt.xlabel("Star Rating")
