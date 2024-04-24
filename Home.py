@@ -181,6 +181,7 @@ def rating_star_analysis2():
             "review_date",
             "star_rating",
             "predicted_sentiment",
+            "sentiment_label",
         ]
     ]
     filtered_df.reset_index(drop=True, inplace=True)
@@ -226,6 +227,7 @@ def rating_star_analysis2():
     st.pyplot(fig)
 
     st.write("Avaliações filtradas")
+    filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
     st.dataframe(filtered_df)
 
 
@@ -257,6 +259,7 @@ def rating_star_analysis3():
             "review_date",
             "star_rating",
             "predicted_sentiment",
+            "sentiment_label",
         ]
     ]
     filtered_df.reset_index(drop=True, inplace=True)
@@ -314,6 +317,7 @@ def rating_star_analysis3():
     st.pyplot(fig)
 
     st.write("Avaliações filtradas")
+    filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
     st.dataframe(filtered_df)
 
 
@@ -405,6 +409,9 @@ if __name__ == "__main__":
 
     if "reviews_df" not in st.session_state:
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+        reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
+            ReportConfig.SENTIMENT_DICT
+        )
         st.session_state["reviews_df"] = reviews_df
 
         neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]

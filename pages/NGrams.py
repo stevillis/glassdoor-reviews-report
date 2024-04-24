@@ -156,6 +156,7 @@ def n_gram_by_company():
             "review_text",
             "review_date",
             "star_rating",
+            "sentiment_label",
         ]
     ]
     filtered_df.reset_index(drop=True, inplace=True)
@@ -191,6 +192,9 @@ if __name__ == "__main__":
 
     if "reviews_df" not in st.session_state:
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+        reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
+            ReportConfig.SENTIMENT_DICT
+        )
         st.session_state["reviews_df"] = reviews_df
 
         neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
