@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 
+from error_messages import ErrorMessages
 from report_config import ReportConfig
 from utils import get_sentiment_key_from_value
 
@@ -264,61 +265,67 @@ def rating_star_analysis3():
     ]
     filtered_df.reset_index(drop=True, inplace=True)
 
-    sentiment_counts = (
-        filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
-        .size()
-        .reset_index(name="count")
-    )
-
-    fig, ax = plt.subplots(1, figsize=(12, 8))
-
-    bars = sns.barplot(
-        data=sentiment_counts,
-        x="star_rating",
-        y="count",
-        hue="predicted_sentiment",
-        ax=ax,
-        palette=sns.color_palette(),
-    )
-
-    for p in bars.patches:
-        height = p.get_height()
-        if math.isnan(height):
-            height = 0.0
-
-        bars.annotate(
-            f"{int(height)}",
-            (p.get_x() + p.get_width() / 2.0, height),
-            ha="center",
-            va="center",
-            fontsize=11,
-            color="black",
-            xytext=(0, 5),
-            textcoords="offset points",
+    if len(filtered_df) > 0:
+        sentiment_counts = (
+            filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
+            .size()
+            .reset_index(name="count")
         )
 
-    plt.title("Sentiment Counts by Star Rating and Company")
-    plt.xlabel("Star Rating")
-    plt.ylabel("Count")
+        fig, ax = plt.subplots(1, figsize=(12, 8))
 
-    legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
-    plt.legend(
-        title="Sentiment",
-        labels=legend_labels,
-        bbox_to_anchor=(1.05, 1),
-        loc="upper left",
-    )
+        bars = sns.barplot(
+            data=sentiment_counts,
+            x="star_rating",
+            y="count",
+            hue="predicted_sentiment",
+            ax=ax,
+            palette=sns.color_palette(),
+        )
 
-    leg = ax.get_legend()
-    leg.legendHandles[0].set_color("#3274a1")
-    leg.legendHandles[1].set_color("#e1812c")
-    leg.legendHandles[2].set_color("#3a923a")
+        for p in bars.patches:
+            height = p.get_height()
+            if math.isnan(height):
+                height = 0.0
 
-    st.pyplot(fig)
+            bars.annotate(
+                f"{int(height)}",
+                (p.get_x() + p.get_width() / 2.0, height),
+                ha="center",
+                va="center",
+                fontsize=11,
+                color="black",
+                xytext=(0, 5),
+                textcoords="offset points",
+            )
 
-    st.write("Avaliações filtradas")
-    filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
-    st.dataframe(filtered_df)
+        plt.title("Sentiment Counts by Star Rating and Company")
+        plt.xlabel("Star Rating")
+        plt.ylabel("Count")
+
+        legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
+        plt.legend(
+            title="Sentiment",
+            labels=legend_labels,
+            bbox_to_anchor=(1.05, 1),
+            loc="upper left",
+        )
+
+        leg = ax.get_legend()
+        leg.legendHandles[0].set_color("#3274a1")
+        leg.legendHandles[1].set_color("#e1812c")
+        leg.legendHandles[2].set_color("#3a923a")
+
+        st.pyplot(fig)
+
+        st.write("Avaliações filtradas")
+        filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
+        st.dataframe(filtered_df)
+    else:
+        st.error(
+            ErrorMessages.EMPTY_DATAFRAME,
+            icon="🚨",
+        )
 
 
 def employee_role_analysis():
@@ -352,31 +359,37 @@ def employee_role_analysis():
 
     filtered_df = company_df[company_df["predicted_sentiment"] == sentiment_key]
 
-    top_10_roles = filtered_df["employee_role"].value_counts().index[:10]
-    filtered_df = filtered_df[filtered_df["employee_role"].isin(top_10_roles)][
-        [
-            "employee_role",
-            "employee_detail",
-            "review_text",
-            "review_date",
-            "star_rating",
+    if len(filtered_df) > 0:
+        top_10_roles = filtered_df["employee_role"].value_counts().index[:10]
+        filtered_df = filtered_df[filtered_df["employee_role"].isin(top_10_roles)][
+            [
+                "employee_role",
+                "employee_detail",
+                "review_text",
+                "review_date",
+                "star_rating",
+            ]
         ]
-    ]
-    filtered_df.reset_index(drop=True, inplace=True)
+        filtered_df.reset_index(drop=True, inplace=True)
 
-    fig, ax = plt.subplots(1, figsize=(10, 8))
-    sns.countplot(data=filtered_df, y="employee_role", order=top_10_roles, ax=ax)
+        fig, ax = plt.subplots(1, figsize=(10, 8))
+        sns.countplot(data=filtered_df, y="employee_role", order=top_10_roles, ax=ax)
 
-    plt.title(
-        f"Top 10 Employee Roles with Predicted Sentiment {ReportConfig.SENTIMENT_DICT[sentiment_key]} for {company}"
-    )
-    plt.xlabel("Count")
-    plt.ylabel("Employee Role")
+        plt.title(
+            f"Top 10 Employee Roles with Predicted Sentiment {ReportConfig.SENTIMENT_DICT[sentiment_key]} for {company}"
+        )
+        plt.xlabel("Count")
+        plt.ylabel("Employee Role")
 
-    st.pyplot(fig)
+        st.pyplot(fig)
 
-    st.write("Avaliações filtradas")
-    st.dataframe(filtered_df)
+        st.write("Avaliações filtradas")
+        st.dataframe(filtered_df)
+    else:
+        st.error(
+            ErrorMessages.EMPTY_DATAFRAME,
+            icon="🚨",
+        )
 
 
 def conclusion():

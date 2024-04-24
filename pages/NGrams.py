@@ -4,6 +4,7 @@ import seaborn as sns
 import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
 
+from error_messages import ErrorMessages
 from report_config import ReportConfig
 from utils import get_sentiment_key_from_value
 
@@ -161,14 +162,20 @@ def n_gram_by_company():
     ]
     filtered_df.reset_index(drop=True, inplace=True)
 
-    _plot_top_ngrams_barchart(
-        filtered_df["review_text"],
-        n_grams=n_gram_input,
-        top=10,
-    )
+    if len(filtered_df) > 0:
+        _plot_top_ngrams_barchart(
+            filtered_df["review_text"],
+            n_grams=n_gram_input,
+            top=10,
+        )
 
-    st.write("Avaliações filtradas")
-    st.dataframe(filtered_df)
+        st.write("Avaliações filtradas")
+        st.dataframe(filtered_df)
+    else:
+        st.error(
+            ErrorMessages.EMPTY_DATAFRAME,
+            icon="🚨",
+        )
 
 
 if __name__ == "__main__":
