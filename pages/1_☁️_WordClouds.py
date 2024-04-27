@@ -10,7 +10,6 @@ from report_config import ReportConfig
 
 
 def _print_wordcloud(corpus, title=None, max_words: int = 150):
-    nltk.download("stopwords")
     portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
 
     non_stopwords_corpus = []
