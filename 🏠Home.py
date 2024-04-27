@@ -414,6 +414,11 @@ def conclusion():
 
 
 if __name__ == "__main__":
+    st.set_page_config(
+        page_title="Home",
+        page_icon=":house:",
+    )
+
     st.markdown(
         ReportConfig.CUSTOM_CSS,
         unsafe_allow_html=True,

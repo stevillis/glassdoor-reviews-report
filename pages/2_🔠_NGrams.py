@@ -182,6 +182,11 @@ def n_gram_by_company():
 
 
 if __name__ == "__main__":
+    st.set_page_config(
+        page_title="N-Grams",
+        page_icon=":capital_abcd:",
+    )
+
     st.markdown(
         ReportConfig.CUSTOM_CSS,
         unsafe_allow_html=True,
