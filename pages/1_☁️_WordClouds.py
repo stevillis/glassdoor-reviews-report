@@ -8,12 +8,6 @@ from wordcloud import WordCloud
 
 from report_config import ReportConfig
 
-if "download_stopwords" not in st.session_state:
-    nltk.download("stopwords")
-    st.session_state["download_stopwords"] = 1
-
-    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
-
 CUSTOM_CSS = """
 <style>
     [data-testid="stMarkdown"] {
@@ -24,6 +18,9 @@ CUSTOM_CSS = """
 
 
 def _print_wordcloud(corpus, title=None, max_words: int = 150):
+    nltk.download("stopwords")
+    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
+
     non_stopwords_corpus = []
     for word in corpus:
         word_lower = word.lower()
