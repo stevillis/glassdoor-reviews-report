@@ -1,6 +1,6 @@
+import math
 import warnings
 
-import math
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -44,39 +44,28 @@ def general_analysis():
     sentiment_counts = reviews_df["predicted_sentiment"].value_counts().reset_index()
     sentiment_counts.columns = ["predicted_sentiment", "count"]
 
-    fig, ax = plt.subplots(1, figsize=(10, 6))
+    fig, ax = plt.subplots(1, figsize=(8, 4))
 
-    sns.barplot(
-        data=sentiment_counts,
-        x=sentiment_counts.index,
-        y="count",
-        palette=sns.color_palette(sns.color_palette(), n_colors=3),
-        ax=ax,
+    sentiment_counts_sum = sentiment_counts.groupby("predicted_sentiment")[
+        "count"
+    ].sum()
+
+    legend_labels = [
+        ReportConfig.SENTIMENT_DICT[i] for i in range(len(ReportConfig.SENTIMENT_DICT))
+    ]
+
+    ax.pie(
+        sentiment_counts_sum,
+        labels=legend_labels,
+        autopct="%1.2f%%",
+        startangle=240,
+        radius=0.8,
+        textprops={
+            "fontsize": ReportConfig.CHART_TITLE_FONT_SIZE - 8,
+        },
     )
 
-    for p in ax.patches:
-        ax.annotate(
-            f"{int(p.get_height())}",
-            (p.get_x() + p.get_width() / 2.0, p.get_height()),
-            ha="center",
-            va="center",
-            fontsize=11,
-            color="black",
-            xytext=(0, 5),
-            textcoords="offset points",
-        )
-
-    plt.xlabel("Sentiment")
-    plt.ylabel("Count")
-
-    ax.set_xticklabels(
-        [
-            ReportConfig.SENTIMENT_DICT[sentiment]
-            for sentiment in sentiment_counts["predicted_sentiment"]
-        ]
-    )
-
-    plt.title("Sentiment Distribution")
+    plt.title("Sentiment Distribution", fontsize=ReportConfig.CHART_TITLE_FONT_SIZE - 7)
 
     st.pyplot(fig)
 
@@ -113,7 +102,9 @@ def company_analisys():
             textcoords="offset points",
         )
 
-    plt.title("Predicted Sentiment by Company")
+    plt.title(
+        "Predicted Sentiment by Company", fontsize=ReportConfig.CHART_TITLE_FONT_SIZE
+    )
     plt.xlabel("Company")
     plt.ylabel("Count")
     plt.xticks(rotation=45, ha="right")
@@ -205,7 +196,10 @@ def rating_star_analysis2():
         palette=sns.color_palette(),
     )
 
-    plt.title("Sentiment Counts by Star Rating and Company")
+    plt.title(
+        "Sentiment Counts by Star Rating and Company",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+    )
     plt.xlabel("Star Rating")
     plt.ylabel("Count")
 
@@ -216,7 +210,9 @@ def rating_star_analysis2():
     handles[1].set_color(["#2ca02c"])
     handles[2].set_color(["#1f77b4"])
 
-    legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
+    legend_labels = [
+        ReportConfig.SENTIMENT_DICT[i] for i in range(len(ReportConfig.SENTIMENT_DICT))
+    ]
 
     plt.legend(
         title="Sentiment",
@@ -299,11 +295,17 @@ def rating_star_analysis3():
                 textcoords="offset points",
             )
 
-        plt.title("Sentiment Counts by Star Rating and Company")
+        plt.title(
+            "Sentiment Counts by Star Rating and Company",
+            fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        )
         plt.xlabel("Star Rating")
         plt.ylabel("Count")
 
-        legend_labels = [ReportConfig.SENTIMENT_DICT[i] for i in range(3)]
+        legend_labels = [
+            ReportConfig.SENTIMENT_DICT[i]
+            for i in range(len(ReportConfig.SENTIMENT_DICT))
+        ]
         plt.legend(
             title="Sentiment",
             labels=legend_labels,
@@ -312,9 +314,9 @@ def rating_star_analysis3():
         )
 
         leg = ax.get_legend()
-        leg.legendHandles[0].set_color("#3274a1")
-        leg.legendHandles[1].set_color("#e1812c")
-        leg.legendHandles[2].set_color("#3a923a")
+        leg.legend_handles[0].set_color("#3274a1")
+        leg.legend_handles[1].set_color("#e1812c")
+        leg.legend_handles[2].set_color("#3a923a")
 
         st.pyplot(fig)
 
@@ -376,7 +378,8 @@ def employee_role_analysis():
         sns.countplot(data=filtered_df, y="employee_role", order=top_10_roles, ax=ax)
 
         plt.title(
-            f"Top 10 Employee Roles with Predicted Sentiment {ReportConfig.SENTIMENT_DICT[sentiment_key]} for {company}"
+            f"Top 10 Employee Roles with Predicted Sentiment {ReportConfig.SENTIMENT_DICT[sentiment_key]} for {company}",
+            fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         )
         plt.xlabel("Count")
         plt.ylabel("Employee Role")

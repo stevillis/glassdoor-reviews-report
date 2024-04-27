@@ -13,3 +13,4 @@ class ReportConfig:
             }
         </style>
     """
+    CHART_TITLE_FONT_SIZE = 14

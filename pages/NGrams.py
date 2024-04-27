@@ -24,7 +24,10 @@ def _plot_top_ngrams_barchart(review_text, n_grams=2, top=10, title=None):
 
     sns.barplot(x=y, y=x, ax=ax)
 
-    plt.title(title, fontsize=20)
+    plt.title(
+        title,
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+    )
 
     st.pyplot(fig)
 

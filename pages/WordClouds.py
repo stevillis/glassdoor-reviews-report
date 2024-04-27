@@ -44,7 +44,10 @@ def _print_wordcloud(corpus, title=None, max_words: int = 150):
     plt.axis("off")
 
     plt.imshow(wordcloud.generate(str(non_stopwords_corpus_str)))
-    plt.title(title, fontsize=20)
+    plt.title(
+        title,
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+    )
 
     st.pyplot(fig)
 
