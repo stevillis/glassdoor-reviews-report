@@ -8,14 +8,6 @@ from wordcloud import WordCloud
 
 from report_config import ReportConfig
 
-CUSTOM_CSS = """
-<style>
-    [data-testid="stMarkdown"] {
-        text-align: justify;
-    }
-</style>
-"""
-
 
 def _print_wordcloud(corpus, title=None, max_words: int = 150):
     nltk.download("stopwords")
