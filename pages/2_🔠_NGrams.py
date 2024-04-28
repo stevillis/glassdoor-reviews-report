@@ -4,7 +4,7 @@ import seaborn as sns
 import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
 
-from error_messages import ErrorMessages
+from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import get_sentiment_key_from_value
 
@@ -176,7 +176,7 @@ def n_gram_by_company():
         st.dataframe(filtered_df)
     else:
         st.error(
-            ErrorMessages.EMPTY_DATAFRAME,
+            AppMessages.ERROR_EMPTY_DATAFRAME,
             icon="🚨",
         )
 

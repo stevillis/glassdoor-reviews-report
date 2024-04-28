@@ -6,7 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 
-from error_messages import ErrorMessages
+from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import get_sentiment_key_from_value
 
@@ -380,7 +380,7 @@ def rating_star_analysis3():
         st.dataframe(filtered_df)
     else:
         st.error(
-            ErrorMessages.EMPTY_DATAFRAME,
+            AppMessages.ERROR_EMPTY_DATAFRAME,
             icon="🚨",
         )
 
@@ -445,7 +445,7 @@ def employee_role_analysis():
         st.dataframe(filtered_df)
     else:
         st.error(
-            ErrorMessages.EMPTY_DATAFRAME,
+            AppMessages.ERROR_EMPTY_DATAFRAME,
             icon="🚨",
         )
 
@@ -478,6 +478,9 @@ if __name__ == "__main__":
         ReportConfig.CUSTOM_CSS,
         unsafe_allow_html=True,
     )
+
+    st.sidebar.info(AppMessages.INFO_MENU_NAVIGATION)
+    st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     st.title(
         "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
