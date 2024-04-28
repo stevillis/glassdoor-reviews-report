@@ -113,6 +113,61 @@ def company_analisys():
     st.pyplot(fig)
 
 
+def sentiment_reviews_along_time():
+    st.subheader("Número de Avaliações por Sentimento ao longo do tempo")
+
+    st.markdown(
+        """
+    O gráfico destaca que as avaliações positivas superam consistentemente as negativas, enquanto as avaliações neutras são menos comuns.
+
+    Observa-se um padrão notável de flutuações nos sentimentos ao longo do tempo. De 2014 a 2017, há uma tendência ascendente seguida por
+    um declínio, repetindo-se de 2017 a 2020.
+
+    Um aumento significativo na quantidade de avaliações de todas as emoções ocorre de 2020 a 2022, com pico em 2022. Enquanto ss avaliações
+    neutras  passam por um declínio a partir de 2022, assim como as positivas, as avaliações negativas continuam a aumentar a partir deste período.
+"""
+    )
+
+    reviews_df = st.session_state.get("reviews_df")
+
+    reviews_df["review_date"] = pd.to_datetime(reviews_df["review_date"])
+    reviews_df["year"] = reviews_df["review_date"].dt.year
+
+    sentiment_counts = (
+        reviews_df.groupby(["year", "predicted_sentiment"])
+        .size()
+        .reset_index(name="count")
+    )
+
+    fig, ax = plt.subplots(1, figsize=(12, 6))
+    sns.lineplot(
+        data=sentiment_counts,
+        x="year",
+        y="count",
+        hue="predicted_sentiment",
+        palette=sns.color_palette()[:3],
+        ax=ax,
+    )
+
+    plt.xlabel("Year")
+    plt.ylabel("Number of Reviews")
+    plt.title("Number of Reviews by Sentiment over time")
+
+    handles, labels = ax.get_legend_handles_labels()
+    for i in range(len(ReportConfig.SENTIMENT_DICT)):
+        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
+        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
+        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
+
+    plt.legend(
+        title="Sentiment",
+        bbox_to_anchor=(1.05, 1),
+        loc="upper left",
+    )
+
+    st.pyplot(fig)
+
+
 def rating_star_analysis():
     warnings.filterwarnings("ignore", "use_inf_as_na")
     reviews_df = st.session_state.get("reviews_df")
@@ -206,9 +261,9 @@ def rating_star_analysis2():
     plt.xticks(ticks=sorted(reviews_df["star_rating"].unique()))
 
     handles, labels = ax.get_legend_handles_labels()
-    handles[0].set_color(["#ff7f0e"])
-    handles[1].set_color(["#2ca02c"])
-    handles[2].set_color(["#1f77b4"])
+    handles[0].set_color([ReportConfig.NEGATIVE_SENTIMENT_COLOR])
+    handles[1].set_color([ReportConfig.POSITIVE_SENTIMENT_COLOR])
+    handles[2].set_color([ReportConfig.NEUTRAL_SENTIMENT_COLOR])
 
     legend_labels = [
         ReportConfig.SENTIMENT_DICT[i] for i in range(len(ReportConfig.SENTIMENT_DICT))
@@ -447,6 +502,7 @@ if __name__ == "__main__":
     introduction()
     general_analysis()
     company_analisys()
+    sentiment_reviews_along_time()
     # rating_star_analysis()
     # rating_star_analysis2()
     rating_star_analysis3()

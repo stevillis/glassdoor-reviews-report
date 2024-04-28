@@ -14,3 +14,6 @@ class ReportConfig:
         </style>
     """
     CHART_TITLE_FONT_SIZE = 14
+    NEGATIVE_SENTIMENT_COLOR = "#ff7f0e"
+    POSITIVE_SENTIMENT_COLOR = "#2ca02c"
+    NEUTRAL_SENTIMENT_COLOR = "#1f77b4"
