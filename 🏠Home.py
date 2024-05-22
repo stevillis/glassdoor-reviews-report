@@ -63,6 +63,7 @@ def general_analysis():
         textprops={
             "fontsize": ReportConfig.CHART_TITLE_FONT_SIZE - 8,
         },
+        colors=ReportConfig.SENTIMENT_PALETTE,
     )
 
     plt.title("Sentiment Distribution", fontsize=ReportConfig.CHART_TITLE_FONT_SIZE - 7)
@@ -88,6 +89,7 @@ def company_analisys():
         hue="predicted_sentiment",
         order=reviews_df["company"].value_counts().index,
         ax=ax,
+        palette=ReportConfig.SENTIMENT_PALETTE,
     )
 
     for p in ax.patches:
@@ -145,7 +147,7 @@ def sentiment_reviews_along_time():
         x="year",
         y="count",
         hue="predicted_sentiment",
-        palette=sns.color_palette()[:3],
+        palette=ReportConfig.SENTIMENT_PALETTE,
         ax=ax,
     )
 
@@ -155,8 +157,6 @@ def sentiment_reviews_along_time():
 
     handles, labels = ax.get_legend_handles_labels()
     for i in range(len(ReportConfig.SENTIMENT_DICT)):
-        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
-        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
         handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
 
     plt.legend(
@@ -331,7 +331,7 @@ def rating_star_analysis3():
             y="count",
             hue="predicted_sentiment",
             ax=ax,
-            palette=sns.color_palette(),
+            palette=ReportConfig.SENTIMENT_PALETTE,
         )
 
         for p in bars.patches:
@@ -369,9 +369,9 @@ def rating_star_analysis3():
         )
 
         leg = ax.get_legend()
-        leg.legend_handles[0].set_color("#3274a1")
-        leg.legend_handles[1].set_color("#e1812c")
-        leg.legend_handles[2].set_color("#3a923a")
+        leg.legend_handles[0].set_color(ReportConfig.NEUTRAL_SENTIMENT_COLOR)
+        leg.legend_handles[1].set_color(ReportConfig.POSITIVE_SENTIMENT_COLOR)
+        leg.legend_handles[2].set_color(ReportConfig.NEGATIVE_SENTIMENT_COLOR)
 
         st.pyplot(fig)
 

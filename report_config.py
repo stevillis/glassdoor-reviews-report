@@ -1,5 +1,7 @@
 """Report Config"""
 
+from seaborn import color_palette
+
 
 class ReportConfig:
     """Configure common used constants."""
@@ -14,6 +16,11 @@ class ReportConfig:
         </style>
     """
     CHART_TITLE_FONT_SIZE = 14
-    NEGATIVE_SENTIMENT_COLOR = "#ff7f0e"
-    POSITIVE_SENTIMENT_COLOR = "#2ca02c"
-    NEUTRAL_SENTIMENT_COLOR = "#1f77b4"
+    NEUTRAL_SENTIMENT_COLOR = color_palette()[0]
+    POSITIVE_SENTIMENT_COLOR = color_palette()[2]
+    NEGATIVE_SENTIMENT_COLOR = color_palette()[1]
+    SENTIMENT_PALETTE = [
+        NEUTRAL_SENTIMENT_COLOR,
+        POSITIVE_SENTIMENT_COLOR,
+        NEGATIVE_SENTIMENT_COLOR,
+    ]
