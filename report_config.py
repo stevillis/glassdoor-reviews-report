@@ -7,7 +7,7 @@ class ReportConfig:
     """Configure common used constants."""
 
     RANDOM_SEED = 103
-    SENTIMENT_DICT = {0: "Neutral", 1: "Positive", 2: "Negative"}
+    SENTIMENT_DICT = {0: "Neutro", 1: "Positivo", 2: "Negativo"}
     CUSTOM_CSS = """
         <style>
             [data-testid="stMarkdown"] {
