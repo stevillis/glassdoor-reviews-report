@@ -66,7 +66,11 @@ def general_analysis():
         colors=ReportConfig.SENTIMENT_PALETTE,
     )
 
-    plt.title("Sentiment Distribution", fontsize=ReportConfig.CHART_TITLE_FONT_SIZE - 7)
+    plt.title(
+        "Sentiment Distribution",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE - 7,
+        loc="center",
+    )
 
     st.pyplot(fig)
 
