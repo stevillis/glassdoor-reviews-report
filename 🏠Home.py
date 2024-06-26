@@ -28,50 +28,102 @@ def introduction():
 
 
 def general_analysis():
-    st.subheader("Análise Geral das Avaliações")
+    st.subheader("Distribuição de sentimentos das avaliações")
 
     st.markdown(
         """
-    Inicialmente, uma análise geral das avaliações foi realizada, totalizando um conjunto de 2532 análises.
-    O Modelo de IA treinado identificou 1257 avaliações positivas, destacando os aspectos mais elogiados pelas equipes.
-    Por outro lado, foram identificadas 1052 avaliações negativas, sugerindo áreas específicas que podem ser aprimoradas.
-    Além disso, o Modelo classificou 223 avaliações como neutras, fornecendo uma perspectiva equilibrada e imparcial.
+       A distribuição das quantidades de cada sentimento predita pelo Modelo treinado é bastante similar à distribuição observada no conjunto de dados anotado
+       usado para treinar o Modelo. Isso sugere que o Modelo aprendeu a classificar os sentimentos de forma consistente.
 """
     )
 
     reviews_df = st.session_state.get("reviews_df")
 
-    sentiment_counts = reviews_df["predicted_sentiment"].value_counts().reset_index()
-    sentiment_counts.columns = ["predicted_sentiment", "count"]
+    fig, ax = plt.subplots(2, 1, figsize=(8, 4))
 
-    fig, ax = plt.subplots(1, figsize=(8, 4))
+    # Annotated sentiment
+    sentiment_counts = reviews_df["sentiment"].value_counts().reset_index()
+    sentiment_counts.columns = ["sentiment", "count"]
 
-    sentiment_counts_sum = sentiment_counts.groupby("predicted_sentiment")[
-        "count"
-    ].sum()
-
-    legend_labels = [
-        ReportConfig.SENTIMENT_DICT[i] for i in range(len(ReportConfig.SENTIMENT_DICT))
-    ]
-
-    ax.pie(
-        sentiment_counts_sum,
-        labels=legend_labels,
-        autopct="%1.2f%%",
-        startangle=240,
-        radius=0.8,
-        textprops={
-            "fontsize": ReportConfig.CHART_TITLE_FONT_SIZE - 8,
-        },
-        colors=ReportConfig.SENTIMENT_PALETTE,
+    sentiment_counts["sentiment"] = sentiment_counts["sentiment"].map(
+        lambda x: ReportConfig.SENTIMENT_DICT[x]
     )
 
-    plt.title(
-        "Sentiment Distribution",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE - 7,
+    sns.barplot(
+        data=sentiment_counts,
+        y="sentiment",
+        x="count",
+        palette=[
+            ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        ],
+        ax=ax[0],
+    )
+
+    for p in ax[0].patches:
+        ax[0].annotate(
+            f"{int(p.get_width())}",
+            (p.get_width() - 50, p.get_y() + p.get_height() / 2.0),
+            ha="center",
+            va="center",
+            fontsize=11,
+            color="white",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    ax[0].set_xticks([])
+    ax[0].set_xlabel("")
+    ax[0].set_ylabel("")
+    ax[0].set_title(
+        "Distribuição de sentimentos anotados",
         loc="center",
     )
 
+    # Predicted sentiment
+    predicted_sentiment_counts = (
+        reviews_df["predicted_sentiment"].value_counts().reset_index()
+    )
+    predicted_sentiment_counts.columns = ["predicted_sentiment", "count"]
+
+    predicted_sentiment_counts["predicted_sentiment"] = predicted_sentiment_counts[
+        "predicted_sentiment"
+    ].map(lambda x: ReportConfig.SENTIMENT_DICT[x])
+
+    sns.barplot(
+        data=predicted_sentiment_counts,
+        y="predicted_sentiment",
+        x="count",
+        palette=[
+            ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        ],
+        ax=ax[1],
+    )
+
+    for p in ax[1].patches:
+        ax[1].annotate(
+            f"{int(p.get_width())}",
+            (p.get_width() - 50, p.get_y() + p.get_height() / 2.0),
+            ha="center",
+            va="center",
+            fontsize=11,
+            color="white",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    ax[1].set_xticks([])
+    ax[1].set_xlabel("")
+    ax[1].set_ylabel("")
+    ax[1].set_title(
+        "Distribuição de sentimentos classificados pelo Modelo",
+        loc="center",
+    )
+
+    plt.tight_layout()
     st.pyplot(fig)
 
 
@@ -492,6 +544,9 @@ if __name__ == "__main__":
 
     if "reviews_df" not in st.session_state:
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+        reviews_df["sentiment"] = reviews_df["sentiment"].apply(
+            lambda x: 2 if x == -1 else x
+        )
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
         )
