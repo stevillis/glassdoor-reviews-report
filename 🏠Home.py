@@ -463,7 +463,7 @@ def employee_role_analysis():
     with col2:
         sentiment = st.selectbox(
             label="Sentimento das Avaliações",
-            options=("Positive", "Negative", "Neutral"),
+            options=("Positivo", "Negativo", "Neutro"),
             key="sentiment_input",
         )
 

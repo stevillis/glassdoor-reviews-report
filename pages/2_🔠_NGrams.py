@@ -136,7 +136,7 @@ def n_gram_by_company():
     with col3:
         sentiment = st.selectbox(
             label="Sentimento das Avaliações",
-            options=("Positive", "Negative", "Neutral"),
+            options=("Positivo", "Negativo", "Neutro"),
             key="sentiment_input",
         )
 
