@@ -138,6 +138,11 @@ def company_analisys():
 
     reviews_df = st.session_state.get("reviews_df")
 
+    LIMIT_COMPANY_NAME = 30
+    reviews_df["company"] = reviews_df["company"].apply(
+        lambda x: x[:LIMIT_COMPANY_NAME] + "" if len(x) > LIMIT_COMPANY_NAME else x
+    )
+
     fig, ax = plt.subplots(1, figsize=(12, 6))
     sns.countplot(
         data=reviews_df,
@@ -160,13 +165,23 @@ def company_analisys():
             textcoords="offset points",
         )
 
+    sns.despine(bottom=False, left=True)
+
     plt.title(
-        "Predicted Sentiment by Company", fontsize=ReportConfig.CHART_TITLE_FONT_SIZE
+        "Sentimentos das Avaliações por Empresa",
+        fontdict={
+            "weight": "bold",
+            "size": ReportConfig.CHART_TITLE_FONT_SIZE,
+        },
     )
-    plt.xlabel("Company")
-    plt.ylabel("Count")
+
+    plt.xlabel("")
+    plt.ylabel("")
+
     plt.xticks(rotation=45, ha="right")
-    plt.legend(title="Predicted Sentiment", labels=ReportConfig.SENTIMENT_DICT.values())
+    plt.yticks([])
+
+    plt.legend(title="Sentimento", labels=ReportConfig.SENTIMENT_DICT.values())
 
     st.pyplot(fig)
 
