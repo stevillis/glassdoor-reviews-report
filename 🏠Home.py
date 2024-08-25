@@ -61,6 +61,10 @@ def general_analysis():
         ax=ax[0],
     )
 
+    ax[0].spines["top"].set_visible(False)
+    ax[0].spines["right"].set_visible(False)
+    ax[0].spines["bottom"].set_visible(False)
+
     for p in ax[0].patches:
         ax[0].annotate(
             f"{int(p.get_width())}",
@@ -79,6 +83,7 @@ def general_analysis():
     ax[0].set_title(
         "Distribuição de sentimentos anotados",
         loc="center",
+        fontsize=14,
     )
 
     # Predicted sentiment
@@ -121,7 +126,12 @@ def general_analysis():
     ax[1].set_title(
         "Distribuição de sentimentos classificados pelo Modelo",
         loc="center",
+        fontsize=14,
     )
+
+    ax[1].spines["top"].set_visible(False)
+    ax[1].spines["right"].set_visible(False)
+    ax[1].spines["bottom"].set_visible(False)
 
     plt.tight_layout()
     st.pyplot(fig)
