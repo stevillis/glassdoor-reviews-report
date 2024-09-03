@@ -8,7 +8,13 @@ import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import get_sentiment_key_from_value
+from utils import (
+    create_predicted_sentiment_plot,
+    get_bad_rating_companies,
+    get_good_rating_companies,
+    get_neutral_rating_companies,
+    get_sentiment_key_from_value,
+)
 
 
 def introduction():
@@ -192,6 +198,140 @@ def company_analisys():
     plt.yticks([])
 
     plt.legend(title="Sentimento", labels=ReportConfig.SENTIMENT_DICT.values())
+
+    st.pyplot(fig)
+
+
+def company_analisys2():
+    st.subheader("Distribuição de Sentimentos das Avaliações por Empresa")
+
+    st.markdown(
+        """Este gráfico mostra a quantidade de avaliações e o sentimento associado para cada empresa, ordenadas pela totalidade de avaliações.
+
+**Metodologia**
+
+As avaliações neutras não foram consideradas na relação entre avaliações positivas e negativas.
+
+**Resultados**
+
+- 15 das 22 empresas analisadas têm mais avaliações positivas do que negativas.
+- 4 empresas apresentam um número maior de avaliações negativas.
+- 3 empresas têm um número igual de avaliações positivas e negativas.
+
+"""
+    )
+
+    reviews_df = st.session_state.get("reviews_df")
+
+    reviews_df = create_predicted_sentiment_plot(reviews_df)
+
+    predicted_sentiment_plot_by_company_df = (
+        reviews_df.groupby(["company", "predicted_sentiment_plot"])
+        .size()
+        .unstack(fill_value=0)
+    )
+
+    predicted_sentiment_plot_by_company_df_reset = (
+        predicted_sentiment_plot_by_company_df.reset_index()
+    )
+    predicted_sentiment_plot_by_company_df_reset.columns = [
+        "company",
+        "1positive",
+        "2negative",
+        "3neutral",
+    ]
+
+    bad_rating_companies = get_bad_rating_companies(
+        predicted_sentiment_plot_by_company_df_reset
+    )
+    good_rating_companies = get_good_rating_companies(
+        predicted_sentiment_plot_by_company_df_reset
+    )
+    neutral_rating_companies = get_neutral_rating_companies(
+        predicted_sentiment_plot_by_company_df_reset
+    )
+
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+
+    # Plot
+    sns.countplot(
+        data=reviews_df,
+        y="company",
+        hue="predicted_sentiment_plot",
+        order=reviews_df["company"].value_counts().index,
+        ax=ax,
+        palette=[
+            ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        ],
+        width=0.9,
+    )
+
+    # Highlight Companies
+    for i, label in enumerate(ax.get_yticklabels()):
+        company_name = label.get_text()
+        if company_name in bad_rating_companies:
+            label.set_color(ReportConfig.NEGATIVE_SENTIMENT_COLOR)
+
+    for i, label in enumerate(ax.get_yticklabels()):
+        company_name = label.get_text()
+        if company_name in good_rating_companies:
+            label.set_color(ReportConfig.POSITIVE_SENTIMENT_COLOR)
+
+    for i, label in enumerate(ax.get_yticklabels()):
+        company_name = label.get_text()
+        if company_name in neutral_rating_companies:
+            label.set_color(ReportConfig.NEUTRAL_SENTIMENT_COLOR)
+
+    # Plot Annotates
+    for p in ax.patches:
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            ha="center",
+            va="center",
+            fontsize=6,
+            color="black",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    sns.despine(bottom=True)
+
+    plt.xlabel("")
+    plt.xticks([])
+
+    plt.ylabel("")
+
+    # plt.title(
+    #     "Distribuição de Sentimentos de Avaliações no Glassdoor por Empresa",
+    #     fontdict={
+    #         # "weight": "bold",
+    #         "size": ReportConfig.CHART_TITLE_FONT_SIZE,
+    #     },
+    #     loc="center",
+    # )
+
+    # plt.legend(
+    #     title="Sentimento", labels=["Positivo", "Negativo", "Neutro"], loc="lower right"
+    # )
+
+    positive_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
+    )
+    negative_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.NEGATIVE_SENTIMENT_COLOR
+    )
+    neutral_patch = plt.Rectangle((0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR)
+
+    ax.legend(
+        handles=[positive_patch, negative_patch, neutral_patch],
+        labels=["Positivo", "Negativo", "Neutro"],
+        title="Sentimento",
+        bbox_to_anchor=(-0.3, 1),
+        # loc="upper left",
+    )
 
     st.pyplot(fig)
 
@@ -588,7 +728,8 @@ if __name__ == "__main__":
 
     introduction()
     general_analysis()
-    company_analisys()
+    # company_analisys()
+    company_analisys2()
     sentiment_reviews_along_time()
     # rating_star_analysis()
     # rating_star_analysis2()
