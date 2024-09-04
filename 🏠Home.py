@@ -38,8 +38,26 @@ def general_analysis():
 
     st.markdown(
         """
-       A distribuição das quantidades de cada sentimento predita pelo Modelo treinado é bastante similar à distribuição observada no conjunto de dados anotado
-       usado para treinar o Modelo. Isso sugere que o Modelo aprendeu a classificar os sentimentos de forma consistente.
+       **Metodologia**
+
+        Antes de treinar o modelo de aprendizado de máquina para classificar os sentimentos das avaliações extraídas do Glassdoor, foi necessário preparar os dados. Essa preparação envolveu:
+
+        *Classificação manual de uma amostra das avaliações*
+
+        Uma parte das avaliações foi classificada manualmente, utilizando uma ferramenta de anotação criada pelo próprio autor.
+        Esse conjunto de dados extraídos e classificados manualmente é chamado de "sentimentos anotados" e serviu como base de treinamento e validação para o modelo.
+
+        *Tratamento do desequilíbrio de classes*
+
+        Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio significativo entre as classes de sentimento. Avaliações classificadas como Neutro representavam quase 5 vezes
+        menos do que as demais classes (Positivo e Negativo). Para lidar com esse problema, foi aplicada a técnica de oversampling na classe Neutro, replicando aleatoriamente algumas amostras
+        dessa classe durante o treinamento. Isso ajudou a balancear a distribuição das classes e melhorar o desempenho do modelo na identificação correta de avaliações Neutras.
+
+        **Resultados**
+
+        *Comparação entre dados anotados e classificados pelo modelo*
+
+        O gráfico a seguir mostra a comparação entre a distribuição dos sentimentos nos dados anotados manualmente e a distribuição dos sentimentos classificados pelo modelo treinado:
 """
     )
 
