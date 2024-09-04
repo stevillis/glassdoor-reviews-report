@@ -371,7 +371,9 @@ def sentiment_reviews_along_time():
 
     reviews_df = st.session_state.get("reviews_df")
 
-    reviews_df["review_date"] = pd.to_datetime(reviews_df["review_date"])
+    reviews_df["review_date"] = pd.to_datetime(
+        reviews_df["review_date"], format="%Y-%m-%d"
+    )
     reviews_df["year"] = reviews_df["review_date"].dt.year
 
     sentiment_counts = (
@@ -397,31 +399,36 @@ def sentiment_reviews_along_time():
             "count"
         ].tolist()
 
-        neutral_counts, positive_counts, negative_counts = year_counts
+        neutral_counts, positive_counts, negative_counts = (year_counts + [None] * 3)[
+            :3
+        ]
 
-        ax.text(
-            x=year,
-            y=neutral_counts - 8,
-            s=f"{neutral_counts}",
-            ha="center",
-            color=ReportConfig.NEUTRAL_SENTIMENT_COLOR,
-        )
+        if neutral_counts:
+            ax.text(
+                x=year,
+                y=neutral_counts - 8,
+                s=f"{neutral_counts}",
+                ha="center",
+                color=ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+            )
 
-        ax.text(
-            x=year,
-            y=positive_counts + 8,
-            s=f"{positive_counts}",
-            ha="center",
-            color=ReportConfig.POSITIVE_SENTIMENT_COLOR,
-        )
+        if positive_counts:
+            ax.text(
+                x=year,
+                y=positive_counts + 8,
+                s=f"{positive_counts}",
+                ha="center",
+                color=ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            )
 
-        ax.text(
-            x=year,
-            y=negative_counts - 8,
-            s=f"{negative_counts}",
-            ha="center",
-            color=ReportConfig.NEGATIVE_SENTIMENT_COLOR,
-        )
+        if negative_counts:
+            ax.text(
+                x=year,
+                y=negative_counts - 8,
+                s=f"{negative_counts}",
+                ha="center",
+                color=ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            )
 
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -760,7 +767,7 @@ if __name__ == "__main__":
     st.sidebar.info(AppMessages.INFO_MENU_NAVIGATION)
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
-    st.title(
+    st.header(
         "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
     )
 

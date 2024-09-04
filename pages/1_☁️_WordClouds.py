@@ -105,7 +105,7 @@ if __name__ == "__main__":
         unsafe_allow_html=True,
     )
 
-    st.title(
+    st.header(
         "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
     )
 
