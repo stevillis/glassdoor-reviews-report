@@ -359,13 +359,13 @@ def sentiment_reviews_along_time():
 
     st.markdown(
         """
-    O gráfico destaca que as avaliações positivas superam consistentemente as negativas, enquanto as avaliações neutras são menos comuns.
+    O gráfico apresenta uma análise de sentimentos das avaliações entre 05 de outubro de 2014 e 16 de março de 2024.
 
-    Observa-se um padrão notável de flutuações nos sentimentos ao longo do tempo. De 2014 a 2017, há uma tendência ascendente seguida por
-    um declínio, repetindo-se de 2017 a 2020.
-
-    Um aumento significativo na quantidade de avaliações de todas as emoções ocorre de 2020 a 2022, com pico em 2022. Enquanto ss avaliações
-    neutras  passam por um declínio a partir de 2022, assim como as positivas, as avaliações negativas continuam a aumentar a partir deste período.
+    - As avaliações positivas superam consistentemente as negativas ao longo do período analisado, enquanto as avaliações neutras são menos frequentes.
+    - Entre 2014 e 2017, há uma tendência ascendente nas avaliações, seguida por um declínio que se repete de 2017 a 2020.
+    - De 2020 a 2022, há um aumento expressivo no número de avaliações em todas as categorias, atingindo um pico em 2022.
+    - Após 2022, as avaliações neutras começam a declinar, acompanhadas por uma diminuição nas avaliações positivas.
+    Em contrapartida, as avaliações negativas seguem uma tendência de aumento, seguida por uma queda no início de 2024, assim como as demais categorias.
 """
     )
 
@@ -390,18 +390,57 @@ def sentiment_reviews_along_time():
         ax=ax,
     )
 
-    plt.xlabel("Year")
-    plt.ylabel("Number of Reviews")
-    plt.title("Number of Reviews by Sentiment over time")
+    # Annotations for number of reviews per sentiment
+    years_unique = sentiment_counts["year"].unique()
+    for year in years_unique:
+        year_counts = sentiment_counts[sentiment_counts["year"] == year][
+            "count"
+        ].tolist()
+
+        neutral_counts, positive_counts, negative_counts = year_counts
+
+        ax.text(
+            x=year,
+            y=neutral_counts - 8,
+            s=f"{neutral_counts}",
+            ha="center",
+            color=ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        )
+
+        ax.text(
+            x=year,
+            y=positive_counts + 8,
+            s=f"{positive_counts}",
+            ha="center",
+            color=ReportConfig.POSITIVE_SENTIMENT_COLOR,
+        )
+
+        ax.text(
+            x=year,
+            y=negative_counts - 8,
+            s=f"{negative_counts}",
+            ha="center",
+            color=ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+        )
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    # ax.spines["bottom"].set_visible(False)
+
+    plt.xlabel("Ano")
+    plt.ylabel("Número de Avaliações")
+    plt.title("Número de Avaliações por Sentimento ao Longo do Tempo")
 
     handles, labels = ax.get_legend_handles_labels()
     for i in range(len(ReportConfig.SENTIMENT_DICT)):
         handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
 
     plt.legend(
-        title="Sentiment",
-        bbox_to_anchor=(1.05, 1),
-        loc="upper left",
+        # title="Sentimento",
+        bbox_to_anchor=(0.5, 1.2),
+        loc="upper center",
+        edgecolor="1",
+        ncols=3,
     )
 
     st.pyplot(fig)
