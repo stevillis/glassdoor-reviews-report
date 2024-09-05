@@ -1,0 +1,152 @@
+import math
+import warnings
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import streamlit as st
+
+from app_messages import AppMessages
+from report_config import ReportConfig
+from utils import create_predicted_sentiment_plot
+
+
+def rating_star_analysis():
+    st.subheader("Distribuição de Sentimentos por Empresa e Quantidade de Estrelas")
+
+    st.markdown(
+        """
+        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas,
+        revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
+    """
+    )
+
+    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = create_predicted_sentiment_plot(reviews_df)
+
+    company = st.selectbox(
+        label="Empresa",
+        options=reviews_df["company"].unique().tolist(),
+        key="rating_star_company_input2",
+    )
+
+    filtered_df = reviews_df[reviews_df["company"] == company][
+        [
+            "company",
+            "employee_role",
+            "employee_detail",
+            "review_text",
+            "review_date",
+            "star_rating",
+            "predicted_sentiment_plot",
+            "sentiment_label",
+        ]
+    ]
+
+    filtered_df.reset_index(drop=True, inplace=True)
+
+    if len(filtered_df) > 0:
+        sentiment_counts = (
+            filtered_df.groupby(["company", "star_rating", "predicted_sentiment_plot"])
+            .size()
+            .reset_index(name="count")
+        )
+
+        fig, ax = plt.subplots(1, figsize=(10, 6))
+
+        bars = sns.barplot(
+            data=sentiment_counts,
+            x="star_rating",
+            y="count",
+            hue="predicted_sentiment_plot",
+            ax=ax,
+            palette=[
+                ReportConfig.POSITIVE_SENTIMENT_COLOR,
+                ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+                ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+            ],
+        )
+
+        for p in bars.patches:
+            height = p.get_height()
+            if math.isnan(height):
+                height = 0.0
+
+            bars.annotate(
+                text=f"{int(height)}",
+                xy=(p.get_x() + p.get_width() / 2.0, height),
+                ha="center",
+                va="center",
+                fontsize=11,
+                color="black",
+                xytext=(0, 5),
+                textcoords="offset points",
+            )
+
+        ax.set_title(
+            "Sentimentos das Avaliações por Quantidade de Estrelas",
+            fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        )
+
+        ax.set_xlabel("")
+        ax.set_xticklabels(
+            ["\u2605" * int(x) for x in sentiment_counts["star_rating"].unique()]
+        )
+
+        ax.set_yticks([])
+        ax.set_ylabel("")
+
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+
+        positive_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
+        )
+        negative_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.NEGATIVE_SENTIMENT_COLOR
+        )
+        neutral_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR
+        )
+
+        ax.legend(
+            # title="Sentimento",
+            handles=[positive_patch, negative_patch, neutral_patch],
+            labels=["Positivo", "Negativo", "Neutro"],
+            bbox_to_anchor=(0.5, 1.2),
+            loc="upper center",
+            edgecolor="1",
+            ncols=3,
+        )
+
+        st.pyplot(fig)
+
+        st.write("Avaliações filtradas")
+        filtered_df = filtered_df.drop(labels="predicted_sentiment_plot", axis=1)
+        st.dataframe(filtered_df)
+    else:
+        st.error(
+            AppMessages.ERROR_EMPTY_DATAFRAME,
+            icon="🚨",
+        )
+
+
+if __name__ == "__main__":
+    warnings.filterwarnings("ignore", "use_inf_as_na")
+
+    st.set_page_config(
+        page_title="Barplots",
+        page_icon=":bar_chart:",
+    )
+
+    st.markdown(
+        ReportConfig.CUSTOM_CSS,
+        unsafe_allow_html=True,
+    )
+
+    st.header(
+        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+    )
+
+    rating_star_analysis()
