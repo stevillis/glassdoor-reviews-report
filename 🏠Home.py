@@ -570,24 +570,30 @@ def rating_star_analysis2():
 
 def rating_star_analysis3():
     reviews_df = st.session_state.get("reviews_df")
+    reviews_df = create_predicted_sentiment_plot(reviews_df)
 
-    st.subheader(
-        "Distribuição de Sentimentos por Quantidade de Estrelas em Avaliações, por Empresa"
-    )
+    st.subheader("Distribuição de Sentimentos por Empresa e Quantidade de Estrelas")
 
     st.markdown(
         """
-        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas, revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
+        Este gráfico ilustra que:
+        - As avaliações de 1 a 3 estrelas apresentam um sentimento
+        predominantemente negativo.
+        - Por outro lado, as avaliações de 4 estrelas mostram uma distribuição
+        equilibrada entre sentimentos positivos e negativos.
+        - Já as avaliações de 5 estrelas são majoritariamente positivas,
+        destacando-se também um número significativo de avaliações neutras.
+
+        Essa predominância de avaliações neutras em avaliações de 5 estrelas
+        pode ser atribuída à exigência do Glassdoor de preencher as seções
+        *Prós* e *Contras*. Em diversas avaliações, os usuários não encontram
+        aspectos negativos a serem mencionados na seção *Contras*, resultando
+        em comentários como `Não há nada a ser apontado` ou `Não tenho nada a
+        reclamar`.
     """
     )
 
-    company = st.selectbox(
-        label="Empresa",
-        options=reviews_df["company"].unique().tolist(),
-        key="rating_star_company_input2",
-    )
-
-    filtered_df = reviews_df[reviews_df["company"] == company][
+    filtered_df = reviews_df[
         [
             "company",
             "employee_role",
@@ -595,28 +601,33 @@ def rating_star_analysis3():
             "review_text",
             "review_date",
             "star_rating",
-            "predicted_sentiment",
+            "predicted_sentiment_plot",
             "sentiment_label",
         ]
     ]
+
     filtered_df.reset_index(drop=True, inplace=True)
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
+            filtered_df.groupby(["star_rating", "predicted_sentiment_plot"])
             .size()
             .reset_index(name="count")
         )
 
-        fig, ax = plt.subplots(1, figsize=(12, 8))
+        fig, ax = plt.subplots(1, figsize=(10, 6))
 
         bars = sns.barplot(
             data=sentiment_counts,
             x="star_rating",
             y="count",
-            hue="predicted_sentiment",
+            hue="predicted_sentiment_plot",
             ax=ax,
-            palette=ReportConfig.SENTIMENT_PALETTE,
+            palette=[
+                ReportConfig.POSITIVE_SENTIMENT_COLOR,
+                ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+                ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+            ],
         )
 
         for p in bars.patches:
@@ -625,8 +636,8 @@ def rating_star_analysis3():
                 height = 0.0
 
             bars.annotate(
-                f"{int(height)}",
-                (p.get_x() + p.get_width() / 2.0, height),
+                text=f"{int(height)}",
+                xy=(p.get_x() + p.get_width() / 2.0, height),
                 ha="center",
                 va="center",
                 fontsize=11,
@@ -635,34 +646,44 @@ def rating_star_analysis3():
                 textcoords="offset points",
             )
 
-        plt.title(
-            "Sentiment Counts by Star Rating and Company",
+        ax.set_title(
+            "Sentimentos das Avaliações por Quantidade de Estrelas",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         )
-        plt.xlabel("Star Rating")
-        plt.ylabel("Count")
 
-        legend_labels = [
-            ReportConfig.SENTIMENT_DICT[i]
-            for i in range(len(ReportConfig.SENTIMENT_DICT))
-        ]
-        plt.legend(
-            title="Sentiment",
-            labels=legend_labels,
-            bbox_to_anchor=(1.05, 1),
-            loc="upper left",
+        ax.set_xlabel("")
+        ax.set_xticklabels(
+            ["\u2605" * int(x) for x in sentiment_counts["star_rating"].unique()]
         )
 
-        leg = ax.get_legend()
-        leg.legend_handles[0].set_color(ReportConfig.NEUTRAL_SENTIMENT_COLOR)
-        leg.legend_handles[1].set_color(ReportConfig.POSITIVE_SENTIMENT_COLOR)
-        leg.legend_handles[2].set_color(ReportConfig.NEGATIVE_SENTIMENT_COLOR)
+        ax.set_yticks([])
+        ax.set_ylabel("")
+
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+
+        positive_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
+        )
+        negative_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.NEGATIVE_SENTIMENT_COLOR
+        )
+        neutral_patch = plt.Rectangle(
+            (0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR
+        )
+
+        ax.legend(
+            # title="Sentimento",
+            handles=[positive_patch, negative_patch, neutral_patch],
+            labels=["Positivo", "Negativo", "Neutro"],
+            bbox_to_anchor=(0.5, 1.2),
+            loc="upper center",
+            edgecolor="1",
+            ncols=3,
+        )
 
         st.pyplot(fig)
-
-        st.write("Avaliações filtradas")
-        filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
-        st.dataframe(filtered_df)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -754,6 +775,8 @@ def conclusion():
 
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore", "use_inf_as_na")
+
     st.set_page_config(
         page_title="Home",
         page_icon=":house:",
