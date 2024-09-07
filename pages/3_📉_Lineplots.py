@@ -20,7 +20,7 @@ if __name__ == "__main__":
         "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
     )
 
-    st.subheader("Sentimento de Avaliações por Empresa ao longo do tempo")
+    st.subheader("Sentimento de avaliações por empresa ao longo do tempo")
 
     st.markdown(
         """
@@ -120,7 +120,11 @@ if __name__ == "__main__":
     ax.spines["right"].set_visible(False)
     # ax.spines["bottom"].set_visible(False)
 
-    ax.set_title("Número de Avaliações por Sentimento ao Longo do Tempo")
+    ax.set_title(
+        "Sentimento de avaliações por empresa ao longo do tempo",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
 
     ax.set_xlabel("Ano")
     ax.set_ylabel("Número de Avaliações")
@@ -133,7 +137,7 @@ if __name__ == "__main__":
 
     ax.legend(
         # title="Sentimento",
-        bbox_to_anchor=(0.5, 1.2),
+        bbox_to_anchor=(0.5, 1.1),
         loc="upper center",
         edgecolor="1",
         ncols=3,

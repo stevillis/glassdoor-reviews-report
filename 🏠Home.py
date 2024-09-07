@@ -148,7 +148,7 @@ def general_analysis():
     ax[1].set_xlabel("")
     ax[1].set_ylabel("")
     ax[1].set_title(
-        "Distribuição de sentimentos classificados pelo Modelo",
+        "Distribuição de sentimentos classificados pelo modelo",
         loc="center",
         fontsize=14,
     )
@@ -221,7 +221,7 @@ def company_analisys():
 
 
 def company_analisys2():
-    st.subheader("Distribuição de Sentimentos das Avaliações por Empresa")
+    st.subheader("Distribuição de sentimentos por empresa")
 
     st.markdown(
         """Este gráfico mostra a quantidade de avaliações e o sentimento associado para cada empresa, ordenadas pela totalidade de avaliações.
@@ -240,6 +240,11 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
     )
 
     reviews_df = st.session_state.get("reviews_df")
+
+    LIMIT_COMPANY_NAME = 30
+    reviews_df["company"] = reviews_df["company"].apply(
+        lambda x: x[:LIMIT_COMPANY_NAME] + "" if len(x) > LIMIT_COMPANY_NAME else x
+    )
 
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
@@ -317,23 +322,16 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
 
     sns.despine(bottom=True)
 
-    plt.xlabel("")
-    plt.xticks([])
+    ax.set_xlabel("")
+    ax.set_xticks([])
 
-    plt.ylabel("")
+    ax.set_ylabel("")
 
-    # plt.title(
-    #     "Distribuição de Sentimentos de Avaliações no Glassdoor por Empresa",
-    #     fontdict={
-    #         # "weight": "bold",
-    #         "size": ReportConfig.CHART_TITLE_FONT_SIZE,
-    #     },
-    #     loc="center",
-    # )
-
-    # plt.legend(
-    #     title="Sentimento", labels=["Positivo", "Negativo", "Neutro"], loc="lower right"
-    # )
+    ax.set_title(
+        "Distribuição de sentimentos por empresa",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
 
     positive_patch = plt.Rectangle(
         (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
@@ -344,18 +342,20 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
     neutral_patch = plt.Rectangle((0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR)
 
     ax.legend(
+        # title="Sentimento",
         handles=[positive_patch, negative_patch, neutral_patch],
         labels=["Positivo", "Negativo", "Neutro"],
-        title="Sentimento",
-        bbox_to_anchor=(-0.3, 1),
-        # loc="upper left",
+        bbox_to_anchor=(0.5, 1.1),
+        loc="upper center",
+        edgecolor="1",
+        ncols=3,
     )
 
     st.pyplot(fig)
 
 
 def sentiment_reviews_along_time():
-    st.subheader("Número de Avaliações por Sentimento ao longo do tempo")
+    st.subheader("Número de avaliações por sentimento ao longo do tempo")
 
     st.markdown(
         """
@@ -434,9 +434,14 @@ def sentiment_reviews_along_time():
     ax.spines["right"].set_visible(False)
     # ax.spines["bottom"].set_visible(False)
 
-    plt.xlabel("Ano")
-    plt.ylabel("Número de Avaliações")
-    plt.title("Número de Avaliações por Sentimento ao Longo do Tempo")
+    ax.set_xlabel("Ano")
+    ax.set_ylabel("Número de Avaliações")
+
+    ax.set_title(
+        "Número de avaliações por sentimento ao longo do tempo",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
 
     handles, labels = ax.get_legend_handles_labels()
     for i in range(len(ReportConfig.SENTIMENT_DICT)):
@@ -444,7 +449,7 @@ def sentiment_reviews_along_time():
 
     plt.legend(
         # title="Sentimento",
-        bbox_to_anchor=(0.5, 1.2),
+        bbox_to_anchor=(0.5, 1.1),
         loc="upper center",
         edgecolor="1",
         ncols=3,
@@ -572,7 +577,7 @@ def rating_star_analysis3():
     reviews_df = st.session_state.get("reviews_df")
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
-    st.subheader("Distribuição de Sentimentos por Empresa e Quantidade de Estrelas")
+    st.subheader("Distribuição de sentimentos por quantidade de estrelas")
 
     st.markdown(
         """
@@ -647,8 +652,9 @@ def rating_star_analysis3():
             )
 
         ax.set_title(
-            "Sentimentos das Avaliações por Quantidade de Estrelas",
+            "Distribuição de sentimentos por quantidade de estrelas",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+            y=1.1,
         )
 
         ax.set_xlabel("")
@@ -677,7 +683,7 @@ def rating_star_analysis3():
             # title="Sentimento",
             handles=[positive_patch, negative_patch, neutral_patch],
             labels=["Positivo", "Negativo", "Neutro"],
-            bbox_to_anchor=(0.5, 1.2),
+            bbox_to_anchor=(0.5, 1.1),
             loc="upper center",
             edgecolor="1",
             ncols=3,

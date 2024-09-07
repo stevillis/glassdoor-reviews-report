@@ -2,7 +2,6 @@ import math
 import warnings
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 import streamlit as st
 
@@ -12,7 +11,7 @@ from utils import create_predicted_sentiment_plot
 
 
 def rating_star_analysis():
-    st.subheader("Distribuição de Sentimentos por Empresa e Quantidade de Estrelas")
+    st.subheader("Distribuição de sentimentos por quantidade de estrelas")
 
     st.markdown(
         """
@@ -84,8 +83,9 @@ def rating_star_analysis():
             )
 
         ax.set_title(
-            "Sentimentos das Avaliações por Quantidade de Estrelas",
+            "Distribuição de sentimentos por quantidade de estrelas",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+            y=1.1,
         )
 
         ax.set_xlabel("")
@@ -114,7 +114,7 @@ def rating_star_analysis():
             # title="Sentimento",
             handles=[positive_patch, negative_patch, neutral_patch],
             labels=["Positivo", "Negativo", "Neutro"],
-            bbox_to_anchor=(0.5, 1.2),
+            bbox_to_anchor=(0.5, 1.1),
             loc="upper center",
             edgecolor="1",
             ncols=3,
