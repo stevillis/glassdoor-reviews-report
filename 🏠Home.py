@@ -793,7 +793,6 @@ if __name__ == "__main__":
         unsafe_allow_html=True,
     )
 
-    st.sidebar.info(AppMessages.INFO_MENU_NAVIGATION)
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     st.header(
