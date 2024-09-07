@@ -7,6 +7,7 @@ class ReportConfig:
     """Configure common used constants."""
 
     RANDOM_SEED = 103
+    COMPANY_NAME_MAX_LENGTH = 30
     SENTIMENT_DICT = {0: "Neutro", 1: "Positivo", 2: "Negativo"}
     CUSTOM_CSS = """
         <style>

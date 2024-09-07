@@ -13,6 +13,7 @@ from utils import (
     get_bad_rating_companies,
     get_good_rating_companies,
     get_neutral_rating_companies,
+    get_ranking_positive_negative_companies,
     get_sentiment_key_from_value,
 )
 
@@ -161,6 +162,185 @@ def general_analysis():
     st.pyplot(fig)
 
 
+def positive_reviews_ranking():
+    st.subheader("Ranking de avaliações positivas por empresa")
+
+    st.markdown(
+        """
+    Este gráfico ilustra as cinco empresas que se apresentam um número de
+    avaliações positivas superior ao de avaliações negativas. Para garantir
+    a relevância dos dados, foram consideradas apenas as empresas que
+    possuem pelo menos 21 avaliações, um critério que representa a metade da
+    mediana de avaliações de todas as empresas analisadas.
+"""
+    )
+
+    top_positive_companies_df = st.session_state.get("top_positive_companies_df")
+
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+
+    sns.barplot(
+        data=top_positive_companies_df,
+        x="sentiment_count",
+        y="company",
+        hue="predicted_sentiment_plot",
+        palette=[
+            ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        ],
+        ax=ax,
+        width=0.9,
+        orient="h",
+    )
+
+    # Annotates
+    for p in ax.patches:
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            ha="center",
+            va="center",
+            fontsize=6,
+            color="black",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    # Axes config
+    ax.set_xlabel("")
+
+    ax.set_xticks([])
+
+    ax.set_ylabel("")
+
+    ax.set_title(
+        "Ranking de avaliações positivas por empresa",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+
+    positive_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
+    )
+    negative_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.NEGATIVE_SENTIMENT_COLOR
+    )
+    neutral_patch = plt.Rectangle((0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR)
+
+    ax.legend(
+        # title="Sentimento",
+        handles=[positive_patch, negative_patch, neutral_patch],
+        labels=["Positivo", "Negativo", "Neutro"],
+        bbox_to_anchor=(0.5, 1.1),
+        loc="upper center",
+        edgecolor="1",
+        ncols=3,
+    )
+
+    st.pyplot(fig)
+
+
+def negative_reviews_ranking():
+    st.subheader("Ranking de avaliações negativas por empresa")
+
+    st.markdown(
+        """
+    Este gráfico ilustra as três empresas que se apresentam um número de
+    avaliações negativas superior ao de avaliações positivas, seguindo
+    os mesmos critérios do gráfico anterior.
+"""
+    )
+
+    top_negative_companies_df = st.session_state.get("top_negative_companies_df")
+
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+
+    sns.barplot(
+        data=top_negative_companies_df,
+        x="sentiment_count",
+        y="company",
+        hue="predicted_sentiment_plot",
+        palette=[
+            ReportConfig.POSITIVE_SENTIMENT_COLOR,
+            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
+            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
+        ],
+        ax=ax,
+        width=0.9,
+        orient="h",
+    )
+
+    # Annotates
+    for p in ax.patches:
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width() + 2, (p.get_y() + p.get_height() / 2) + 0.02),
+            ha="center",
+            va="center",
+            fontsize=6,
+            color="black",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width() + 2, (p.get_y() + p.get_height() / 2) + 0.02),
+            ha="center",
+            va="center",
+            fontsize=6,
+            color="black",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    # Axes config
+    ax.set_xlabel("")
+
+    ax.set_xticks([])
+
+    ax.set_ylabel("")
+
+    ax.set_title(
+        "Ranking de avaliações negativas por empresa",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+
+    positive_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
+    )
+    negative_patch = plt.Rectangle(
+        (0, 0), 1, 1, fc=ReportConfig.NEGATIVE_SENTIMENT_COLOR
+    )
+    neutral_patch = plt.Rectangle((0, 0), 1, 1, fc=ReportConfig.NEUTRAL_SENTIMENT_COLOR)
+
+    ax.legend(
+        # title="Sentimento",
+        handles=[positive_patch, negative_patch, neutral_patch],
+        labels=["Positivo", "Negativo", "Neutro"],
+        bbox_to_anchor=(0.5, 1.1),
+        loc="upper center",
+        edgecolor="1",
+        ncols=3,
+    )
+
+    st.pyplot(fig)
+
+    st.write(
+        "O ranking geral das empresas pode ser visualizado no menu Distribuição de sentimentos por empresa"
+    )
+
+
 def company_analisys():
     st.subheader("Sentimentos das Avaliações por Empresa")
 
@@ -171,11 +351,6 @@ def company_analisys():
     )
 
     reviews_df = st.session_state.get("reviews_df")
-
-    LIMIT_COMPANY_NAME = 30
-    reviews_df["company"] = reviews_df["company"].apply(
-        lambda x: x[:LIMIT_COMPANY_NAME] + "" if len(x) > LIMIT_COMPANY_NAME else x
-    )
 
     fig, ax = plt.subplots(1, figsize=(12, 6))
     sns.countplot(
@@ -240,11 +415,6 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
     )
 
     reviews_df = st.session_state.get("reviews_df")
-
-    LIMIT_COMPANY_NAME = 30
-    reviews_df["company"] = reviews_df["company"].apply(
-        lambda x: x[:LIMIT_COMPANY_NAME] + "" if len(x) > LIMIT_COMPANY_NAME else x
-    )
 
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
@@ -800,28 +970,53 @@ if __name__ == "__main__":
     )
 
     if "reviews_df" not in st.session_state:
+        # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+
         reviews_df["sentiment"] = reviews_df["sentiment"].apply(
             lambda x: 2 if x == -1 else x
         )
+
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
         )
+
+        reviews_df["company"] = reviews_df["company"].apply(
+            lambda x: (
+                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
+                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
+                else x
+            )
+        )
+
         st.session_state["reviews_df"] = reviews_df
 
+        # Top Companies Reviews DF
+        top_positive_companies_df, top_negative_companies_df = (
+            get_ranking_positive_negative_companies(reviews_df)
+        )
+
+        st.session_state["top_positive_companies_df"] = top_positive_companies_df
+        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+
+        # Neutral Reviews DF
         neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
         st.session_state["neutral_reviews_df"] = neutral_reviews_df
 
+        # Positive Reviews DF
         positive_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 1]
         st.session_state["positive_reviews_df"] = positive_reviews_df
 
+        # Negative Reviews DF
         negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
         st.session_state["negative_reviews_df"] = negative_reviews_df
 
     introduction()
     general_analysis()
     # company_analisys()
-    company_analisys2()
+    positive_reviews_ranking()
+    negative_reviews_ranking()
+    company_analisys2()  # TODO: move to another page
     sentiment_reviews_along_time()
     # rating_star_analysis()
     # rating_star_analysis2()

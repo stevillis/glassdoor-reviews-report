@@ -1,6 +1,11 @@
+from typing import List
+
+import numpy as np
 import pandas as pd
 
 from report_config import ReportConfig
+
+MIN_REVIEWS = 42 / 2  # (reviews median) / 2
 
 
 def get_sentiment_key_from_value(value):
@@ -80,3 +85,134 @@ def create_predicted_sentiment_plot(df: pd.DataFrame) -> pd.DataFrame:
     df["predicted_sentiment_plot"] = df["predicted_sentiment"].map(sentiment_mapping)
 
     return df
+
+
+def get_ranking_positive_negative_companies(df: pd.DataFrame) -> List[pd.DataFrame]:
+    """
+    Calculate the ranking of companies based on the difference between positive and negative sentiment counts.
+
+    Parameters:
+    - df (DataFrame): Input DataFrame containing sentiment analysis data.
+
+    Returns:
+    - Tuple: Two DataFrames representing the top positive and top negative companies based on sentiment difference and review counts.
+    """
+    df["predicted_sentiment_plot"] = np.select(
+        condlist=[
+            (df["predicted_sentiment"] == 0),
+            (df["predicted_sentiment"] == 1),
+            (df["predicted_sentiment"] == 2),
+        ],
+        choicelist=[3, 1, 2],
+    )
+
+    reviews_count_df = df.groupby(["company"])["review_text"].count()
+
+    reviews_count_df = reviews_count_df.reset_index()
+    reviews_count_df.columns = [
+        "company",
+        "reviews_count",
+    ]
+
+    df = pd.merge(
+        left=df,
+        right=reviews_count_df,
+        on="company",
+        how="left",
+    )
+
+    predicted_sentiment_plot_by_company_df = (
+        df.groupby(["company", "predicted_sentiment_plot"])["review_text"]
+        .count()
+        .unstack(fill_value=0)
+    )
+
+    predicted_sentiment_plot_by_company_df = (
+        predicted_sentiment_plot_by_company_df.reset_index()
+    )
+
+    predicted_sentiment_plot_by_company_df.columns = [
+        "company",
+        "1positive",
+        "2negative",
+        "3neutral",
+    ]
+
+    predicted_sentiment_plot_by_company_df["sentiment_diff"] = (
+        predicted_sentiment_plot_by_company_df["1positive"]
+        - predicted_sentiment_plot_by_company_df["2negative"]
+    )
+
+    predicted_sentiment_plot_by_company_df = (
+        predicted_sentiment_plot_by_company_df.sort_values(
+            by="sentiment_diff", ascending=False
+        ).reset_index()
+    )
+
+    predicted_sentiment_plot_by_company_df = (
+        predicted_sentiment_plot_by_company_df.drop(labels="index", axis=1)
+    )
+
+    bad_rating_companies = get_bad_rating_companies(
+        predicted_sentiment_plot_by_company_df
+    )
+
+    good_rating_companies = get_good_rating_companies(
+        predicted_sentiment_plot_by_company_df
+    )
+
+    reviews_30_plus_df = pd.merge(
+        left=df,
+        right=predicted_sentiment_plot_by_company_df,
+        on="company",
+        how="left",
+    )
+
+    reviews_30_plus_df = reviews_30_plus_df.sort_values(
+        by="sentiment_diff", ascending=False
+    ).reset_index()
+
+    reviews_30_plus_df = reviews_30_plus_df[
+        reviews_30_plus_df["reviews_count"] >= MIN_REVIEWS
+    ]
+
+    reviews_30_plus_df["sentiment_count"] = np.select(
+        condlist=[
+            (reviews_30_plus_df["predicted_sentiment_plot"] == 1),  # Positive
+            (reviews_30_plus_df["predicted_sentiment_plot"] == 2),  # Negative
+            (reviews_30_plus_df["predicted_sentiment_plot"] == 3),  # Neutral
+        ],
+        choicelist=[
+            reviews_30_plus_df["1positive"],
+            reviews_30_plus_df["2negative"],
+            reviews_30_plus_df["3neutral"],
+        ],
+        default=0,
+    )
+
+    top_good_bad_companies_by_sentiment_diff = reviews_30_plus_df[
+        (
+            reviews_30_plus_df["company"].isin(good_rating_companies[:5])
+            | reviews_30_plus_df["company"].isin(bad_rating_companies[:5])
+        )
+    ]
+
+    top_positive_companies_df = top_good_bad_companies_by_sentiment_diff[
+        top_good_bad_companies_by_sentiment_diff["sentiment_diff"] > 0
+    ]
+
+    top_positive_companies_df = top_positive_companies_df.sort_values(
+        by=["sentiment_diff", "reviews_count"],
+        ascending=False,
+    ).reset_index()
+
+    top_negative_companies_df = top_good_bad_companies_by_sentiment_diff[
+        top_good_bad_companies_by_sentiment_diff["sentiment_diff"] < 0
+    ]
+
+    top_negative_companies_df = top_negative_companies_df.sort_values(
+        by=["sentiment_diff", "reviews_count"],
+        ascending=True,
+    ).reset_index()
+
+    return top_positive_companies_df, top_negative_companies_df
