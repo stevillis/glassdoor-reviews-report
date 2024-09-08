@@ -9,7 +9,7 @@ from wordcloud import WordCloud
 from report_config import ReportConfig
 
 
-def _print_wordcloud(corpus, title=None, max_words: int = 150):
+def print_wordcloud(corpus, title=None, max_words: int = 150):
     portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
 
     non_stopwords_corpus = []
@@ -40,7 +40,7 @@ def _print_wordcloud(corpus, title=None, max_words: int = 150):
     st.pyplot(fig)
 
 
-def _positive_wordcloud():
+def positive_wordcloud():
     st.subheader("Avaliações Positivas")
 
     positive_reviews_df = st.session_state.get("positive_reviews_df")
@@ -55,10 +55,10 @@ def _positive_wordcloud():
         key="slider_max_words_positive",
     )
 
-    _print_wordcloud(corpus, max_words=max_words)
+    print_wordcloud(corpus, max_words=max_words)
 
 
-def _negative_wordcloud():
+def negative_wordcloud():
     st.subheader("Avaliações Negativas")
 
     negative_reviews_df = st.session_state.get("negative_reviews_df")
@@ -73,10 +73,10 @@ def _negative_wordcloud():
         key="slider_max_words_negative",
     )
 
-    _print_wordcloud(corpus, max_words=max_words)
+    print_wordcloud(corpus, max_words=max_words)
 
 
-def _neutral_wordcloud():
+def neutral_wordcloud():
     st.subheader("Avaliações Neutras")
 
     neutral_reviews_df = st.session_state.get("neutral_reviews_df")
@@ -91,7 +91,7 @@ def _neutral_wordcloud():
         key="slider_max_words_neutral",
     )
 
-    _print_wordcloud(corpus, max_words=max_words)
+    print_wordcloud(corpus, max_words=max_words)
 
 
 if __name__ == "__main__":
@@ -132,6 +132,8 @@ if __name__ == "__main__":
 
         nltk.download("stopwords")
 
-    _positive_wordcloud()
-    _negative_wordcloud()
-    _neutral_wordcloud()
+    positive_wordcloud()
+    negative_wordcloud()
+    neutral_wordcloud()
+
+    # TODO: create wordclouds by company

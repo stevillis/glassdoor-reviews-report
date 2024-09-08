@@ -15,8 +15,10 @@ def rating_star_analysis():
 
     st.markdown(
         """
-        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas,
-        revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
+        Esta análise mostra padrões interessantes na relação entre as
+        avaliações e o número de estrelas atribuídas, revelando correlações
+        intrigantes entre a satisfação dos funcionários e a classificação
+        geral.
     """
     )
 
@@ -146,7 +148,8 @@ if __name__ == "__main__":
     )
 
     st.header(
-        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+        """Desvendando emoções nas avaliações do Glassdoor de empresas de
+        Tecnologia de Cuiabá"""
     )
 
     rating_star_analysis()

@@ -1,10 +1,14 @@
 import math
 import warnings
+from collections import Counter
+from string import punctuation
 
 import matplotlib.pyplot as plt
+import nltk
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+from wordcloud import WordCloud
 
 from app_messages import AppMessages
 from report_config import ReportConfig
@@ -335,8 +339,9 @@ def negative_reviews_ranking():
 
     st.markdown(
         """
-        O ranking completo de avaliações por empresa pode ser visualizado no menu
-        <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking geral de avaliações</a>.
+        O ranking completo de avaliações por empresa pode ser visualizado no
+        menu <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking
+        geral de avaliações</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -501,8 +506,9 @@ def sentiment_reviews_along_time():
 
     st.markdown(
         """
-        As avaliações ao longo do tempo por empresa podem ser visualizadas no menu
-        <a target="_self" href="./Avaliações_ao_longo_do_tempo">Avaliações ao longo do tempo</a>.
+        As avaliações ao longo do tempo por empresa podem ser visualizadas no
+        menu <a target="_self" href="./Avaliações_ao_longo_do_tempo">
+        📉Avaliações ao longo do tempo</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -746,6 +752,149 @@ def rating_star_analysis3():
             icon="🚨",
         )
 
+    st.markdown(
+        """
+        A distribuição de sentimentos por quantidades de estrelas para cada
+        empresa pode ser visualizada no menu
+        <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
+        📊Avaliações por quantidade de estrelas</a>.
+    """,
+        unsafe_allow_html=True,
+    )
+
+
+def wordcloud_analysis():
+    st.subheader("Word Cloud das avaliações")
+
+    reviews_df = st.session_state.get("reviews_df")
+    review_text = reviews_df["review_text"].str.split().values.tolist()
+    corpus = [word for i in review_text for word in i]
+
+    max_words = st.slider(
+        label="Quantidade de palavras",
+        min_value=10,
+        max_value=150,
+        value=100,
+        key="slider_max_words_positive",
+    )
+
+    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
+
+    non_stopwords_corpus = []
+    for word in corpus:
+        word_lower = word.lower()
+        if word_lower not in portuguese_stop_words and word_lower not in punctuation:
+            non_stopwords_corpus.append(word_lower)
+
+    non_stopwords_corpus_str = " ".join(non_stopwords_corpus)
+
+    wordcloud = WordCloud(
+        background_color="white",
+        random_state=ReportConfig.RANDOM_SEED,
+        max_words=max_words,
+        width=1024,
+        height=768,
+    )
+
+    fig, ax = plt.subplots(1, figsize=(10, 6))
+    plt.axis("off")
+
+    ax.imshow(wordcloud.generate(str(non_stopwords_corpus_str)))
+
+    ax.set_title(
+        "Word Cloud de todas as avaliações",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
+
+    st.pyplot(fig)
+
+    st.markdown(
+        """
+        As Word Clouds de avaliações por sentimento e por empresa podem ser
+        visualizadas no menu
+        <a target="_self" href="./Word_Clouds">☁️Word Clouds</a>.
+    """,
+        unsafe_allow_html=True,
+    )
+
+
+def most_common_words_analysis():
+    st.subheader("Top 10 palavras mais usadas nas avaliações")
+
+    st.markdown(
+        """
+       Este gráfico apresenta as 10 palavras mais frequentemente utilizadas em 
+       todas as avaliações analisadas. É importante ressaltar que as stopwords, 
+       que são palavras comuns e geralmente sem significado relevante para a 
+       análise (como "e", "a", "o", "de"), foram excluídas desta análise. 
+       
+       Essa abordagem permite uma compreensão mais clara dos termos 
+       significativos que realmente refletem as opiniões dos avaliadores.
+"""
+    )
+
+    reviews_df = st.session_state.get("reviews_df")
+    review_text = reviews_df["review_text"].str.split().values.tolist()
+    corpus = [word for i in review_text for word in i]
+
+    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
+
+    non_stopwords_corpus = []
+    for word in corpus:
+        word_lower = word.lower()
+        if word_lower not in portuguese_stop_words and word_lower not in punctuation:
+            non_stopwords_corpus.append(word_lower)
+
+    counter = Counter(non_stopwords_corpus)
+    most_common_words = counter.most_common(n=10)
+
+    words, counts = zip(*most_common_words)  # Unzip the words and counts
+    most_common_words_df = pd.DataFrame({"words": words, "counts": counts})
+
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+
+    sns.barplot(
+        data=most_common_words_df,
+        x="counts",
+        y="words",
+        ax=ax,
+        width=0.9,
+        orient="h",
+    )
+
+    # Annotates
+    for p in ax.patches:
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            ha="center",
+            va="center",
+            fontsize=6,
+            color="black",
+            xytext=(0, 0),
+            textcoords="offset points",
+        )
+
+    # Axes config
+    ax.set_xlabel("")
+
+    ax.set_xticks([])
+
+    ax.set_ylabel("")
+
+    ax.set_title(
+        "Top 10 palavras mais usadas nas avaliações",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+
+    st.pyplot(fig)
+
 
 def employee_role_analysis():
     st.subheader("Sentimentos das Avaliações por Empresa e por Cargo")
@@ -910,6 +1059,14 @@ if __name__ == "__main__":
     # rating_star_analysis2()
 
     rating_star_analysis3()
+    st.markdown("---")
+
+    # TODO: create rating star analysis by company
+
+    wordcloud_analysis()
+    st.markdown("---")
+
+    most_common_words_analysis()
     st.markdown("---")
 
     employee_role_analysis()
