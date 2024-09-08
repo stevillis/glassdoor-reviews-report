@@ -10,9 +10,6 @@ from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
     create_predicted_sentiment_plot,
-    get_bad_rating_companies,
-    get_good_rating_companies,
-    get_neutral_rating_companies,
     get_ranking_positive_negative_companies,
     get_sentiment_key_from_value,
 )
@@ -338,8 +335,8 @@ def negative_reviews_ranking():
 
     st.markdown(
         """
-        Você pode visualizar o ranking completo de avaliações por empresa no menu
-        <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking geral de avaliações</a>
+        O ranking completo de avaliações por empresa pode ser visualizado no menu
+        <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking geral de avaliações</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -501,6 +498,14 @@ def sentiment_reviews_along_time():
     )
 
     st.pyplot(fig)
+
+    st.markdown(
+        """
+        As avaliações ao longo do tempo por empresa podem ser visualizadas no menu
+        <a target="_self" href="./Avaliações_ao_longo_do_tempo">Avaliações ao longo do tempo</a>.
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def rating_star_analysis():
@@ -887,13 +892,27 @@ if __name__ == "__main__":
         st.session_state["negative_reviews_df"] = negative_reviews_df
 
     introduction()
+    st.markdown("---")
+
     general_analysis()
+    st.markdown("---")
+
     # company_analisys()
+
     positive_reviews_ranking()
     negative_reviews_ranking()
+    st.markdown("---")
+
     sentiment_reviews_along_time()
+    st.markdown("---")
+
     # rating_star_analysis()
     # rating_star_analysis2()
+
     rating_star_analysis3()
+    st.markdown("---")
+
     employee_role_analysis()
+    st.markdown("---")
+
     conclusion()
