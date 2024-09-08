@@ -764,7 +764,7 @@ def rating_star_analysis3():
 
 
 def wordcloud_analysis():
-    st.subheader("Word Cloud das avaliações")
+    st.subheader("Word Cloud de todas as avaliações")
 
     reviews_df = st.session_state.get("reviews_df")
     review_text = reviews_df["review_text"].str.split().values.tolist()
@@ -773,8 +773,8 @@ def wordcloud_analysis():
     max_words = st.slider(
         label="Quantidade de palavras",
         min_value=10,
-        max_value=150,
-        value=100,
+        max_value=50,
+        value=50,
         key="slider_max_words_positive",
     )
 
@@ -801,12 +801,6 @@ def wordcloud_analysis():
 
     ax.imshow(wordcloud.generate(str(non_stopwords_corpus_str)))
 
-    ax.set_title(
-        "Word Cloud de todas as avaliações",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-        y=1.1,
-    )
-
     st.pyplot(fig)
 
     st.markdown(
@@ -824,12 +818,12 @@ def most_common_words_analysis():
 
     st.markdown(
         """
-       Este gráfico apresenta as 10 palavras mais frequentemente utilizadas em 
-       todas as avaliações analisadas. É importante ressaltar que as stopwords, 
-       que são palavras comuns e geralmente sem significado relevante para a 
-       análise (como "e", "a", "o", "de"), foram excluídas desta análise. 
-       
-       Essa abordagem permite uma compreensão mais clara dos termos 
+       Este gráfico apresenta as 10 palavras mais frequentemente utilizadas em
+       todas as avaliações analisadas. É importante ressaltar que as stopwords,
+       que são palavras comuns e geralmente sem significado relevante para a
+       análise (como "e", "a", "o", "de"), foram excluídas desta análise.
+
+       Essa abordagem permite uma compreensão mais clara dos termos
        significativos que realmente refletem as opiniões dos avaliadores.
 """
     )
@@ -1060,8 +1054,6 @@ if __name__ == "__main__":
 
     rating_star_analysis3()
     st.markdown("---")
-
-    # TODO: create rating star analysis by company
 
     wordcloud_analysis()
     st.markdown("---")

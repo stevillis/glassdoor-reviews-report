@@ -7,7 +7,7 @@ import streamlit as st
 from wordcloud import WordCloud
 
 from report_config import ReportConfig
-from utils import get_ranking_positive_negative_companies
+from utils import get_ranking_positive_negative_companies, get_sentiment_key_from_value
 
 
 def print_wordcloud(corpus, title=None, max_words: int = 150):
@@ -42,54 +42,117 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
 
 
 def positive_wordcloud():
-    st.subheader("Avaliações Positivas")
+    st.subheader("Word Cloud de avaliações positivas")
 
     positive_reviews_df = st.session_state.get("positive_reviews_df")
-    review_text = positive_reviews_df["review_text"].str.split().values.tolist()
-    corpus = [word for i in review_text for word in i]
+
+    if "positive_corpus" not in st.session_state:
+        review_text = positive_reviews_df["review_text"].str.split().values.tolist()
+        positive_corpus = [word for i in review_text for word in i]
+
+        st.session_state["positive_corpus"] = positive_corpus
+    else:
+        positive_corpus = st.session_state.get("positive_corpus")
 
     max_words = st.slider(
         label="Quantidade de palavras",
         min_value=10,
-        max_value=150,
-        value=100,
-        key="slider_max_words_positive",
+        max_value=50,
+        value=10,
+        key="max_words_positive_slider",
     )
 
-    print_wordcloud(corpus, max_words=max_words)
+    print_wordcloud(corpus=positive_corpus, max_words=max_words)
 
 
 def negative_wordcloud():
-    st.subheader("Avaliações Negativas")
+    st.subheader("Word Cloud de avaliações negativas")
 
     negative_reviews_df = st.session_state.get("negative_reviews_df")
-    review_text = negative_reviews_df["review_text"].str.split().values.tolist()
-    corpus = [word for i in review_text for word in i]
+    if "negative_corpus" not in st.session_state:
+        review_text = negative_reviews_df["review_text"].str.split().values.tolist()
+        negative_corpus = [word for i in review_text for word in i]
+
+        st.session_state["negative_corpus"] = negative_corpus
+    else:
+        negative_corpus = st.session_state.get("negative_corpus")
 
     max_words = st.slider(
         label="Quantidade de palavras",
         min_value=10,
-        max_value=150,
-        value=100,
-        key="slider_max_words_negative",
+        max_value=50,
+        value=10,
+        key="max_words_negative_slider",
     )
 
-    print_wordcloud(corpus, max_words=max_words)
+    print_wordcloud(corpus=negative_corpus, max_words=max_words)
 
 
 def neutral_wordcloud():
-    st.subheader("Avaliações Neutras")
+    st.subheader("Word Cloud de avaliações neutras")
 
     neutral_reviews_df = st.session_state.get("neutral_reviews_df")
-    review_text = neutral_reviews_df["review_text"].str.split().values.tolist()
+
+    if "neutral_corpus" not in st.session_state:
+        review_text = neutral_reviews_df["review_text"].str.split().values.tolist()
+        neutral_corpus = [word for i in review_text for word in i]
+
+        st.session_state["neutral_corpus"] = neutral_corpus
+    else:
+        neutral_corpus = st.session_state.get("neutral_corpus")
+
+    max_words = st.slider(
+        label="Quantidade de palavras",
+        min_value=10,
+        max_value=50,
+        value=10,
+        key="max_words_neutral_slider",
+    )
+
+    print_wordcloud(corpus=neutral_corpus, max_words=max_words)
+
+
+def wordcloud_by_company():
+    st.subheader("Avaliações por empresa")
+
+    reviews_df = st.session_state.get("reviews_df")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        company = st.selectbox(
+            label="Empresa",
+            options=reviews_df["company"].unique().tolist(),
+            key="wordcloud_company_selectbox",
+        )
+
+    filtered_df = reviews_df[reviews_df["company"] == company]
+
+    with col2:
+        sentiment = st.selectbox(
+            label="Sentimento das Avaliações",
+            options=(
+                "Todos",
+                "Positivo",
+                "Negativo",
+                "Neutro",
+            ),
+            key="sentiment_selectbox",
+        )
+
+    if sentiment != "Todos":
+        sentiment_key = get_sentiment_key_from_value(sentiment)
+        filtered_df = filtered_df[filtered_df["predicted_sentiment"] == sentiment_key]
+
+    review_text = filtered_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
 
     max_words = st.slider(
         label="Quantidade de palavras",
         min_value=10,
-        max_value=150,
-        value=100,
-        key="slider_max_words_neutral",
+        max_value=50,
+        value=10,
+        key="max_words_by_company_slider",
     )
 
     print_wordcloud(corpus, max_words=max_words)
@@ -97,7 +160,7 @@ def neutral_wordcloud():
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="WordClouds",
+        page_title="Word Clouds",
         page_icon=":cloud:",
     )
 
@@ -107,8 +170,7 @@ if __name__ == "__main__":
     )
 
     st.header(
-        """Desvendando emoções nas avaliações do Glassdoor de empresas de
-        Tecnologia de Cuiabá"""
+        """Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"""
     )
 
     st.subheader("WordClouds")
@@ -165,7 +227,11 @@ if __name__ == "__main__":
         nltk.download("stopwords")
 
     positive_wordcloud()
+    st.markdown("---")
     negative_wordcloud()
-    neutral_wordcloud()
+    st.markdown("---")
 
-    # TODO: create wordclouds by company
+    neutral_wordcloud()
+    st.markdown("---")
+
+    wordcloud_by_company()

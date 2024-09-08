@@ -15,7 +15,7 @@ from utils import (
 
 
 def rating_star_analysis():
-    st.subheader("Distribuição de sentimentos por quantidade de estrelas")
+    st.subheader("Avaliações por quantidade de estrelas")
 
     st.markdown(
         """
@@ -87,7 +87,7 @@ def rating_star_analysis():
             )
 
         ax.set_title(
-            "Distribuição de sentimentos por quantidade de estrelas",
+            "Avaliações por quantidade de estrelas",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.1,
         )
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", "use_inf_as_na")
 
     st.set_page_config(
-        page_title="Barplots",
+        page_title="Avaliações por quantidade de estrelas",
         page_icon=":bar_chart:",
     )
 
