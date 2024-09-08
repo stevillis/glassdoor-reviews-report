@@ -9,7 +9,7 @@ from report_config import ReportConfig
 from utils import get_sentiment_key_from_value
 
 
-def _plot_top_ngrams_barchart(review_text, n_grams=2, top=10, title=None):
+def plot_top_ngrams_barchart(review_text, n_grams=2, top=10, title=None):
     vec = CountVectorizer(ngram_range=(n_grams, n_grams)).fit(review_text)
     bag_of_words = vec.transform(review_text)
     sum_words = bag_of_words.sum(axis=0)
@@ -48,7 +48,7 @@ def positive_ngrams():
         )
 
     positive_reviews_df = st.session_state.get("positive_reviews_df")
-    _plot_top_ngrams_barchart(
+    plot_top_ngrams_barchart(
         positive_reviews_df["review_text"],
         n_grams=positive_n_gram_input,
         top=10,
@@ -71,7 +71,7 @@ def negative_ngrams():
         )
 
     negative_reviews_df = st.session_state.get("negative_reviews_df")
-    _plot_top_ngrams_barchart(
+    plot_top_ngrams_barchart(
         negative_reviews_df["review_text"],
         n_grams=negative_n_gram_input,
         top=10,
@@ -94,7 +94,7 @@ def neutral_ngrams():
         )
 
     neutral_reviews_df = st.session_state.get("neutral_reviews_df")
-    _plot_top_ngrams_barchart(
+    plot_top_ngrams_barchart(
         neutral_reviews_df["review_text"],
         n_grams=neutral_n_gram_input,
         top=10,
@@ -166,7 +166,7 @@ def n_gram_by_company():
     filtered_df.reset_index(drop=True, inplace=True)
 
     if len(filtered_df) > 0:
-        _plot_top_ngrams_barchart(
+        plot_top_ngrams_barchart(
             filtered_df["review_text"],
             n_grams=n_gram_input,
             top=10,
@@ -196,7 +196,7 @@ if __name__ == "__main__":
         "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
     )
 
-    st.header("Explorando as características comuns entre avaliações com N-Grams")
+    st.subheader("Explorando as características comuns entre avaliações com N-Grams")
 
     st.markdown(
         """
@@ -206,18 +206,44 @@ if __name__ == "__main__":
     )
 
     if "reviews_df" not in st.session_state:
+        # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+
+        reviews_df["sentiment"] = reviews_df["sentiment"].apply(
+            lambda x: 2 if x == -1 else x
+        )
+
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
         )
+
+        reviews_df["company"] = reviews_df["company"].apply(
+            lambda x: (
+                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
+                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
+                else x
+            )
+        )
+
         st.session_state["reviews_df"] = reviews_df
 
+        # Top Companies Reviews DF
+        top_positive_companies_df, top_negative_companies_df = (
+            get_ranking_positive_negative_companies(reviews_df)
+        )
+
+        st.session_state["top_positive_companies_df"] = top_positive_companies_df
+        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+
+        # Neutral Reviews DF
         neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
         st.session_state["neutral_reviews_df"] = neutral_reviews_df
 
+        # Positive Reviews DF
         positive_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 1]
         st.session_state["positive_reviews_df"] = positive_reviews_df
 
+        # Negative Reviews DF
         negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
         st.session_state["negative_reviews_df"] = negative_reviews_df
 

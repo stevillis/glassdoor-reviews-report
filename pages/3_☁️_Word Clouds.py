@@ -7,6 +7,7 @@ import streamlit as st
 from wordcloud import WordCloud
 
 from report_config import ReportConfig
+from utils import get_ranking_positive_negative_companies
 
 
 def print_wordcloud(corpus, title=None, max_words: int = 150):
@@ -106,27 +107,58 @@ if __name__ == "__main__":
     )
 
     st.header(
-        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+        """Desvendando emoções nas avaliações do Glassdoor de empresas de
+        Tecnologia de Cuiabá"""
     )
 
-    st.header("WordClouds")
+    st.subheader("WordClouds")
 
     st.markdown(
         """
-        As WordClouds destacam as palavras mais frequentemente associadas a cada tipo de sentimento nas avaliações.
+        As WordClouds destacam as palavras mais frequentemente associadas a
+        cada tipo de sentimento nas avaliações.
 """
     )
 
     if "reviews_df" not in st.session_state:
+        # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
+
+        reviews_df["sentiment"] = reviews_df["sentiment"].apply(
+            lambda x: 2 if x == -1 else x
+        )
+
+        reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
+            ReportConfig.SENTIMENT_DICT
+        )
+
+        reviews_df["company"] = reviews_df["company"].apply(
+            lambda x: (
+                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
+                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
+                else x
+            )
+        )
+
         st.session_state["reviews_df"] = reviews_df
 
+        # Top Companies Reviews DF
+        top_positive_companies_df, top_negative_companies_df = (
+            get_ranking_positive_negative_companies(reviews_df)
+        )
+
+        st.session_state["top_positive_companies_df"] = top_positive_companies_df
+        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+
+        # Neutral Reviews DF
         neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
         st.session_state["neutral_reviews_df"] = neutral_reviews_df
 
+        # Positive Reviews DF
         positive_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 1]
         st.session_state["positive_reviews_df"] = positive_reviews_df
 
+        # Negative Reviews DF
         negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
         st.session_state["negative_reviews_df"] = negative_reviews_df
 
