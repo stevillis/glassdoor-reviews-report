@@ -1,11 +1,25 @@
+from string import punctuation
 from typing import List
 
+import nltk
 import numpy as np
 import pandas as pd
 
 from report_config import ReportConfig
 
+nltk.download("stopwords")
+
 MIN_REVIEWS = 42 / 2  # (reviews median) / 2
+
+STOPWORDS = [word.lower() for word in nltk.corpus.stopwords.words("portuguese")]
+STOPWORDS.extend(
+    [
+        "empresa",
+    ]
+)
+
+# Translation table for replacing any special character from a word.
+TRANSLATION_TABLE_SPECIAL_CHARACTERS = str.maketrans("", "", punctuation)
 
 
 def get_sentiment_key_from_value(value):

@@ -1,23 +1,26 @@
-from string import punctuation
-
 import matplotlib.pyplot as plt
-import nltk
 import pandas as pd
 import streamlit as st
+
+# from collections import Counter
 from wordcloud import WordCloud
 
 from report_config import ReportConfig
-from utils import get_ranking_positive_negative_companies, get_sentiment_key_from_value
+from utils import (
+    STOPWORDS,
+    TRANSLATION_TABLE_SPECIAL_CHARACTERS,
+    get_ranking_positive_negative_companies,
+    get_sentiment_key_from_value,
+)
 
 
 def print_wordcloud(corpus, title=None, max_words: int = 150):
-    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
-
     non_stopwords_corpus = []
     for word in corpus:
         word_lower = word.lower()
-        if word_lower not in portuguese_stop_words and word_lower not in punctuation:
-            non_stopwords_corpus.append(word_lower)
+        cleaned_word = word_lower.translate(TRANSLATION_TABLE_SPECIAL_CHARACTERS)
+        if cleaned_word and cleaned_word not in STOPWORDS:
+            non_stopwords_corpus.append(cleaned_word)
 
     non_stopwords_corpus_str = " ".join(non_stopwords_corpus)
 
@@ -39,6 +42,21 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
     )
 
     st.pyplot(fig)
+
+    # counter = Counter(non_stopwords_corpus)
+    # most_common_words = counter.most_common(n=max_words)
+
+    # most_common_words_formatted = "\n".join(
+    #     [f"{word}: {count}" for word, count in most_common_words[:10]]
+    # )
+
+    # st.markdown(
+    #     f"""
+    # Top 10 palavras mais presentes nas avaliações:
+
+    # {most_common_words_formatted}
+    #     """
+    # )
 
 
 def positive_wordcloud():
@@ -224,10 +242,9 @@ if __name__ == "__main__":
         negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
         st.session_state["negative_reviews_df"] = negative_reviews_df
 
-        nltk.download("stopwords")
-
     positive_wordcloud()
     st.markdown("---")
+
     negative_wordcloud()
     st.markdown("---")
 

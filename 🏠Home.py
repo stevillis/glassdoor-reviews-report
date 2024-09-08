@@ -1,10 +1,8 @@
 import math
 import warnings
 from collections import Counter
-from string import punctuation
 
 import matplotlib.pyplot as plt
-import nltk
 import pandas as pd
 import seaborn as sns
 import streamlit as st
@@ -13,6 +11,8 @@ from wordcloud import WordCloud
 from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
+    STOPWORDS,
+    TRANSLATION_TABLE_SPECIAL_CHARACTERS,
     create_predicted_sentiment_plot,
     get_ranking_positive_negative_companies,
     get_sentiment_key_from_value,
@@ -778,13 +778,12 @@ def wordcloud_analysis():
         key="slider_max_words_positive",
     )
 
-    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
-
     non_stopwords_corpus = []
     for word in corpus:
         word_lower = word.lower()
-        if word_lower not in portuguese_stop_words and word_lower not in punctuation:
-            non_stopwords_corpus.append(word_lower)
+        cleaned_word = word_lower.translate(TRANSLATION_TABLE_SPECIAL_CHARACTERS)
+        if cleaned_word and cleaned_word not in STOPWORDS:
+            non_stopwords_corpus.append(cleaned_word)
 
     non_stopwords_corpus_str = " ".join(non_stopwords_corpus)
 
@@ -832,13 +831,12 @@ def most_common_words_analysis():
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
 
-    portuguese_stop_words = nltk.corpus.stopwords.words("portuguese")
-
     non_stopwords_corpus = []
     for word in corpus:
         word_lower = word.lower()
-        if word_lower not in portuguese_stop_words and word_lower not in punctuation:
-            non_stopwords_corpus.append(word_lower)
+        cleaned_word = word_lower.translate(TRANSLATION_TABLE_SPECIAL_CHARACTERS)
+        if cleaned_word and cleaned_word not in STOPWORDS:
+            non_stopwords_corpus.append(cleaned_word)
 
     counter = Counter(non_stopwords_corpus)
     most_common_words = counter.most_common(n=10)
