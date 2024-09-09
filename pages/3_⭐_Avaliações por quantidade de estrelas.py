@@ -15,8 +15,6 @@ from utils import (
 
 
 def rating_star_analysis():
-    # TODO: fix plot when selection "Todos" in sentiment filter.
-    # The plot is showing a vertical line on each bar.
     st.subheader("Avaliações por quantidade de estrelas")
 
     st.markdown(
@@ -54,7 +52,7 @@ def rating_star_analysis():
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            filtered_df.groupby(["company", "star_rating", "predicted_sentiment_plot"])
+            filtered_df.groupby(["star_rating", "predicted_sentiment_plot"])
             .size()
             .reset_index(name="count")
         )
@@ -131,8 +129,8 @@ def rating_star_analysis():
         st.pyplot(fig)
 
         st.write("Avaliações filtradas")
-        filtered_df = filtered_df.drop(labels="predicted_sentiment_plot", axis=1)
-        st.dataframe(filtered_df)
+        filtered_print_df = filtered_df.drop(labels="predicted_sentiment_plot", axis=1)
+        st.dataframe(filtered_print_df)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
