@@ -54,19 +54,22 @@ if __name__ == "__main__":
     else:
         reviews_df = st.session_state.get("reviews_df")
 
+    company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
     company = st.selectbox(
         label="Empresa",
-        options=reviews_df["company"].unique().tolist(),
+        options=company_options,
         key="reviews_along_time_company_input",
+        index=0,
     )
 
-    filtered_df = reviews_df[reviews_df["company"] == company][
+    filtered_df = reviews_df[(reviews_df["company"] == company) | (company == "Todas")][
         [
             "company",
             "review_date",
             "predicted_sentiment",
         ]
     ]
+
     filtered_df.reset_index(drop=True, inplace=True)
 
     filtered_df["review_date"] = pd.to_datetime(
