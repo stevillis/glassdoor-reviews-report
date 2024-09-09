@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     st.set_page_config(
         page_title="Avaliações por quantidade de estrelas",
-        page_icon=":bar_chart:",
+        page_icon=":star:",
     )
 
     st.markdown(

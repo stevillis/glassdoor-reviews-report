@@ -97,12 +97,12 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
     for p in ax.patches:
         ax.annotate(
             text=f"{p.get_width():.0f}",
-            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
             fontsize=6,
             color="black",
-            xytext=(0, 0),
+            xytext=(10, 0),
             textcoords="offset points",
         )
 

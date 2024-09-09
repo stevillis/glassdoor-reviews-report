@@ -94,12 +94,12 @@ def general_analysis():
     for p in ax[0].patches:
         ax[0].annotate(
             f"{int(p.get_width())}",
-            (p.get_width() - 50, p.get_y() + p.get_height() / 2.0),
+            (p.get_width(), p.get_y() + p.get_height() / 2.0),
             ha="center",
             va="center",
             fontsize=11,
             color="white",
-            xytext=(0, 0),
+            xytext=(-15, 0),
             textcoords="offset points",
         )
 
@@ -199,12 +199,12 @@ def positive_reviews_ranking():
     for p in ax.patches:
         ax.annotate(
             text=f"{p.get_width():.0f}",
-            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=6,
+            fontsize=9,
             color="black",
-            xytext=(0, 0),
+            xytext=(10, 0),
             textcoords="offset points",
         )
 
@@ -280,23 +280,12 @@ def negative_reviews_ranking():
     for p in ax.patches:
         ax.annotate(
             text=f"{p.get_width():.0f}",
-            xy=(p.get_width() + 2, (p.get_y() + p.get_height() / 2) + 0.02),
+            xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=6,
+            fontsize=9,
             color="black",
-            xytext=(0, 0),
-            textcoords="offset points",
-        )
-
-        ax.annotate(
-            text=f"{p.get_width():.0f}",
-            xy=(p.get_width() + 2, (p.get_y() + p.get_height() / 2) + 0.02),
-            ha="center",
-            va="center",
-            fontsize=6,
-            color="black",
-            xytext=(0, 0),
+            xytext=(10, 0),
             textcoords="offset points",
         )
 
@@ -701,7 +690,7 @@ def rating_star_analysis3():
                 xy=(p.get_x() + p.get_width() / 2.0, height),
                 ha="center",
                 va="center",
-                fontsize=11,
+                fontsize=10,
                 color="black",
                 xytext=(0, 5),
                 textcoords="offset points",
@@ -766,17 +755,29 @@ def rating_star_analysis3():
 def wordcloud_analysis():
     st.subheader("Word Cloud de todas as avaliações")
 
+    st.markdown(
+        """
+    A Nuvem de Palavras é uma representação visual que ilustra as palavras
+    mais frequentemente utilizadas no conjunto de avaliações. Neste
+    gráfico, as palavras aparecem em tamanhos variados, refletindo sua
+    frequência de uso: quanto maior a palavra, mais vezes ela foi mencionada
+    nas avaliações.
+
+    É importante ressaltar que as stopwords, que são palavras comuns e
+    geralmente sem significado relevante para a análise (como "e", "a", "o",
+    "de"), foram excluídas desta visualização. Além disso, a palavra `empresa`
+    foi removida, pois sua alta frequência não contribui para a compreensão
+    dos temas e sentimentos expressos nas avaliações.
+
+    Essa abordagem permite uma análise mais clara e focada, facilitando a
+    identificação rápida dos tópicos mais relevantes e das percepções
+    predominantes dos usuários.
+"""
+    )
+
     reviews_df = st.session_state.get("reviews_df")
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
-
-    max_words = st.slider(
-        label="Quantidade de palavras",
-        min_value=10,
-        max_value=50,
-        value=50,
-        key="slider_max_words_positive",
-    )
 
     non_stopwords_corpus = []
     for word in corpus:
@@ -790,7 +791,7 @@ def wordcloud_analysis():
     wordcloud = WordCloud(
         background_color="white",
         random_state=ReportConfig.RANDOM_SEED,
-        max_words=max_words,
+        max_words=50,
         width=1024,
         height=768,
     )
@@ -804,8 +805,8 @@ def wordcloud_analysis():
 
     st.markdown(
         """
-        As Word Clouds de avaliações por sentimento e por empresa podem ser
-        visualizadas no menu
+        A Word Cloud de avaliações por sentimento e por empresa pode ser
+        visualizada no menu
         <a target="_self" href="./Word_Clouds">☁️Word Clouds</a>.
     """,
         unsafe_allow_html=True,
@@ -817,13 +818,21 @@ def most_common_words_analysis():
 
     st.markdown(
         """
-       Este gráfico apresenta as 10 palavras mais frequentemente utilizadas em
-       todas as avaliações analisadas. É importante ressaltar que as stopwords,
-       que são palavras comuns e geralmente sem significado relevante para a
-       análise (como "e", "a", "o", "de"), foram excluídas desta análise.
+        Embora a Word Cloud ofereça uma visão geral interessante das
+        palavras mais utilizadas nas avaliações, ela pode não ser a melhor
+        opção para destacar de forma clara e precisa a palavra mais frequente.
+        Para complementar essa análise, é mostrado o gráfico de barras que
+        apresenta as 10 palavras mais frequentemente utilizadas nas avaliações
+        analisadas.
 
-       Essa abordagem permite uma compreensão mais clara dos termos
-       significativos que realmente refletem as opiniões dos avaliadores.
+        Este gráfico segue os mesmos critérios da Word Cloud, garantindo que
+        as palavras selecionadas sejam relevantes e significativas. Com a
+        disposição em barras, é possível visualizar facilmente a frequência de
+        cada palavra, permitindo uma comparação direta entre elas.
+
+        Essa abordagem torna a interpretação dos dados mais intuitiva e
+        acessível, facilitando a identificação dos temas mais recorrentes nas
+        avaliações.
 """
     )
 
@@ -859,12 +868,12 @@ def most_common_words_analysis():
     for p in ax.patches:
         ax.annotate(
             text=f"{p.get_width():.0f}",
-            xy=(p.get_width() + 10, (p.get_y() + p.get_height() / 2) + 0.02),
+            xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=6,
-            color="black",
-            xytext=(0, 0),
+            fontsize=10,
+            color="white",
+            xytext=(-15, 0),
             textcoords="offset points",
         )
 
@@ -878,7 +887,7 @@ def most_common_words_analysis():
     ax.set_title(
         "Top 10 palavras mais usadas nas avaliações",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-        y=1.1,
+        y=1.0,
     )
 
     ax.spines["top"].set_visible(False)
@@ -886,6 +895,14 @@ def most_common_words_analysis():
     ax.spines["bottom"].set_visible(False)
 
     st.pyplot(fig)
+
+    st.markdown(
+        """
+        As Top 10 palavras mais usadas nas avaliações por empresa e por
+        sentimento pode ser visualizado no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais usadas</a>.
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def employee_role_analysis():

@@ -47,6 +47,8 @@ def positive_ngrams():
             key="positive_n_gram_input",
         )
 
+    # TODO: fix positive_reviews_df, negative_reviews_df and neutral_reviews_df
+    # by creating a filter by sentiment and company
     positive_reviews_df = st.session_state.get("positive_reviews_df")
     plot_top_ngrams_barchart(
         positive_reviews_df["review_text"],
