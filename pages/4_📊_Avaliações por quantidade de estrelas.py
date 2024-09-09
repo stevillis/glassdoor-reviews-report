@@ -27,13 +27,15 @@ def rating_star_analysis():
     reviews_df = st.session_state.get("reviews_df")
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
+    company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
     company = st.selectbox(
         label="Empresa",
-        options=reviews_df["company"].unique().tolist(),
+        options=company_options,
         key="rating_star_company_input2",
+        index=0,
     )
 
-    filtered_df = reviews_df[reviews_df["company"] == company][
+    filtered_df = reviews_df[(reviews_df["company"] == company) | (company == "Todas")][
         [
             "company",
             "employee_role",
@@ -182,17 +184,5 @@ if __name__ == "__main__":
 
         st.session_state["top_positive_companies_df"] = top_positive_companies_df
         st.session_state["top_negative_companies_df"] = top_negative_companies_df
-
-        # Neutral Reviews DF
-        neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
-        st.session_state["neutral_reviews_df"] = neutral_reviews_df
-
-        # Positive Reviews DF
-        positive_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 1]
-        st.session_state["positive_reviews_df"] = positive_reviews_df
-
-        # Negative Reviews DF
-        negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
-        st.session_state["negative_reviews_df"] = negative_reviews_df
 
     rating_star_analysis()

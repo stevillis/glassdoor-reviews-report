@@ -115,13 +115,17 @@ def n_gram_by_company():
 
     col1, col2 = st.columns(2)
     with col1:
+        company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
         company = st.selectbox(
             label="Empresa",
-            options=reviews_df["company"].unique().tolist(),
+            options=company_options,
             key="company_input",
+            index=0,
         )
 
-        filtered_df = reviews_df[reviews_df["company"] == company]
+        filtered_df = reviews_df[
+            (reviews_df["company"] == company) | (company == "Todas")
+        ]
 
     with col2:
         employee_role = st.selectbox(
@@ -234,18 +238,6 @@ if __name__ == "__main__":
 
         st.session_state["top_positive_companies_df"] = top_positive_companies_df
         st.session_state["top_negative_companies_df"] = top_negative_companies_df
-
-        # Neutral Reviews DF
-        neutral_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 0]
-        st.session_state["neutral_reviews_df"] = neutral_reviews_df
-
-        # Positive Reviews DF
-        positive_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 1]
-        st.session_state["positive_reviews_df"] = positive_reviews_df
-
-        # Negative Reviews DF
-        negative_reviews_df = reviews_df[reviews_df["predicted_sentiment"] == 2]
-        st.session_state["negative_reviews_df"] = negative_reviews_df
 
     positive_ngrams()
     negative_ngrams()
