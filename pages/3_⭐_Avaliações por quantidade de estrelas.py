@@ -15,6 +15,8 @@ from utils import (
 
 
 def rating_star_analysis():
+    # TODO: fix plot when selection "Todos" in sentiment filter.
+    # The plot is showing a vertical line on each bar.
     st.subheader("Avaliações por quantidade de estrelas")
 
     st.markdown(
@@ -152,7 +154,7 @@ if __name__ == "__main__":
     )
 
     st.header(
-        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+        "Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"
     )
 
     if "reviews_df" not in st.session_state:

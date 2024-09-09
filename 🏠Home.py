@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
 from app_messages import AppMessages
@@ -15,7 +16,6 @@ from utils import (
     TRANSLATION_TABLE_SPECIAL_CHARACTERS,
     create_predicted_sentiment_plot,
     get_ranking_positive_negative_companies,
-    get_sentiment_key_from_value,
 )
 
 
@@ -26,11 +26,11 @@ def introduction():
        Elas revelam não apenas a cultura e o ambiente de trabalho, mas também o pulso emocional dos colaboradores.
        Em setores altamente competitivos, como o de Tecnologia, entender essas emoções pode ser a chave para atrair talentos, encantar clientes e impulsionar o sucesso empresarial.
 
-       A fim de identificar as emoções nas avaliações do Glassdoor de 22 empresas de Tecnologia de Cuiabá, foi criado um Modelo de IA utilizando a técnica de Transfer Learning com BERT (Bidirectional Encoder Representations from Transformers),
+       A fim de identificar as emoções nas avaliações no Glassdoor de 22 empresas de Tecnologia de Cuiabá, foi criado um Modelo de IA utilizando a técnica de Transfer Learning com BERT (Bidirectional Encoder Representations from Transformers),
        um Modelo de linguagem pré-treinado que utiliza a representação bidirecional de texto para entender o contexto das palavras em uma frase ou texto.
 
        O Modelo pré-treinado utilizado como base para a criação do Modelo de identificação de sentimentos foi o BERTimbau, um Modelo que consiste no BERT, mas treinado com a língua portuguesa.
-       Os insights que surgiram da análise das avaliações do Glassdoor são apresentados a seguir.
+       Os insights que surgiram da análise das avaliações no Glassdoor são apresentados a seguir.
 """
     )
 
@@ -42,7 +42,7 @@ def general_analysis():
         """
        **Metodologia**
 
-        Antes de treinar o modelo de aprendizado de máquina para classificar os sentimentos das avaliações extraídas do Glassdoor, foi necessário preparar os dados. Essa preparação envolveu:
+        Antes de treinar o modelo de aprendizado de máquina para classificar os sentimentos das avaliações extraídas no Glassdoor, foi necessário preparar os dados. Essa preparação envolveu:
 
         *Classificação manual de uma amostra das avaliações*
 
@@ -635,7 +635,7 @@ def rating_star_analysis3():
         destacando-se também um número significativo de avaliações neutras.
 
         Essa predominância de avaliações neutras em avaliações de 5 estrelas
-        pode ser atribuída à exigência do Glassdoor de preencher as seções
+        pode ser atribuída à exigência no Glassdoor de preencher as seções
         *Prós* e *Contras*. Em diversas avaliações, os usuários não encontram
         aspectos negativos a serem mencionados na seção *Contras*, resultando
         em comentários como `Não há nada a ser apontado` ou `Não tenho nada a
@@ -905,71 +905,95 @@ def most_common_words_analysis():
     )
 
 
-def employee_role_analysis():
-    st.subheader("Sentimentos das Avaliações por Empresa e por Cargo")
+def ngram_analysis():
+    st.subheader("Top 10 NGrams mais frequentes nas avaliações")
 
     st.markdown(
         """
-    A visualização da distribuição de avaliações e emoções em todas as empresas permite uma comparação rápida e uma visão abrangente do panorama geral.
+    Embora o gráfico de palavras mais frequentes forneça uma visão inicial
+    sobre os termos mais utilizados nas avaliações, ele não captura a riqueza
+    dos contextos em que essas palavras aparecem. Palavras isoladas podem ter
+    significados variados e não revelam como elas se combinam para formar
+    ideias ou sentimentos mais complexos. Por exemplo, a palavra `crescimento`
+    pode aparecer frequentemente, mas sem o contexto, como em `oportunidade de
+    crescimento`, seu significado pode ser ambíguo.
+
+    Os n-gramas, que são sequências contíguas de "n" itens (palavras ou
+    caracteres), são essenciais para uma análise mais profunda, pois permitem
+    identificar padrões e temas recorrentes nas avaliações.
+
+    Ao considerar as combinações de palavras, conseguimos entender melhor as
+    percepções dos funcionários e os aspectos mais relevantes de suas
+    experiências. Essa análise revelou que as combinações de palavras mais
+    frequentes, considerando todas as avaliações, foram: `ambiente de
+    trabalho`, `plano de carreira`, `plano de saúde` e `oportunidade de
+    crescimento`.
 """
     )
 
     reviews_df = st.session_state.get("reviews_df")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
-        company = st.selectbox(
-            label="Empresa",
-            options=company_options,
-            key="company_selectbox",
-            index=0,
+    review_text = reviews_df["review_text"]
+
+    vec = CountVectorizer(ngram_range=(3, 3)).fit(review_text)
+    bag_of_words = vec.transform(review_text)
+    sum_words = bag_of_words.sum(axis=0)
+
+    words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
+    words_freq = sorted(words_freq, key=lambda x: x[1], reverse=True)
+
+    top_n_grams = words_freq[:10]
+    x, y = map(list, zip(*top_n_grams))
+
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+
+    sns.barplot(
+        x=y,
+        y=x,
+        ax=ax,
+        width=0.9,
+        orient="h",
+    )
+
+    # Annotates
+    for p in ax.patches:
+        ax.annotate(
+            text=f"{p.get_width():.0f}",
+            xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
+            ha="center",
+            va="center",
+            fontsize=11,
+            color="white",
+            xytext=(-15, 0),
+            textcoords="offset points",
         )
 
-    with col2:
-        sentiment = st.selectbox(
-            label="Sentimento das Avaliações",
-            options=("Positivo", "Negativo", "Neutro"),
-            key="sentiment_input",
-        )
+    # Axes config
+    ax.set_xlabel("")
 
-    sentiment_key = get_sentiment_key_from_value(sentiment)
-    company_df = reviews_df[(reviews_df["company"] == company) | (company == "Todas")]
+    ax.set_xticks([])
 
-    filtered_df = company_df[company_df["predicted_sentiment"] == sentiment_key]
+    ax.set_ylabel("")
 
-    if len(filtered_df) > 0:
-        top_10_roles = filtered_df["employee_role"].value_counts().index[:10]
-        filtered_df = filtered_df[filtered_df["employee_role"].isin(top_10_roles)][
-            [
-                "employee_role",
-                "employee_detail",
-                "review_text",
-                "review_date",
-                "star_rating",
-            ]
-        ]
-        filtered_df.reset_index(drop=True, inplace=True)
+    ax.set_title(
+        "Top 10 NGrams mais frequentes nas avaliações",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.0,
+    )
 
-        fig, ax = plt.subplots(1, figsize=(10, 8))
-        sns.countplot(data=filtered_df, y="employee_role", order=top_10_roles, ax=ax)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
 
-        plt.title(
-            f"Top 10 Employee Roles with Predicted Sentiment {ReportConfig.SENTIMENT_DICT[sentiment_key]} for {company}",
-            fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-        )
-        plt.xlabel("Count")
-        plt.ylabel("Employee Role")
+    st.pyplot(fig)
 
-        st.pyplot(fig)
-
-        st.write("Avaliações filtradas")
-        st.dataframe(filtered_df)
-    else:
-        st.error(
-            AppMessages.ERROR_EMPTY_DATAFRAME,
-            icon="🚨",
-        )
+    st.markdown(
+        """
+        Os Top 10 NGrams mais frequentes nas avaliações por empresa pode ser
+        visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def conclusion():
@@ -977,7 +1001,7 @@ def conclusion():
 
     st.markdown(
         """
-    Com base nos resultados da análise das avaliações do Glassdoor, as empresas podem fortalecer pontos positivos identificados, abordar áreas de melhoria,
+    Com base nos resultados da análise das avaliações no Glassdoor, as empresas podem fortalecer pontos positivos identificados, abordar áreas de melhoria,
     personalizar estratégias de engajamento e monitorar continuamente o clima organizacional.
 
     Além disso, a análise revelou que algumas empresas foram classificadas
@@ -1006,7 +1030,7 @@ if __name__ == "__main__":
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     st.header(
-        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+        "Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"
     )
 
     if "reviews_df" not in st.session_state:
@@ -1066,7 +1090,7 @@ if __name__ == "__main__":
     most_common_words_analysis()
     st.markdown("---")
 
-    employee_role_analysis()
+    ngram_analysis()
     st.markdown("---")
 
     conclusion()

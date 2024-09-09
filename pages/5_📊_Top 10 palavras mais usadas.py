@@ -122,7 +122,7 @@ if __name__ == "__main__":
     )
 
     st.header(
-        "Desvendando emoções nas avaliações do Glassdoor de empresas de Tecnologia de Cuiabá"
+        "Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"
     )
 
     if "reviews_df" not in st.session_state:
