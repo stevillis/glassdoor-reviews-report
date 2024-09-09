@@ -16,7 +16,7 @@ from utils import (
 
 
 def top_10_most_common_words_analysis():
-    st.subheader("Top 10 palavras mais usadas por empresa")
+    st.subheader("Top 10 palavras mais frequentes por empresa")
 
     reviews_df = st.session_state.get("reviews_df")
 
@@ -96,7 +96,7 @@ def top_10_most_common_words_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 palavras mais usadas por empresa",
+        "Top 10 palavras mais frequentes por empresa",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", "use_inf_as_na")
 
     st.set_page_config(
-        page_title="Top 10 palavras mais usadas por empresa",
+        page_title="Top 10 palavras mais frequentes por empresa",
         page_icon=":bar_chart:",
     )
 
@@ -135,14 +135,6 @@ if __name__ == "__main__":
 
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
-        )
-
-        reviews_df["company"] = reviews_df["company"].apply(
-            lambda x: (
-                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
-                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
-                else x
-            )
         )
 
         st.session_state["reviews_df"] = reviews_df

@@ -391,7 +391,7 @@ def company_analisys():
 
 
 def sentiment_reviews_along_time():
-    st.subheader("Número de avaliações por sentimento ao longo do tempo")
+    st.subheader("Quantidade de avaliações por sentimento ao longo do tempo")
 
     st.markdown(
         """
@@ -399,7 +399,7 @@ def sentiment_reviews_along_time():
 
     - As avaliações positivas superam consistentemente as negativas ao longo do período analisado, enquanto as avaliações neutras são menos frequentes.
     - Entre 2014 e 2017, há uma tendência ascendente nas avaliações, seguida por um declínio que se repete de 2017 a 2020.
-    - De 2020 a 2022, há um aumento expressivo no número de avaliações em todas as categorias, atingindo um pico em 2022.
+    - De 2020 a 2022, há um aumento expressivo na quantidade de avaliações em todas as categorias, atingindo um pico em 2022.
     - Após 2022, as avaliações neutras começam a declinar, acompanhadas por uma diminuição nas avaliações positivas.
     Em contrapartida, as avaliações negativas seguem uma tendência de aumento, seguida por uma queda no início de 2024, assim como as demais categorias.
 """
@@ -471,10 +471,10 @@ def sentiment_reviews_along_time():
     # ax.spines["bottom"].set_visible(False)
 
     ax.set_xlabel("Ano")
-    ax.set_ylabel("Número de Avaliações")
+    ax.set_ylabel("Quantidade de avaliações")
 
     ax.set_title(
-        "Número de avaliações por sentimento ao longo do tempo",
+        "Quantidade de avaliações por sentimento ao longo do tempo",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
@@ -814,7 +814,7 @@ def wordcloud_analysis():
 
 
 def most_common_words_analysis():
-    st.subheader("Top 10 palavras mais usadas nas avaliações")
+    st.subheader("Top 10 palavras mais frequentes nas avaliações")
 
     st.markdown(
         """
@@ -885,7 +885,7 @@ def most_common_words_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 palavras mais usadas nas avaliações",
+        "Top 10 palavras mais frequentes nas avaliações",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )
@@ -898,8 +898,8 @@ def most_common_words_analysis():
 
     st.markdown(
         """
-        As Top 10 palavras mais usadas nas avaliações por empresa e por
-        sentimento pode ser visualizado no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais usadas</a>.
+        As Top 10 palavras mais frequentes nas avaliações por empresa e por
+        sentimento pode ser visualizado no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -1043,14 +1043,6 @@ if __name__ == "__main__":
 
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
-        )
-
-        reviews_df["company"] = reviews_df["company"].apply(
-            lambda x: (
-                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
-                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
-                else x
-            )
         )
 
         st.session_state["reviews_df"] = reviews_df

@@ -60,8 +60,6 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
 
 
 def wordcloud_by_company():
-    st.subheader("Avaliações por empresa")
-
     reviews_df = st.session_state.get("reviews_df")
 
     col1, col2 = st.columns(2)
@@ -119,15 +117,17 @@ if __name__ == "__main__":
     )
 
     st.header(
-        """Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"""
+        """
+        Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá
+    """
     )
 
-    st.subheader("WordClouds")
+    st.subheader("Word Cloud de avaliações por empresa")
 
     st.markdown(
         """
-        As WordClouds destacam as palavras mais frequentemente associadas a
-        cada tipo de sentimento nas avaliações.
+        A Word Cloud destaca as palavras mais frequentemente associadas a cada
+        tipo de sentimento nas avaliações.
 """
     )
 
@@ -141,14 +141,6 @@ if __name__ == "__main__":
 
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
-        )
-
-        reviews_df["company"] = reviews_df["company"].apply(
-            lambda x: (
-                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
-                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
-                else x
-            )
         )
 
         st.session_state["reviews_df"] = reviews_df

@@ -32,6 +32,14 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
 
     reviews_df = st.session_state.get("reviews_df")
 
+    reviews_df["company"] = reviews_df["company"].apply(
+        lambda x: (
+            x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
+            if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
+            else x
+        )
+    )
+
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
     predicted_sentiment_plot_by_company_df = (
@@ -167,14 +175,6 @@ if __name__ == "__main__":
 
         reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
             ReportConfig.SENTIMENT_DICT
-        )
-
-        reviews_df["company"] = reviews_df["company"].apply(
-            lambda x: (
-                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
-                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
-                else x
-            )
         )
 
         st.session_state["reviews_df"] = reviews_df

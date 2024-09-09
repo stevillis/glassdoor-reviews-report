@@ -167,14 +167,6 @@ if __name__ == "__main__":
             ReportConfig.SENTIMENT_DICT
         )
 
-        reviews_df["company"] = reviews_df["company"].apply(
-            lambda x: (
-                x[: ReportConfig.COMPANY_NAME_MAX_LENGTH] + ""
-                if len(x) > ReportConfig.COMPANY_NAME_MAX_LENGTH
-                else x
-            )
-        )
-
         st.session_state["reviews_df"] = reviews_df
 
         # Top Companies Reviews DF
