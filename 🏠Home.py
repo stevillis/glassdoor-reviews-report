@@ -122,9 +122,28 @@ def general_analysis():
 
         *Comparação entre dados anotados e classificados pelo modelo*
 
-        O gráfico a seguir mostra a comparação entre a distribuição dos
-        sentimentos nos dados anotados manualmente e a distribuição dos
-        sentimentos classificados pelo modelo treinado:
+        As barras do gráfico são divididas em duas categorias: uma
+        representando os dados anotados manualmente e a outra representando as
+        previsões do modelo.
+        - Classificação Positiva: O modelo identificou 1257 avaliações como
+        positivas, o que é apenas 12 a menos do que a anotação manual. Isso
+        indica uma alta precisão na detecção de sentimentos positivos.
+        - Classificação Negativa: O modelo classificou 1052 avaliações como
+        negativas, superando a anotação manual em 31 casos. Essa leve
+        discrepância sugere que o modelo pode estar identificando um número
+        maior de sentimentos negativos do que realmente existe nos dados
+        anotados.
+        - Classificação Neutra: O modelo identificou 223 avaliações como
+        neutras, o que representa uma diferença de 19 casos a menos em
+        comparação com as anotações manuais. Essa discrepância evidencia a
+        conhecida dificuldade do modelo em reconhecer sentimentos neutros,
+        atribuída ao desbalanceamento em relação às classes positivas e
+        negativas.
+
+            Entretanto, a aplicação da técnica de Oversampling demonstrou ser
+            eficaz, uma vez que, sem essa abordagem, o modelo apresentava
+            dificuldades significativas em identificar as classes neutras durante
+            o treinamento.
 """
     )
 
