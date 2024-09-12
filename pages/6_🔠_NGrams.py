@@ -144,6 +144,29 @@ if __name__ == "__main__":
 
     st.subheader("Top 10 NGrams por empresa")
 
+    st.markdown(
+        """
+    A análise de NGrams nas avaliações positivas revela os tópicos mais
+    recorrentes, que incluem:
+    - Ambiente de trabalho
+    - Plano de saúde
+    - Oportunidade de crescimento
+
+    Por outro lado, os NGrams nas avaliações negativas destacam os seguintes
+    temas:
+    - Plano de carreira
+    - Plano de saúde
+    - Salário abaixo do mercado
+
+    As análises de NGrams nas avaliações neutras indicam que os avaliadores
+    não conseguiram identificar aspectos negativos a serem destacados na seção
+    "Contras" do Glassdoor, mesmo quando obrigados a fornecer uma resposta.
+    Isso sugere que, para muitos colaboradores, a experiência de trabalho é
+    suficientemente positiva, resultando em uma falta de críticas
+    significativas.
+"""
+    )
+
     if "reviews_df" not in st.session_state:
         # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
