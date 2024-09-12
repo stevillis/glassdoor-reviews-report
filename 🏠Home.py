@@ -90,9 +90,9 @@ def general_analysis():
         camadas do BERTimbau.
 
         A arquitetura do modelo consiste em:
-        1. Camada de Entrada: Conectada ao BERTimbau com suas camadas
+        - Camada de Entrada: Conectada ao BERTimbau com suas camadas
         congeladas.
-        2. Camadas Ocultas:
+        - Camadas Ocultas:
             - Primeira camada oculta com 300 neurônios.
             - Segunda camada oculta com 100 neurônios.
             - Terceira camada oculta com 50 neurônios.
@@ -107,7 +107,9 @@ def general_analysis():
 
         O modelo foi treinado utilizando 80% dos dados disponíveis, enquanto
         os 20% restantes foram reservados para testes. A tabela a seguir
-        apresenta as métricas de desempenho do modelo treinado:
+        apresenta as métricas de desempenho do modelo treinado. As linhas 0,
+        1 e 2 representam, respectivamente, as classes: Neutro, Positivo e
+        Negativo.
 
         |              | precision | recall | f1-score | support |
         | ------------ | --------- | ------ | -------- | ------- |
@@ -1085,15 +1087,38 @@ def conclusion():
 
     st.markdown(
         """
-    Com base nos resultados da análise das avaliações no Glassdoor, as empresas podem fortalecer pontos positivos identificados, abordar áreas de melhoria,
-    personalizar estratégias de engajamento e monitorar continuamente o clima organizacional.
+    **A análise de sentimentos das avaliações no Glassdoor de 22 empresas de
+    Tecnologia em Cuiabá** revelou que o modelo de IA, baseado na técnica de
+    Transfer Learning com BERTimbau, **demonstrou uma alta acurácia de 95% na
+    classificação das avaliações**, evidenciando a eficácia metodologia aplicada.
 
-    Além disso, a análise revelou que algumas empresas foram classificadas
-    como pertencentes à área de Tecnologia da Informação no Glassdoor, embora apresentem cargos não relacionados a TI, como *Classificador de Grãos* e *Comprador*,
-    especialmente evidente na empresa **Amaggi**.
+    Os resultados indicam que **15 das 22 empresas analisadas possuem mais
+    avaliações positivas do que negativas**, refletindo um ambiente de trabalho
+    predominantemente favorável.
 
-    Para trabalhos futuros, uma possibilidade seria treinar o modelo com avaliações específicas de cargos de TI, visando torná-lo mais especializado na identificação de
-    pontos relevantes para classificação de sentimentos nessa área.
+    As **avaliações positivas** frequentemente mencionam temas como **ambiente
+    de trabalho**, **plano de saúde** e **oportunidade de crescimento**,
+    enquanto as **avaliações negativas** destacam preocupações com **plano de
+    carreira**, **salário abaixo do mercado** e, em alguns casos, o **plano de
+    saúde**. As **avaliações neutras**, embora menos frequentes, sugerem que
+    muitos colaboradores **não encontraram aspectos negativos a serem
+    destacados**, indicando uma satisfação geral com suas experiências.
+
+    Além disso, a análise temporal revelou que **as avaliações positivas sempre
+    foram predominantes em relação as demais**. Esta análise também mostrou que
+    houve um grande aumento no número de avaliações entre 2020 e 2022, período
+    da Pandemia de Covid-19, onde as empresas contrataram mais.
+
+    Esses insights são fundamentais para as empresas, pois proporcionam uma
+    visão clara das áreas que precisam de melhorias e das que já estão
+    apresentando resultados positivos. Com base nessas informações, as
+    organizações podem desenvolver estratégias eficazes para aprimorar o
+    ambiente de trabalho, focar em benefícios que realmente importam para os
+    colaboradores e, assim, não apenas aumentar a retenção de talentos, mas
+    também atrair profissionais que buscam ambientes com melhores avaliações.
+    A reputação positiva, refletida nas avaliações, pode ser um diferencial
+    decisivo na escolha de uma empresa por candidatos qualificados, impactando
+    diretamente o sucesso e a competitividade no mercado.
 """
     )
 
