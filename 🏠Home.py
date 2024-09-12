@@ -22,15 +22,24 @@ from utils import (
 def introduction():
     st.markdown(
         """
-       As avaliações dos funcionários no Glassdoor são como janelas para o coração de uma empresa.
-       Elas revelam não apenas a cultura e o ambiente de trabalho, mas também o pulso emocional dos colaboradores.
-       Em setores altamente competitivos, como o de Tecnologia, entender essas emoções pode ser a chave para atrair talentos, encantar clientes e impulsionar o sucesso empresarial.
+       As avaliações dos funcionários no Glassdoor são como janelas para o
+       coração de uma empresa. Elas revelam não apenas a cultura e o ambiente
+       de trabalho, mas também o pulso emocional dos colaboradores. Em setores
+       altamente competitivos, como o de Tecnologia, entender essas emoções
+       pode ser a chave para atrair talentos, encantar clientes e impulsionar
+       o sucesso empresarial.
 
-       A fim de identificar as emoções nas avaliações no Glassdoor de 22 empresas de Tecnologia de Cuiabá, foi criado um Modelo de IA utilizando a técnica de Transfer Learning com BERT (Bidirectional Encoder Representations from Transformers),
-       um Modelo de linguagem pré-treinado que utiliza a representação bidirecional de texto para entender o contexto das palavras em uma frase ou texto.
+       A fim de identificar as emoções nas avaliações no Glassdoor de 22
+       empresas de Tecnologia de Cuiabá, foi criado um Modelo de IA utilizando
+       a técnica de Transfer Learning com BERT (Bidirectional Encoder
+       Representations from Transformers), um Modelo de linguagem pré-treinado
+       que utiliza a representação bidirecional de texto para entender o
+       contexto das palavras em uma frase ou texto.
 
-       O Modelo pré-treinado utilizado como base para a criação do Modelo de identificação de sentimentos foi o BERTimbau, um Modelo que consiste no BERT, mas treinado com a língua portuguesa.
-       Os insights que surgiram da análise das avaliações no Glassdoor são apresentados a seguir.
+       O Modelo pré-treinado utilizado como base para a criação do Modelo de
+       identificação de sentimentos foi o BERTimbau, um Modelo que consiste no
+       BERT, mas treinado com a língua portuguesa. Os insights que surgiram da
+       análise das avaliações no Glassdoor são apresentados a seguir.
 """
     )
 
@@ -42,24 +51,80 @@ def general_analysis():
         """
        **Metodologia**
 
-        Antes de treinar o modelo de aprendizado de máquina para classificar os sentimentos das avaliações extraídas no Glassdoor, foi necessário preparar os dados. Essa preparação envolveu:
+        Antes de treinar o modelo de aprendizado de máquina para classificar
+        os sentimentos das avaliações extraídas no Glassdoor, foi necessário
+        preparar os dados. Essa preparação envolveu:
 
-        *Classificação manual de uma amostra das avaliações*
+        *Classificação manual das avaliações*
 
-        Uma parte das avaliações foi classificada manualmente, utilizando uma ferramenta de anotação criada pelo próprio autor.
-        Esse conjunto de dados extraídos e classificados manualmente é chamado de "sentimentos anotados" e serviu como base de treinamento e validação para o modelo.
+        Uma parte das avaliações foi classificada manualmente, utilizando uma
+        ferramenta de anotação criada pelo próprio autor. Esse conjunto de
+        dados extraídos e classificados manualmente é chamado de "sentimentos
+        anotados" e serviu como base de treinamento e validação para o modelo.
 
         *Tratamento do desequilíbrio de classes*
 
-        Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio significativo entre as classes de sentimento. Avaliações classificadas como Neutro representavam quase 5 vezes
-        menos do que as demais classes (Positivo e Negativo). Para lidar com esse problema, foi aplicada a técnica de oversampling na classe Neutro, replicando aleatoriamente algumas amostras
-        dessa classe durante o treinamento. Isso ajudou a balancear a distribuição das classes e melhorar o desempenho do modelo na identificação correta de avaliações Neutras.
+        Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio
+        significativo entre as classes de sentimento. Avaliações classificadas
+        como Neutro representavam quase 5 vezes menos do que as demais classes
+        (Positivo e Negativo). Para lidar com esse problema, foi aplicada a
+        técnica de oversampling na classe Neutro, replicando aleatoriamente
+        algumas amostras dessa classe durante o treinamento. Isso ajudou a
+        balancear a distribuição das classes e melhorar o desempenho do modelo
+        na identificação correta de avaliações Neutras.
 
         **Resultados**
 
+        *Arquitetura do Modelo*
+
+        Para identificar a melhor configuração na classificação das três
+        classes de sentimento (Neutro, Positivo e Negativo), diversas
+        abordagens foram testadas. As configurações incluem:
+        - Modelo sem congelamento das camadas do BERTimbau.
+        - Modelo com congelamento das camadas do BERTimbau.
+        - Oversampling sem congelamento do BERTimbau.
+        - Oversampling com congelamento do BERTimbau.
+
+        Dentre todas as configurações testadas, a combinação que apresentou a
+        melhor acurácia foi a do modelo com Oversampling e congelamento das
+        camadas do BERTimbau.
+
+        A arquitetura do modelo consiste em:
+        1. Camada de Entrada: Conectada ao BERTimbau com suas camadas
+        congeladas.
+        2. Camadas Ocultas:
+            - Primeira camada oculta com 300 neurônios.
+            - Segunda camada oculta com 100 neurônios.
+            - Terceira camada oculta com 50 neurônios.
+
+        A última camada oculta é conectada a uma função Softmax, que
+        classifica a entrada em uma das três classes de sentimento: Neutro,
+        Positivo ou Negativo.
+
+        ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetuar do Modelo")
+
+        *Treinamento do Modelo*
+
+        O modelo foi treinado utilizando 80% dos dados disponíveis, enquanto
+        os 20% restantes foram reservados para testes. A tabela a seguir
+        apresenta as métricas de desempenho do modelo treinado:
+
+        |              | precision | recall | f1-score | support |
+        | ------------ | --------- | ------ | -------- | ------- |
+        | 0            | 0.96      | 0.98   | 0.97     | 197     |
+        | 1            | 0.92      | 0.98   | 0.95     | 256     |
+        | 2            | 0.98      | 0.88   | 0.93     | 199     |
+        | accuracy     |           |        | 0.95     | 652     |
+        | macro avg    | 0.96      | 0.95   | 0.95     | 652     |
+        | weighted avg | 0.95      | 0.95   | 0.95     | 652     |
+
+        $~$
+
         *Comparação entre dados anotados e classificados pelo modelo*
 
-        O gráfico a seguir mostra a comparação entre a distribuição dos sentimentos nos dados anotados manualmente e a distribuição dos sentimentos classificados pelo modelo treinado:
+        O gráfico a seguir mostra a comparação entre a distribuição dos
+        sentimentos nos dados anotados manualmente e a distribuição dos
+        sentimentos classificados pelo modelo treinado:
 """
     )
 
