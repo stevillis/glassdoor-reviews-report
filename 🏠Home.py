@@ -872,12 +872,13 @@ def wordcloud_analysis():
         if cleaned_word and cleaned_word not in STOPWORDS:
             non_stopwords_corpus.append(cleaned_word)
 
-    non_stopwords_corpus_str = " ".join(non_stopwords_corpus)
+    counter = Counter(non_stopwords_corpus)
+    most_common_words = counter.most_common(n=50)
 
     wordcloud = WordCloud(
         background_color="white",
         random_state=ReportConfig.RANDOM_SEED,
-        max_words=50,
+        # max_words=50,
         width=1024,
         height=768,
     )
@@ -885,7 +886,7 @@ def wordcloud_analysis():
     fig, ax = plt.subplots(1, figsize=(10, 6))
     plt.axis("off")
 
-    ax.imshow(wordcloud.generate(str(non_stopwords_corpus_str)))
+    ax.imshow(wordcloud.generate_from_frequencies(dict(most_common_words)))
 
     st.pyplot(fig)
 

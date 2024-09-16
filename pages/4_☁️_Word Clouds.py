@@ -1,8 +1,8 @@
+from collections import Counter
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-
-# from collections import Counter
 from wordcloud import WordCloud
 
 from report_config import ReportConfig
@@ -22,12 +22,13 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
         if cleaned_word and cleaned_word not in STOPWORDS:
             non_stopwords_corpus.append(cleaned_word)
 
-    non_stopwords_corpus_str = " ".join(non_stopwords_corpus)
+    counter = Counter(non_stopwords_corpus)
+    most_common_words = counter.most_common(n=max_words)
 
     wordcloud = WordCloud(
         background_color="white",
         random_state=ReportConfig.RANDOM_SEED,
-        max_words=max_words,
+        # max_words=max_words,
         width=1024,
         height=768,
     )
@@ -35,7 +36,8 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
     fig = plt.figure(1, figsize=(10, 6))
     plt.axis("off")
 
-    plt.imshow(wordcloud.generate(str(non_stopwords_corpus_str)))
+    plt.imshow(wordcloud.generate_from_frequencies(dict(most_common_words)))
+
     plt.title(
         title,
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
