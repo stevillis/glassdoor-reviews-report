@@ -978,7 +978,7 @@ def wordcloud_analysis():
         """
         A Word Cloud de avaliações por sentimento e por empresa pode ser
         visualizada no menu
-        <a target="_self" href="./Word_Clouds">☁️Word Clouds</a>.
+        <a target="_self" href="./Word_Cloud">☁️Word Cloud</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -1233,23 +1233,17 @@ if __name__ == "__main__":
 
         # TODO:check where the "sentiment" column is used and if it is being
         # used instead of "predicted_sentiment"
-        reviews_df["sentiment"] = reviews_df["sentiment"].apply(
-            lambda x: 2 if x == -1 else x
-        )
-
-        reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
-            ReportConfig.SENTIMENT_DICT
-        )
 
         st.session_state["reviews_df"] = reviews_df
 
         # Top Companies Reviews DF
-        top_positive_companies_df, top_negative_companies_df = (
-            get_ranking_positive_negative_companies(reviews_df)
-        )
+        if "top_positive_companies_df" not in st.session_state:
+            top_positive_companies_df, top_negative_companies_df = (
+                get_ranking_positive_negative_companies(reviews_df)
+            )
 
-        st.session_state["top_positive_companies_df"] = top_positive_companies_df
-        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+            st.session_state["top_positive_companies_df"] = top_positive_companies_df
+            st.session_state["top_negative_companies_df"] = top_negative_companies_df
 
     introduction()
     st.markdown("---")

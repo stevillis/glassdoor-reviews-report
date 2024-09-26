@@ -109,7 +109,7 @@ def wordcloud_by_company():
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="Word Clouds",
+        page_title="Word Cloud",
         page_icon=":cloud:",
     )
 
@@ -136,23 +136,15 @@ if __name__ == "__main__":
     if "reviews_df" not in st.session_state:
         # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-
-        reviews_df["sentiment"] = reviews_df["sentiment"].apply(
-            lambda x: 2 if x == -1 else x
-        )
-
-        reviews_df["sentiment_label"] = reviews_df["predicted_sentiment"].map(
-            ReportConfig.SENTIMENT_DICT
-        )
-
         st.session_state["reviews_df"] = reviews_df
 
         # Top Companies Reviews DF
-        top_positive_companies_df, top_negative_companies_df = (
-            get_ranking_positive_negative_companies(reviews_df)
-        )
+        if "top_positive_companies_df" not in st.session_state:
+            top_positive_companies_df, top_negative_companies_df = (
+                get_ranking_positive_negative_companies(reviews_df)
+            )
 
-        st.session_state["top_positive_companies_df"] = top_positive_companies_df
-        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+            st.session_state["top_positive_companies_df"] = top_positive_companies_df
+            st.session_state["top_negative_companies_df"] = top_negative_companies_df
 
     wordcloud_by_company()
