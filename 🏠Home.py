@@ -29,23 +29,23 @@ def introduction():
        pode ser a chave para atrair talentos, encantar clientes e impulsionar
        o sucesso empresarial.
 
-       A fim de identificar as emoções nas avaliações no Glassdoor de 22
-       empresas de Tecnologia de Cuiabá, foi criado um Modelo de IA utilizando
-       a técnica de Transfer Learning com BERT (Bidirectional Encoder
-       Representations from Transformers), um Modelo de linguagem pré-treinado
-       que utiliza a representação bidirecional de texto para entender o
-       contexto das palavras em uma frase ou texto.
+       A fim de **identificar as emoções nas avaliações no Glassdoor de 22
+       empresas de Tecnologia de Cuiabá**, foi criado um Modelo de IA
+       utilizando a técnica de Transfer Learning com **BERT (Bidirectional
+       Encoder Representations from Transformers)**, um Modelo de linguagem
+       pré-treinado que utiliza a representação bidirecional de texto para
+       entender o contexto das palavras em uma frase ou texto.
 
-       O Modelo pré-treinado utilizado como base para a criação do Modelo de
-       identificação de sentimentos foi o BERTimbau, um Modelo que consiste no
-       BERT, mas treinado com a língua portuguesa. Os insights que surgiram da
-       análise das avaliações no Glassdoor são apresentados a seguir.
+       O Modelo pré-treinado utilizado como base para a criação do **Modelo de
+       classificação de sentimentos** foi o **BERTimbau**, um Modelo que consiste
+       no BERT, mas treinado com a língua portuguesa. Os insights que surgiram
+       da análise das avaliações no Glassdoor são apresentados a seguir.
 """
     )
 
 
 def general_analysis():
-    st.subheader("Distribuição de sentimentos das avaliações")
+    st.subheader("Treinamento do Modelo")
 
     st.markdown(
         """
@@ -55,12 +55,37 @@ def general_analysis():
         os sentimentos das avaliações extraídas no Glassdoor, foi necessário
         preparar os dados. Essa preparação envolveu:
 
+
+        *Extrair as avaliações do Glassdoor*
+
+        Para isto, criou-se um **scraper** para baixar as páginas HTML de
+        avaliações no Glassdoor das empresas pré-selecionadas e,
+        posteriormente, extrair dados relevantes desssas páginas, como
+        **texto da avaliação**, **cargo do avaliador**, **quantidade de
+        estrelas da avaliação**, etc.
+
+        A partir destes dados extraídos, criou-se um
+        dataset com todas as informações extraídas, onde cada avaliação
+        foi classificada como **Positiva** ou **Negativa**, de acordo com a
+        seção onde esta se encontrava na página, onde avaliações da seção
+        **Prós** foram classificadas como **Positivas** e avaliações da seção
+        **Contras** foram classificadas como **Negativas**.
+
         *Classificação manual das avaliações*
 
-        Uma parte das avaliações foi classificada manualmente, utilizando uma
-        ferramenta de anotação criada pelo próprio autor. Esse conjunto de
-        dados extraídos e classificados manualmente é chamado de "sentimentos
-        anotados" e serviu como base de treinamento e validação para o modelo.
+        Durante a **Análise Exploratória dos Dados**, identificou-se a
+        necessidade de criação de uma nova classe de sentimento para as
+        avaliações, pois haviam casos onde nem o sentimento Positivo ou o
+        Negativo eram apropriados. Assim, optou-se pela criação da classe
+        **Neutro**.
+
+        Com o auxílio do modelo pré-treinado
+        [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
+        que classifica sentimentos em texto de diversos idiomas, incluindo o
+        Português, foi possível classificar as avaliações com sentimento
+        Neutro. Posteriormente, essas avaliações Neutras precisaram ser
+        revisadas  manualmente, o que foi feito com o auxílio de uma
+        ferramenta de anotação de dados criada pelo próprio autor.
 
         *Tratamento do desequilíbrio de classes*
 
@@ -71,7 +96,7 @@ def general_analysis():
         técnica de oversampling na classe Neutro, replicando aleatoriamente
         algumas amostras dessa classe durante o treinamento. Isso ajudou a
         balancear a distribuição das classes e melhorar o desempenho do modelo
-        na identificação correta de avaliações Neutras.
+        na identificação correta de avaliações neutras.
 
         **Resultados**
 
@@ -101,21 +126,19 @@ def general_analysis():
         classifica a entrada em uma das três classes de sentimento: Neutro,
         Positivo ou Negativo.
 
-        ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetuar do Modelo")
+        ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetura do Modelo")
 
         *Treinamento do Modelo*
 
         O modelo foi treinado utilizando 80% dos dados disponíveis, enquanto
         os 20% restantes foram reservados para testes. A tabela a seguir
-        apresenta as métricas de desempenho do modelo treinado. As linhas 0,
-        1 e 2 representam, respectivamente, as classes: Neutro, Positivo e
-        Negativo.
+        apresenta as métricas de desempenho do modelo treinado.
 
-        |              | precision | recall | f1-score | support |
+        |  sentimento  | precision | recall | f1-score | support |
         | ------------ | --------- | ------ | -------- | ------- |
-        | 0            | 0.96      | 0.98   | 0.97     | 197     |
-        | 1            | 0.92      | 0.98   | 0.95     | 256     |
-        | 2            | 0.98      | 0.88   | 0.93     | 199     |
+        | Neutro       | 0.96      | 0.98   | 0.97     | 197     |
+        | Positivo     | 0.92      | 0.98   | 0.95     | 256     |
+        | Negativo     | 0.98      | 0.88   | 0.93     | 199     |
         | accuracy     |           |        | 0.95     | 652     |
         | macro avg    | 0.96      | 0.95   | 0.95     | 652     |
         | weighted avg | 0.95      | 0.95   | 0.95     | 652     |
@@ -195,7 +218,7 @@ def general_analysis():
     ax[0].set_title(
         "Distribuição de sentimentos anotados",
         loc="center",
-        fontsize=14,
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
     )
 
     # Predicted sentiment
@@ -238,7 +261,7 @@ def general_analysis():
     ax[1].set_title(
         "Distribuição de sentimentos classificados pelo modelo",
         loc="center",
-        fontsize=14,
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
     )
 
     ax[1].spines["top"].set_visible(False)
@@ -247,6 +270,53 @@ def general_analysis():
 
     plt.tight_layout()
     st.pyplot(fig)
+
+    st.subheader("Avaliação Geral do Modelo")
+
+    st.write(
+        """
+        *Matriz de Confusão*
+
+        A matriz de confusão é uma ferramenta fundamental na avaliação do
+        desempenho de modelos de classificação, permitindo uma análise
+        detalhada dos acertos e erros do modelo em relação às classes reais.
+
+        ![Matriz de Confusão](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true "Matriz de Confusão")
+
+        A matriz de confusão apresentada mostra o desempenho geral do modelo,
+        permitindo uma interpretação clara dos resultados obtidos em relação
+        aos sentimentos classificados:
+
+        - Sentimento Neutro (Linha 1):
+            - O modelo **corretamente** previu **216** avaliações como neutras.
+            - O modelo incorretamente previu 9 avaliações como positivas.
+            - O modelo incorretamente previu 17 avaliações como negativas.
+
+        - Sentimento Positivo (Linha 2):
+            - O modelo incorretamente previu 5 avaliações como neutras.
+            - O modelo **corretamente** previu **1246** avaliações como
+            positivas.
+            - O modelo incorretamente previu 18 avaliações como negativas.
+
+        - Sentimento Negativo (Linha 3):
+            - O modelo incorretamente previu 2 avaliações como neutras.
+            - O modelo incorretamente previu 2 avaliações como positivas.
+            - O modelo **corretamente** previu **1017** avaliações como
+            negativas.
+
+        À partir da Matriz de Confusão, foram calculadas as métricas do modelo,
+        apresentadas as seguir, que evidenciam sua eficácia na classificação
+        de sentimentos, destacando especialmente a acurácia, que superou os
+        resultados obtidos durante a fase de treinamento. Essa melhoria indica
+        um desempenho robusto e confiável do modelo em situações reais.
+        | sentimento         | precision | recall   | f1-score |
+        |--------------------|-----------|----------|----------|
+        | Neutro             | 0.9686    | 0.8926   | 0.9290   |
+        | Positivo           | 0.9912    | 0.9819   | 0.9865   |
+        | Negativo           | 0.9667    | 0.9961   | 0.9812   |
+        | Acurácia Geral     |           |          | 0.9791   |
+    """
+    )
 
 
 def positive_reviews_ranking():
@@ -288,7 +358,7 @@ def positive_reviews_ranking():
             xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=9,
+            fontsize=10,
             color="black",
             xytext=(10, 0),
             textcoords="offset points",
@@ -328,6 +398,13 @@ def positive_reviews_ranking():
         edgecolor="1",
         ncols=3,
     )
+
+    # plt.savefig(
+    #     "positive_reviews_by_company.png",
+    #     transparent=True,
+    #     dpi=300,
+    #     bbox_inches="tight",
+    # )
 
     st.pyplot(fig)
 
@@ -369,7 +446,7 @@ def negative_reviews_ranking():
             xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=9,
+            fontsize=10,
             color="black",
             xytext=(10, 0),
             textcoords="offset points",
@@ -409,6 +486,13 @@ def negative_reviews_ranking():
         edgecolor="1",
         ncols=3,
     )
+
+    # plt.savefig(
+    #     "negative_reviews_by_company.png",
+    #     transparent=True,
+    #     dpi=300,
+    #     bbox_inches="tight",
+    # )
 
     st.pyplot(fig)
 
@@ -1147,6 +1231,8 @@ if __name__ == "__main__":
         # Reviews DF
         reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
 
+        # TODO:check where the "sentiment" column is used and if it is being
+        # used instead of "predicted_sentiment"
         reviews_df["sentiment"] = reviews_df["sentiment"].apply(
             lambda x: 2 if x == -1 else x
         )
