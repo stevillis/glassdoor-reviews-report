@@ -392,7 +392,7 @@ def positive_reviews_ranking():
     ax.legend(
         # title="Sentimento",
         handles=[positive_patch, negative_patch, neutral_patch],
-        labels=["Positivo", "Negativo", "Neutro"],
+        labels=ReportConfig.PLOT_SENTIMENT_LABELS,
         bbox_to_anchor=(0.5, 1.1),
         loc="upper center",
         edgecolor="1",
@@ -480,7 +480,7 @@ def negative_reviews_ranking():
     ax.legend(
         # title="Sentimento",
         handles=[positive_patch, negative_patch, neutral_patch],
-        labels=["Positivo", "Negativo", "Neutro"],
+        labels=ReportConfig.PLOT_SENTIMENT_LABELS,
         bbox_to_anchor=(0.5, 1.1),
         loc="upper center",
         edgecolor="1",
@@ -650,11 +650,13 @@ def sentiment_reviews_along_time():
     )
 
     handles, labels = ax.get_legend_handles_labels()
-    for i in range(len(ReportConfig.SENTIMENT_DICT)):
-        handles[i]._label = ReportConfig.SENTIMENT_DICT[int(labels[i])]
+    order_map = {label: handle for handle, label in zip(handles, labels)}
+    handles = [order_map[sentiment] for sentiment in ReportConfig.PLOT_SENTIMENT_VALUES]
 
     plt.legend(
         # title="Sentimento",
+        handles=handles,
+        labels=ReportConfig.PLOT_SENTIMENT_LABELS,
         bbox_to_anchor=(0.5, 1.1),
         loc="upper center",
         edgecolor="1",
@@ -897,7 +899,7 @@ def rating_star_analysis3():
         ax.legend(
             # title="Sentimento",
             handles=[positive_patch, negative_patch, neutral_patch],
-            labels=["Positivo", "Negativo", "Neutro"],
+            labels=ReportConfig.PLOT_SENTIMENT_LABELS,
             bbox_to_anchor=(0.5, 1.1),
             loc="upper center",
             edgecolor="1",

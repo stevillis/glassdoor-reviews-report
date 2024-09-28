@@ -9,6 +9,8 @@ class ReportConfig:
     RANDOM_SEED = 103
     COMPANY_NAME_MAX_LENGTH = 30
     SENTIMENT_DICT = {0: "Neutro", 1: "Positivo", 2: "Negativo"}
+    PLOT_SENTIMENT_LABELS = ["Positivo", "Negativo", "Neutro"]
+    PLOT_SENTIMENT_VALUES = ["1", "2", "0"]
     CUSTOM_CSS = """
         <style>
             [data-testid="stMarkdown"] {
