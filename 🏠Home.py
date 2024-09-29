@@ -134,7 +134,7 @@ def general_analysis():
         os 20% restantes foram reservados para testes. A tabela a seguir
         apresenta as métricas de desempenho do modelo treinado.
 
-        |  sentimento  | precision | recall | f1-score | support |
+        |              | precision | recall | f1-score | support |
         | ------------ | --------- | ------ | -------- | ------- |
         | Neutro       | 0.96      | 0.98   | 0.97     | 197     |
         | Positivo     | 0.92      | 0.98   | 0.95     | 256     |
@@ -309,12 +309,11 @@ def general_analysis():
         de sentimentos, destacando especialmente a acurácia, que superou os
         resultados obtidos durante a fase de treinamento. Essa melhoria indica
         um desempenho robusto e confiável do modelo em situações reais.
-        | sentimento         | precision | recall   | f1-score |
-        |--------------------|-----------|----------|----------|
-        | Neutro             | 0.9686    | 0.8926   | 0.9290   |
-        | Positivo           | 0.9912    | 0.9819   | 0.9865   |
-        | Negativo           | 0.9667    | 0.9961   | 0.9812   |
-        | Acurácia Geral     |           |          | 0.9791   |
+        |            | precision | recall | accuracy | f1-score |
+        |------------|-----------|--------|----------|----------|
+        | Neutro     | 0.97      | 0.89   | 0.99     | 0.93     |
+        | Positivo   | 0.99      | 0.98   | 0.99     | 0.99     |
+        | Negativo   | 0.97      | 1.00   | 0.98     | 0.98     |
     """
     )
 
