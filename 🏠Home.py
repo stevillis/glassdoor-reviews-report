@@ -400,7 +400,7 @@ def positive_reviews_ranking():
 
     # plt.savefig(
     #     "positive_reviews_by_company.png",
-    #     transparent=True,
+    #     transparent=False,
     #     dpi=300,
     #     bbox_inches="tight",
     # )
@@ -673,6 +673,13 @@ def sentiment_reviews_along_time():
         unsafe_allow_html=True,
     )
 
+    # plt.savefig(
+    #     "sentiments_reviews_along_time.png",
+    #     transparent=True,
+    #     dpi=300,
+    #     bbox_inches="tight",
+    # )
+
 
 def rating_star_analysis():
     warnings.filterwarnings("ignore", "use_inf_as_na")
@@ -906,6 +913,13 @@ def rating_star_analysis3():
         )
 
         st.pyplot(fig)
+
+        # plt.savefig(
+        #     "sentiment_by_rating_star.png",
+        #     transparent=True,
+        #     dpi=300,
+        #     bbox_inches="tight",
+        # )
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -936,9 +950,7 @@ def wordcloud_analysis():
 
     É importante ressaltar que as stopwords, que são palavras comuns e
     geralmente sem significado relevante para a análise (como "e", "a", "o",
-    "de"), foram excluídas desta visualização. Além disso, a palavra `empresa`
-    foi removida, pois sua alta frequência não contribui para a compreensão
-    dos temas e sentimentos expressos nas avaliações.
+    "de"), foram excluídas desta visualização.
 
     Essa abordagem permite uma análise mais clara e focada, facilitando a
     identificação rápida dos tópicos mais relevantes e das percepções

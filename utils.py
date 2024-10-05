@@ -14,7 +14,7 @@ MIN_REVIEWS = 42 / 2  # (reviews median) / 2
 STOPWORDS = [word.lower() for word in nltk.corpus.stopwords.words("portuguese")]
 STOPWORDS.extend(
     [
-        "empresa",
+        # "empresa",
     ]
 )
 
@@ -43,7 +43,7 @@ def get_good_rating_companies(df: pd.DataFrame) -> list:
     positive_greater_than_negative = df[df["1positive"] > df["2negative"]]
 
     positive_greater_than_negative = positive_greater_than_negative.sort_values(
-        by="1positive", ascending=False
+        by="sentiment_diff", ascending=False
     ).reset_index()
 
     return list(positive_greater_than_negative["company"].values)
@@ -62,7 +62,7 @@ def get_bad_rating_companies(df: pd.DataFrame) -> list:
     negative_greater_than_positive = df[df["2negative"] > df["1positive"]]
 
     negative_greater_than_positive = negative_greater_than_positive.sort_values(
-        by="2negative", ascending=False
+        by="sentiment_diff", ascending=False
     ).reset_index()
 
     return list(negative_greater_than_positive["company"].values)

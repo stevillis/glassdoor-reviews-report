@@ -58,6 +58,11 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
         "3neutral",
     ]
 
+    predicted_sentiment_plot_by_company_df_reset["sentiment_diff"] = (
+        predicted_sentiment_plot_by_company_df_reset["1positive"]
+        - predicted_sentiment_plot_by_company_df_reset["2negative"]
+    )
+
     bad_rating_companies = get_bad_rating_companies(
         predicted_sentiment_plot_by_company_df_reset
     )
@@ -68,14 +73,19 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
         predicted_sentiment_plot_by_company_df_reset
     )
 
-    fig, ax = plt.subplots(1, figsize=(10, 8))
+    fig, ax = plt.subplots(1, figsize=(8, 10))
 
     # Plot
+
+    sorted_companies_df = predicted_sentiment_plot_by_company_df_reset.sort_values(
+        by="sentiment_diff", ascending=False
+    )["company"]
+
     sns.countplot(
         data=reviews_df,
         y="company",
         hue="predicted_sentiment_plot",
-        order=reviews_df["company"].value_counts().index,
+        order=sorted_companies_df,
         ax=ax,
         palette=[
             ReportConfig.POSITIVE_SENTIMENT_COLOR,
@@ -108,9 +118,9 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
             xy=(p.get_width(), (p.get_y() + p.get_height() / 2)),
             ha="center",
             va="center",
-            fontsize=6,
+            fontsize=9,
             color="black",
-            xytext=(10, 0),
+            xytext=(10, -1),
             textcoords="offset points",
         )
 
@@ -121,11 +131,11 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
 
     ax.set_ylabel("")
 
-    ax.set_title(
-        "Ranking geral de avaliações",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-        y=1.1,
-    )
+    # ax.set_title(
+    #     "Ranking geral de avaliações",
+    #     fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+    #     y=1.1,
+    # )
 
     positive_patch = plt.Rectangle(
         (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
@@ -146,6 +156,13 @@ As avaliações neutras não foram consideradas na relação entre avaliações 
     )
 
     st.pyplot(fig)
+
+    plt.savefig(
+        "general_sentiment_reviews_rank.png",
+        transparent=False,
+        dpi=300,
+        bbox_inches="tight",
+    )
 
 
 if __name__ == "__main__":

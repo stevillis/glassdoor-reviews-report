@@ -118,6 +118,13 @@ def n_gram_by_company():
 
         st.pyplot(fig)
 
+        # plt.savefig(
+        #     "top_10_ngrams.png",
+        #     transparent=True,
+        #     dpi=300,
+        #     bbox_inches="tight",
+        # )
+
         st.write("Avaliações filtradas")
         st.dataframe(filtered_df)
     else:
