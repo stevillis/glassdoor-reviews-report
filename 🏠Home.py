@@ -47,6 +47,7 @@ def introduction():
 def general_analysis():
     st.subheader("Treinamento do Modelo")
 
+    # TODO: Move model explanation and metrics to a separated page.
     st.markdown(
         """
        **Metodologia**
