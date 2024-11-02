@@ -22,300 +22,48 @@ from utils import (
 def introduction():
     st.markdown(
         """
-       As avaliações dos funcionários no Glassdoor são como janelas para o
-       coração de uma empresa. Elas revelam não apenas a cultura e o ambiente
-       de trabalho, mas também o pulso emocional dos colaboradores. Em setores
-       altamente competitivos, como o de Tecnologia, entender essas emoções
-       pode ser a chave para atrair talentos, encantar clientes e impulsionar
-       o sucesso empresarial.
+   As avaliações de funcionários no Glassdoor proporcionam uma visão valiosa
+   sobre a cultura e o ambiente de trabalho de uma empresa. No contexto do
+   setor de Tecnologia, entender as emoções expressas nessas avaliações é
+   crucial para atrair e reter talentos.
 
-       A fim de **identificar as emoções nas avaliações no Glassdoor de 22
-       empresas de Tecnologia de Cuiabá**, foi criado um Modelo de IA
-       utilizando a técnica de Transfer Learning com **BERT (Bidirectional
-       Encoder Representations from Transformers)**, um Modelo de linguagem
-       pré-treinado que utiliza a representação bidirecional de texto para
-       entender o contexto das palavras em uma frase ou texto.
+   Além disso, essas percepções podem  servir como base para reestruturações
+   necessárias, especialmente em resposta a comentários negativos. Ao
+   valorizar o feedback dos colaboradores, as organizações podem não apenas
+   melhorar seu ambiente interno, mas também garantir um caminho sólido para o
+   sucesso a longo prazo.
 
-       O Modelo pré-treinado utilizado como base para a criação do **Modelo de
-       classificação de sentimentos** foi o **BERTimbau**, um Modelo que consiste
-       no BERT, mas treinado com a língua portuguesa. Os insights que surgiram
-       da análise das avaliações no Glassdoor são apresentados a seguir.
-"""
-    )
+    Esse trabalho mostra uma **análise das emoções expressas nas avaliações
+    no Glassdoor de 22 empresas de Tecnologia de Cuiabá**, com dados de **05 de
+    outubro de 2014 a 16 de março de 2024** e um total de **2532 avaliações**.
+    Para isso, foi treinado um Modelo de [Inteligência Artificial (IA)](https://pt.wikipedia.org/wiki/Intelig%C3%AAncia_artificial)
+    baseado na técnica de [Transfer Learning](https://pt.wikipedia.org/wiki/Aprendizado_por_transfer%C3%AAncia)
+    com [BERTimbau](https://neuralmind.ai/bert/).
 
+    Os detalhes de treinamento e avaliação do Modelo podem ser acessados no
+    menu
+    <a target="_self" href="./Treinamento_do_Modelo">🧠Treinamento do Modelo</a>.
 
-def general_analysis():
-    st.subheader("Treinamento do Modelo")
+    #### Tecnologias e ferramentas usadas
 
-    # TODO: Move model explanation and metrics to a separated page.
-    st.markdown(
-        """
-       **Metodologia**
+    | **Categoria**                     | **Ferramentas e Tecnologias**                                                                                                                                           |
+    |-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | Extração de Dados                 | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white) BeautifulSoup                           |
+    | Manipulação e Análise de Dados    | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) |
+    | Treinamento e Avaliação do Modelo | ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) |
+    | Visualização de Dados             | ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black) ![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white) Seaborn |
+    | Versionamento                     | ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
+    | Ambiente de Desenvolvimento       | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white) Google Colab |
 
-        Antes de treinar o modelo de aprendizado de máquina para classificar
-        os sentimentos das avaliações extraídas no Glassdoor, foi necessário
-        preparar os dados. Essa preparação envolveu:
+    <br/>
+    As seções a seguir apresentam as predições realizadas pelo modelo treinado
+    para todas as avaliações. Nelas, é possível comparar os dados reais com
+    as previsões geradas pelo Modelo, permitindo uma avaliação clara da
+    eficácia do modelo na tarefa proposta.
 
-
-        *Extrair as avaliações do Glassdoor*
-
-        Para isto, criou-se um **scraper** para baixar as páginas HTML de
-        avaliações no Glassdoor das empresas pré-selecionadas e,
-        posteriormente, extrair dados relevantes desssas páginas, como
-        **texto da avaliação**, **cargo do avaliador**, **quantidade de
-        estrelas da avaliação**, etc.
-
-        A partir destes dados extraídos, criou-se um
-        dataset com todas as informações extraídas, onde cada avaliação
-        foi classificada como **Positiva** ou **Negativa**, de acordo com a
-        seção onde esta se encontrava na página, onde avaliações da seção
-        **Prós** foram classificadas como **Positivas** e avaliações da seção
-        **Contras** foram classificadas como **Negativas**.
-
-        *Classificação manual das avaliações*
-
-        Durante a **Análise Exploratória dos Dados**, identificou-se a
-        necessidade de criação de uma nova classe de sentimento para as
-        avaliações, pois haviam casos onde nem o sentimento Positivo ou o
-        Negativo eram apropriados. Assim, optou-se pela criação da classe
-        **Neutro**.
-
-        Com o auxílio do modelo pré-treinado
-        [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
-        que classifica sentimentos em texto de diversos idiomas, incluindo o
-        Português, foi possível classificar as avaliações com sentimento
-        Neutro. Posteriormente, essas avaliações Neutras precisaram ser
-        revisadas  manualmente, o que foi feito com o auxílio de uma
-        ferramenta de anotação de dados criada pelo próprio autor.
-
-        *Tratamento do desequilíbrio de classes*
-
-        Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio
-        significativo entre as classes de sentimento. Avaliações classificadas
-        como Neutro representavam quase 5 vezes menos do que as demais classes
-        (Positivo e Negativo). Para lidar com esse problema, foi aplicada a
-        técnica de oversampling na classe Neutro, replicando aleatoriamente
-        algumas amostras dessa classe durante o treinamento. Isso ajudou a
-        balancear a distribuição das classes e melhorar o desempenho do modelo
-        na identificação correta de avaliações neutras.
-
-        **Resultados**
-
-        *Arquitetura do Modelo*
-
-        Para identificar a melhor configuração na classificação das três
-        classes de sentimento (Neutro, Positivo e Negativo), diversas
-        abordagens foram testadas. As configurações incluem:
-        - Modelo sem congelamento das camadas do BERTimbau.
-        - Modelo com congelamento das camadas do BERTimbau.
-        - Oversampling sem congelamento do BERTimbau.
-        - Oversampling com congelamento do BERTimbau.
-
-        Dentre todas as configurações testadas, a combinação que apresentou a
-        melhor acurácia foi a do modelo com Oversampling e congelamento das
-        camadas do BERTimbau.
-
-        A arquitetura do modelo consiste em:
-        - Camada de Entrada: Conectada ao BERTimbau com suas camadas
-        congeladas.
-        - Camadas Ocultas:
-            - Primeira camada oculta com 300 neurônios.
-            - Segunda camada oculta com 100 neurônios.
-            - Terceira camada oculta com 50 neurônios.
-
-        A última camada oculta é conectada a uma função Softmax, que
-        classifica a entrada em uma das três classes de sentimento: Neutro,
-        Positivo ou Negativo.
-
-        ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetura do Modelo")
-
-        *Treinamento do Modelo*
-
-        O modelo foi treinado utilizando 80% dos dados disponíveis, enquanto
-        os 20% restantes foram reservados para testes. A tabela a seguir
-        apresenta as métricas de desempenho do modelo treinado.
-
-        |              | precision | recall | f1-score | support |
-        | ------------ | --------- | ------ | -------- | ------- |
-        | Neutro       | 0.96      | 0.98   | 0.97     | 197     |
-        | Positivo     | 0.92      | 0.98   | 0.95     | 256     |
-        | Negativo     | 0.98      | 0.88   | 0.93     | 199     |
-        | accuracy     |           |        | 0.95     | 652     |
-        | macro avg    | 0.96      | 0.95   | 0.95     | 652     |
-        | weighted avg | 0.95      | 0.95   | 0.95     | 652     |
-
-        $~$
-
-        *Comparação entre dados anotados e classificados pelo modelo*
-
-        As barras do gráfico são divididas em duas categorias: uma
-        representando os dados anotados manualmente e a outra representando as
-        previsões do modelo.
-        - Classificação Positiva: O modelo identificou 1257 avaliações como
-        positivas, o que é apenas 12 a menos do que a anotação manual. Isso
-        indica uma alta precisão na detecção de sentimentos positivos.
-        - Classificação Negativa: O modelo classificou 1052 avaliações como
-        negativas, superando a anotação manual em 31 casos. Essa leve
-        discrepância sugere que o modelo pode estar identificando um número
-        maior de sentimentos negativos do que realmente existe nos dados
-        anotados.
-        - Classificação Neutra: O modelo identificou 223 avaliações como
-        neutras, o que representa uma diferença de 19 casos a menos em
-        comparação com as anotações manuais. Essa discrepância evidencia a
-        conhecida dificuldade do modelo em reconhecer sentimentos neutros,
-        atribuída ao desbalanceamento em relação às classes positivas e
-        negativas.
-
-            Entretanto, a aplicação da técnica de Oversampling demonstrou ser
-            eficaz, uma vez que, sem essa abordagem, o modelo apresentava
-            dificuldades significativas em identificar as classes neutras durante
-            o treinamento.
-"""
-    )
-
-    reviews_df = st.session_state.get("reviews_df")
-
-    fig, ax = plt.subplots(2, 1, figsize=(8, 4))
-
-    # Annotated sentiment
-    sentiment_counts = reviews_df["sentiment"].value_counts().reset_index()
-    sentiment_counts.columns = ["sentiment", "count"]
-
-    sentiment_counts["sentiment"] = sentiment_counts["sentiment"].map(
-        lambda x: ReportConfig.SENTIMENT_DICT[x]
-    )
-
-    sns.barplot(
-        data=sentiment_counts,
-        y="sentiment",
-        x="count",
-        palette=[
-            ReportConfig.POSITIVE_SENTIMENT_COLOR,
-            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
-            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
-        ],
-        ax=ax[0],
-    )
-
-    ax[0].spines["top"].set_visible(False)
-    ax[0].spines["right"].set_visible(False)
-    ax[0].spines["bottom"].set_visible(False)
-
-    for p in ax[0].patches:
-        ax[0].annotate(
-            f"{int(p.get_width())}",
-            (p.get_width(), p.get_y() + p.get_height() / 2.0),
-            ha="center",
-            va="center",
-            fontsize=11,
-            color="white",
-            xytext=(-15, 0),
-            textcoords="offset points",
-        )
-
-    ax[0].set_xticks([])
-    ax[0].set_xlabel("")
-    ax[0].set_ylabel("")
-    ax[0].set_title(
-        "Distribuição de sentimentos anotados",
-        loc="center",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-    )
-
-    # Predicted sentiment
-    predicted_sentiment_counts = (
-        reviews_df["predicted_sentiment"].value_counts().reset_index()
-    )
-    predicted_sentiment_counts.columns = ["predicted_sentiment", "count"]
-
-    predicted_sentiment_counts["predicted_sentiment"] = predicted_sentiment_counts[
-        "predicted_sentiment"
-    ].map(lambda x: ReportConfig.SENTIMENT_DICT[x])
-
-    sns.barplot(
-        data=predicted_sentiment_counts,
-        y="predicted_sentiment",
-        x="count",
-        palette=[
-            ReportConfig.POSITIVE_SENTIMENT_COLOR,
-            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
-            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
-        ],
-        ax=ax[1],
-    )
-
-    for p in ax[1].patches:
-        ax[1].annotate(
-            f"{int(p.get_width())}",
-            (p.get_width() - 50, p.get_y() + p.get_height() / 2.0),
-            ha="center",
-            va="center",
-            fontsize=11,
-            color="white",
-            xytext=(0, 0),
-            textcoords="offset points",
-        )
-
-    ax[1].set_xticks([])
-    ax[1].set_xlabel("")
-    ax[1].set_ylabel("")
-    ax[1].set_title(
-        "Distribuição de sentimentos classificados pelo modelo",
-        loc="center",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-    )
-
-    ax[1].spines["top"].set_visible(False)
-    ax[1].spines["right"].set_visible(False)
-    ax[1].spines["bottom"].set_visible(False)
-
-    plt.tight_layout()
-    st.pyplot(fig)
-
-    st.subheader("Avaliação Geral do Modelo")
-
-    st.write(
-        """
-        *Matriz de Confusão*
-
-        A matriz de confusão é uma ferramenta fundamental na avaliação do
-        desempenho de modelos de classificação, permitindo uma análise
-        detalhada dos acertos e erros do modelo em relação às classes reais.
-
-        ![Matriz de Confusão](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true "Matriz de Confusão")
-
-        A matriz de confusão apresentada mostra o desempenho geral do modelo,
-        permitindo uma interpretação clara dos resultados obtidos em relação
-        aos sentimentos classificados:
-
-        - Sentimento Neutro (Linha 1):
-            - O modelo **corretamente** previu **216** avaliações como neutras.
-            - O modelo incorretamente previu 9 avaliações como positivas.
-            - O modelo incorretamente previu 17 avaliações como negativas.
-
-        - Sentimento Positivo (Linha 2):
-            - O modelo incorretamente previu 5 avaliações como neutras.
-            - O modelo **corretamente** previu **1246** avaliações como
-            positivas.
-            - O modelo incorretamente previu 18 avaliações como negativas.
-
-        - Sentimento Negativo (Linha 3):
-            - O modelo incorretamente previu 2 avaliações como neutras.
-            - O modelo incorretamente previu 2 avaliações como positivas.
-            - O modelo **corretamente** previu **1017** avaliações como
-            negativas.
-
-        À partir da Matriz de Confusão, foram calculadas as métricas do modelo,
-        apresentadas as seguir, que evidenciam sua eficácia na classificação
-        de sentimentos, destacando especialmente a acurácia, que superou os
-        resultados obtidos durante a fase de treinamento. Essa melhoria indica
-        um desempenho robusto e confiável do modelo em situações reais.
-        |            | precision | recall | accuracy | f1-score |
-        |------------|-----------|--------|----------|----------|
-        | Neutro     | 0.97      | 0.89   | 0.99     | 0.93     |
-        | Positivo   | 0.99      | 0.98   | 0.99     | 0.99     |
-        | Negativo   | 0.97      | 1.00   | 0.98     | 0.98     |
-    """
+    <br/>
+    """,
+        unsafe_allow_html=True,
     )
 
 
@@ -324,7 +72,7 @@ def positive_reviews_ranking():
 
     st.markdown(
         """
-    Este gráfico ilustra as cinco empresas que se apresentam um número de
+    Este gráfico ilustra as cinco empresas que apresentam um número de
     avaliações positivas superior ao de avaliações negativas. Para garantir
     a relevância dos dados, foram consideradas apenas as empresas que
     possuem pelo menos 21 avaliações, um critério que representa a metade da
@@ -414,7 +162,7 @@ def negative_reviews_ranking():
 
     st.markdown(
         """
-    Este gráfico ilustra as três empresas que se apresentam um número de
+    Este gráfico mostra as empresas que apresentam um número de
     avaliações negativas superior ao de avaliações positivas, seguindo
     os mesmos critérios do gráfico anterior.
 """
@@ -501,6 +249,8 @@ def negative_reviews_ranking():
         O ranking completo de avaliações por empresa pode ser visualizado no
         menu <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking
         geral de avaliações</a>.
+
+        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -561,18 +311,18 @@ def company_analisys():
 
 
 def sentiment_reviews_along_time():
-    st.subheader("Quantidade de avaliações por sentimento ao longo do tempo")
+    st.subheader("Sentimento das avaliações ao longo do tempo")
 
     st.markdown(
         """
-    O gráfico apresenta uma análise de sentimentos das avaliações entre 05 de outubro de 2014 e 16 de março de 2024.
+     Este gráfico revela que as avaliações positivas sempre foram mais
+     frequentes do que as negativas e neutras. O ano de 2022 destacou-se como
+     o período com o maior número total de avaliações, apresentando também a
+     maior disparidade entre as avaliações positivas e negativas.
 
-    - As avaliações positivas superam consistentemente as negativas ao longo do período analisado, enquanto as avaliações neutras são menos frequentes.
-    - Entre 2014 e 2017, há uma tendência ascendente nas avaliações, seguida por um declínio que se repete de 2017 a 2020.
-    - De 2020 a 2022, há um aumento expressivo na quantidade de avaliações em todas as categorias, atingindo um pico em 2022.
-    - Após 2022, as avaliações neutras começam a declinar, acompanhadas por uma diminuição nas avaliações positivas.
-    Em contrapartida, as avaliações negativas seguem uma tendência de aumento, seguida por uma queda no início de 2024, assim como as demais categorias.
-"""
+    <br/>
+""",
+        unsafe_allow_html=True,
     )
 
     reviews_df = st.session_state.get("reviews_df")
@@ -644,7 +394,7 @@ def sentiment_reviews_along_time():
     ax.set_ylabel("Quantidade de avaliações")
 
     ax.set_title(
-        "Quantidade de avaliações por sentimento ao longo do tempo",
+        "Sentimento das avaliações ao longo do tempo",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
@@ -670,6 +420,8 @@ def sentiment_reviews_along_time():
         As avaliações ao longo do tempo por empresa podem ser visualizadas no
         menu <a target="_self" href="./Avaliações_ao_longo_do_tempo">
         📉Avaliações ao longo do tempo</a>.
+
+        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -817,8 +569,8 @@ def rating_star_analysis3():
         pode ser atribuída à exigência no Glassdoor de preencher as seções
         *Prós* e *Contras*. Em diversas avaliações, os usuários não encontram
         aspectos negativos a serem mencionados na seção *Contras*, resultando
-        em comentários como `Não há nada a ser apontado` ou `Não tenho nada a
-        reclamar`.
+        em comentários neutros como `Não há nada a ser apontado` ou `Não tenho
+        nada a reclamar`.
     """
     )
 
@@ -933,6 +685,8 @@ def rating_star_analysis3():
         empresa pode ser visualizada no menu
         <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
         📊Avaliações por quantidade de estrelas</a>.
+
+        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -943,8 +697,8 @@ def wordcloud_analysis():
 
     st.markdown(
         """
-    A Nuvem de Palavras é uma representação visual que ilustra as palavras
-    mais frequentemente utilizadas no conjunto de avaliações. Neste
+    A Word Cloud (Nuvem de Palavras) é uma representação visual que ilustra as
+    palavras mais frequentemente utilizadas no conjunto de avaliações. Neste
     gráfico, as palavras aparecem em tamanhos variados, refletindo sua
     frequência de uso: quanto maior a palavra, mais vezes ela foi mencionada
     nas avaliações.
@@ -1084,7 +838,9 @@ def most_common_words_analysis():
     st.markdown(
         """
         As Top 10 palavras mais frequentes nas avaliações por empresa e por
-        sentimento pode ser visualizado no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
+        sentimento podem ser visualizadas no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
+
+        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -1103,11 +859,11 @@ def ngram_analysis():
     pode aparecer frequentemente, mas sem o contexto, como em `oportunidade de
     crescimento`, seu significado pode ser ambíguo.
 
-    Os n-gramas, que são sequências contíguas de "n" itens (palavras ou
-    caracteres), são essenciais para uma análise mais profunda, pois permitem
+    Os N-Gramas são sequências contíguas de "n" itens (palavras ou
+    caracteres) e são essenciais para uma análise mais profunda, pois permitem
     identificar padrões e temas recorrentes nas avaliações.
 
-    Ao considerar as combinações de palavras, conseguimos entender melhor as
+    Ao considerar as combinações de palavras, é possível entender melhor as
     percepções dos funcionários e os aspectos mais relevantes de suas
     experiências. Essa análise revelou que as combinações de palavras mais
     frequentes, considerando todas as avaliações, foram: `ambiente de
@@ -1174,14 +930,17 @@ def ngram_analysis():
 
     st.markdown(
         """
-        Os Top 10 NGrams mais frequentes nas avaliações por empresa pode ser
-        visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
+        Os Top 10 NGrams mais frequentes nas avaliações de cada empresa pode
+        ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
+
+        <br/>
     """,
         unsafe_allow_html=True,
     )
 
 
 def conclusion():
+    # TODO: fix the final description
     st.subheader("Conclusão")
 
     st.markdown(
@@ -1260,33 +1019,31 @@ if __name__ == "__main__":
             st.session_state["top_negative_companies_df"] = top_negative_companies_df
 
     introduction()
-    st.markdown("---")
-
-    general_analysis()
-    st.markdown("---")
 
     # company_analisys()
 
+    # TODO: create positive reviews ranking for `sentiment` column.
     positive_reviews_ranking()
+    # TODO: create negative reviews ranking for `sentiment` column.
     negative_reviews_ranking()
-    st.markdown("---")
 
+    # TODO: create sentiment reviews along time for `sentiment` column.
     sentiment_reviews_along_time()
-    st.markdown("---")
 
     # rating_star_analysis()
     # rating_star_analysis2()
 
+    # TODO: create rating star analysis for `sentiment` column.
     rating_star_analysis3()
-    st.markdown("---")
 
+    # TODO: create wordcloud for `sentiment` column.
     wordcloud_analysis()
-    st.markdown("---")
 
+    # TODO: create most common words plot for `sentiment` column.
     most_common_words_analysis()
-    st.markdown("---")
 
+    # TODO: create ngram plot for `sentiment` column.
     ngram_analysis()
-    st.markdown("---")
 
+    # TODO: refact conclusion, explaining that the model is efficient for sentiment classification
     conclusion()
