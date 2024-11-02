@@ -435,121 +435,6 @@ def sentiment_reviews_along_time():
 
 
 def rating_star_analysis():
-    warnings.filterwarnings("ignore", "use_inf_as_na")
-    reviews_df = st.session_state.get("reviews_df")
-
-    st.subheader(
-        "Distribuição de Sentimentos por Quantidade de Estrelas em Avaliações, por Empresa"
-    )
-
-    st.markdown(
-        """
-    Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas, revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
-"""
-    )
-
-    g = sns.FacetGrid(
-        reviews_df,
-        col="company",
-        hue="predicted_sentiment",
-        col_wrap=4,
-    )
-    g.map(sns.histplot, "star_rating")
-
-    g.set_titles("{col_name}")
-    g.set_axis_labels("Star Rating", "Count")
-    g.add_legend(
-        title="Predicted Sentiment",
-        labels=list(ReportConfig.SENTIMENT_DICT.values()),
-    )
-
-    st.pyplot(g)
-
-
-def rating_star_analysis2():
-    reviews_df = st.session_state.get("reviews_df")
-
-    st.subheader(
-        "Distribuição de Sentimentos por Quantidade de Estrelas em Avaliações, por Empresa"
-    )
-
-    st.markdown(
-        """
-        Esta análise mostra padrões interessantes na relação entre as avaliações e o número de estrelas atribuídas, revelando correlações intrigantes entre a satisfação dos funcionários e a classificação geral.
-    """
-    )
-
-    company = st.selectbox(
-        label="Empresa",
-        options=reviews_df["company"].unique().tolist(),
-        key="rating_star_company_input",
-    )
-
-    filtered_df = reviews_df[reviews_df["company"] == company][
-        [
-            "company",
-            "employee_role",
-            "employee_detail",
-            "review_text",
-            "review_date",
-            "star_rating",
-            "predicted_sentiment",
-            "sentiment_label",
-        ]
-    ]
-    filtered_df.reset_index(drop=True, inplace=True)
-
-    sentiment_counts = (
-        filtered_df.groupby(["company", "star_rating", "predicted_sentiment"])
-        .size()
-        .reset_index(name="count")
-    )
-
-    fig, ax = plt.subplots(1, figsize=(12, 8))
-
-    sns.scatterplot(
-        data=sentiment_counts,
-        x="star_rating",
-        y="count",
-        hue="predicted_sentiment",
-        # style="company",
-        ax=ax,
-        palette=sns.color_palette(),
-    )
-
-    plt.title(
-        "Sentiment Counts by Star Rating and Company",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-    )
-    plt.xlabel("Star Rating")
-    plt.ylabel("Count")
-
-    plt.xticks(ticks=sorted(reviews_df["star_rating"].unique()))
-
-    handles, labels = ax.get_legend_handles_labels()
-    handles[0].set_color([ReportConfig.NEGATIVE_SENTIMENT_COLOR])
-    handles[1].set_color([ReportConfig.POSITIVE_SENTIMENT_COLOR])
-    handles[2].set_color([ReportConfig.NEUTRAL_SENTIMENT_COLOR])
-
-    legend_labels = [
-        ReportConfig.SENTIMENT_DICT[i] for i in range(len(ReportConfig.SENTIMENT_DICT))
-    ]
-
-    plt.legend(
-        title="Sentiment",
-        labels=legend_labels,
-        bbox_to_anchor=(1.05, 1),
-        loc="upper left",
-    )
-
-    st.pyplot(fig)
-
-    st.write("Avaliações filtradas")
-    filtered_df = filtered_df.drop(labels="predicted_sentiment", axis=1)
-    st.dataframe(filtered_df)
-
-
-def rating_star_analysis3():
     reviews_df = st.session_state.get("reviews_df")
     reviews_df = create_predicted_sentiment_plot(reviews_df)
 
@@ -1030,11 +915,8 @@ if __name__ == "__main__":
     # TODO: create sentiment reviews along time for `sentiment` column.
     sentiment_reviews_along_time()
 
-    # rating_star_analysis()
-    # rating_star_analysis2()
-
     # TODO: create rating star analysis for `sentiment` column.
-    rating_star_analysis3()
+    rating_star_analysis()
 
     # TODO: create wordcloud for `sentiment` column.
     wordcloud_analysis()
