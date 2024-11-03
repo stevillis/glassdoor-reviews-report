@@ -155,6 +155,18 @@ def positive_reviews_ranking():
 
     st.pyplot(fig)
 
+    show_real_positive_reviews = st.checkbox(
+        "Mostrar Ranking de avaliações positivas por empresa (dados originais)"
+    )
+
+    if show_real_positive_reviews:
+        st.markdown(
+            """
+        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_positive_reviews_by_company.png?raw=true" alt="Ranking de avaliações positivas por empresa (dados originais)" width="704px"/>
+""",
+            unsafe_allow_html=True,
+        )
+
 
 def negative_reviews_ranking():
     st.subheader("Ranking de avaliações negativas por empresa")
@@ -242,6 +254,18 @@ def negative_reviews_ranking():
     # )
 
     st.pyplot(fig)
+
+    show_real_negative_reviews = st.checkbox(
+        "Mostrar Ranking de avaliações negativas por empresa (dados originais)"
+    )
+
+    if show_real_negative_reviews:
+        st.markdown(
+            """
+        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_negative_reviews_by_company.png?raw=true" alt="Ranking de avaliações negativas por empresa (dados originais)" width="704px"/>
+""",
+            unsafe_allow_html=True,
+        )
 
     st.markdown(
         """
@@ -412,6 +436,18 @@ def sentiment_reviews_along_time():
 
     st.pyplot(fig)
 
+    show_real_sentiments_reviews_along_time = st.checkbox(
+        "Mostrar Sentimento das avaliações ao longo do tempo (dados originais)"
+    )
+
+    if show_real_sentiments_reviews_along_time:
+        st.markdown(
+            """
+        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiments_reviews_along_time.png?raw=true" alt="Sentimento das avaliações ao longo do tempo (dados originais)" width="704px"/>
+""",
+            unsafe_allow_html=True,
+        )
+
     st.markdown(
         """
         As avaliações ao longo do tempo por empresa podem ser visualizadas no
@@ -554,6 +590,18 @@ def rating_star_analysis():
         #     dpi=300,
         #     bbox_inches="tight",
         # )
+
+        show_real_sentiment_by_rating_star = st.checkbox(
+            "Mostrar Distribuição de sentimentos por quantidade de estrelas (dados originais)"
+        )
+
+        if show_real_sentiment_by_rating_star:
+            st.markdown(
+                """
+            <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiment_by_rating_star.png?raw=true" alt="Distribuição de sentimentos por quantidade de estrelas (dados originais)" width="704px"/>
+    """,
+                unsafe_allow_html=True,
+            )
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -889,25 +937,19 @@ if __name__ == "__main__":
 
     # company_analisys()
 
-    # TODO: create positive reviews ranking for `sentiment` column.
     positive_reviews_ranking()
-    # TODO: create negative reviews ranking for `sentiment` column.
+
     negative_reviews_ranking()
 
-    # TODO: create sentiment reviews along time for `sentiment` column.
     sentiment_reviews_along_time()
 
     # TODO: create rating star analysis for `sentiment` column.
     rating_star_analysis()
 
-    # TODO: create wordcloud for `sentiment` column.
     wordcloud_analysis()
 
-    # TODO: create most common words plot for `sentiment` column.
     most_common_words_analysis()
 
-    # TODO: create ngram plot for `sentiment` column.
     ngram_analysis()
 
-    # TODO: refact conclusion, explaining that the model is efficient for sentiment classification
     conclusion()

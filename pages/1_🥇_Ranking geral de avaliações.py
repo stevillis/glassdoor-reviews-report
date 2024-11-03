@@ -128,11 +128,11 @@ def general_reviews_ranking():
 
     ax.set_ylabel("")
 
-    # ax.set_title(
-    #     "Ranking geral de avaliações",
-    #     fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-    #     y=1.1,
-    # )
+    ax.set_title(
+        "Ranking geral de avaliações",
+        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
+        y=1.1,
+    )
 
     positive_patch = plt.Rectangle(
         (0, 0), 1, 1, fc=ReportConfig.POSITIVE_SENTIMENT_COLOR
@@ -154,12 +154,24 @@ def general_reviews_ranking():
 
     st.pyplot(fig)
 
-    plt.savefig(
-        "general_sentiment_reviews_rank.png",
-        transparent=False,
-        dpi=300,
-        bbox_inches="tight",
+    # plt.savefig(
+    #     "general_sentiment_reviews_rank.png",
+    #     transparent=False,
+    #     dpi=300,
+    #     bbox_inches="tight",
+    # )
+
+    show_real_general_sentiment_reviews_rank = st.checkbox(
+        "Mostrar Ranking geral de avaliações (dados originais)"
     )
+
+    if show_real_general_sentiment_reviews_rank:
+        st.markdown(
+            """
+        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_general_sentiment_reviews_rank_by_company.png?raw=true" alt="Ranking de avaliações positivas por empresa (dados originais)" width="600"/>
+""",
+            unsafe_allow_html=True,
+        )
 
 
 if __name__ == "__main__":
