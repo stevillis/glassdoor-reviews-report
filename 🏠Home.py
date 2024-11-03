@@ -160,11 +160,8 @@ def positive_reviews_ranking():
     )
 
     if show_real_positive_reviews:
-        st.markdown(
-            """
-        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_positive_reviews_by_company.png?raw=true" alt="Ranking de avaliações positivas por empresa (dados originais)" width="704px"/>
-""",
-            unsafe_allow_html=True,
+        st.image(
+            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_positive_reviews_by_company.png?raw=true"
         )
 
 
@@ -260,11 +257,8 @@ def negative_reviews_ranking():
     )
 
     if show_real_negative_reviews:
-        st.markdown(
-            """
-        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_negative_reviews_by_company.png?raw=true" alt="Ranking de avaliações negativas por empresa (dados originais)" width="704px"/>
-""",
-            unsafe_allow_html=True,
+        st.image(
+            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_negative_reviews_by_company.png?raw=true"
         )
 
     st.markdown(
@@ -441,11 +435,8 @@ def sentiment_reviews_along_time():
     )
 
     if show_real_sentiments_reviews_along_time:
-        st.markdown(
-            """
-        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiments_reviews_along_time.png?raw=true" alt="Sentimento das avaliações ao longo do tempo (dados originais)" width="704px"/>
-""",
-            unsafe_allow_html=True,
+        st.image(
+            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiments_reviews_along_time.png?raw=true"
         )
 
     st.markdown(
@@ -596,11 +587,8 @@ def rating_star_analysis():
         )
 
         if show_real_sentiment_by_rating_star:
-            st.markdown(
-                """
-            <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiment_by_rating_star.png?raw=true" alt="Distribuição de sentimentos por quantidade de estrelas (dados originais)" width="704px"/>
-    """,
-                unsafe_allow_html=True,
+            st.image(
+                image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiment_by_rating_star.png?raw=true"
             )
     else:
         st.error(

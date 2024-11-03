@@ -166,11 +166,8 @@ def general_reviews_ranking():
     )
 
     if show_real_general_sentiment_reviews_rank:
-        st.markdown(
-            """
-        <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_general_sentiment_reviews_rank_by_company.png?raw=true" alt="Ranking de avaliações positivas por empresa (dados originais)" width="600"/>
-""",
-            unsafe_allow_html=True,
+        st.image(
+            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_general_sentiment_reviews_rank.png?raw=true"
         )
 
 
