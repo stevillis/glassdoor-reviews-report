@@ -852,10 +852,10 @@ def conclusion():
     A análise de sentimentos das avaliações no Glassdoor de 22 empresas de
     Tecnologia em Cuiabá revelou que o Modelo desenvolvido demonstrou alta
     precisão na classificação das categorias de sentimentos presentes nas
-    avaliações. Nos dados de teste, **o Modelo obteve uma acurácia alta
-    acurácia de 0,99 para a classe Neutro, 0,97 para a classe Positivo e 0,98
-    para a  classe Negativo**. Esses resultados evidenciam a eficácia da
-    metodologia aplicada.
+    avaliações. Nos dados de teste, **o Modelo demonstrou bons resultados de
+    acurácia, apresentando 99% para a classe Neutro, 97% para a classe
+    Positivo 98% para a classe Negativo**. Esses resultados evidenciam a
+    eficácia da metodologia aplicada.
 
     As **avaliações positivas** frequentemente mencionam temas como **ambiente
     de trabalho**, **plano de saúde** e **oportunidade de crescimento**,
@@ -877,9 +877,9 @@ def conclusion():
     ambiente de trabalho, focar em benefícios que realmente importam para os
     colaboradores e, assim, não apenas aumentar a retenção de talentos, mas
     também atrair profissionais que buscam ambientes com melhores avaliações.
-    A reputação positiva, refletida nas avaliações, pode ser um diferencial
-    decisivo na escolha de uma empresa por candidatos qualificados, impactando
-    diretamente o sucesso e a competitividade no mercado.
+    **A reputação positiva, refletida nas avaliações, pode ser um diferencial
+    decisivo na escolha de uma empresa por candidatos qualificados**,
+    impactando diretamente o sucesso e a competitividade no mercado.
 """
     )
 
