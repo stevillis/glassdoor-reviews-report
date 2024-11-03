@@ -198,7 +198,7 @@ def model_development():
     a evolução de perda nos dados de treino, é posssível observar que
     o Modelo praticamente decorou os dados de treino.
 
-    ![Loss de treinamento e teste ao longo das épocas](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss.png?raw=true "Loss de treinamento e teste ao longo das épocas")
+    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss.png?raw=true" alt="Loss de treinamento e teste ao longo das épocas" width="600"/>
 
     ##### Métricas do Modelo
 
@@ -215,9 +215,10 @@ def model_development():
     <br/>
 
     A [Matriz de Confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o#:~:text=Em%20an%C3%A1lise%20preditiva%2C%20a%20matriz,verdadeiros%20positivos%20e%20verdadeiros%20negativos%20.)
-    nos dados de teste após as 5 épocas é mostrada a seguir:
+    das predições do Modelo nos dados de teste após as 5 épocas é mostrada a 
+    seguir:
 
-    ![Matriz de Confusão](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true "Matriz de Confusão")
+    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true" alt="Matriz de Confusão" width="600"/>
     """,
         unsafe_allow_html=True,
     )

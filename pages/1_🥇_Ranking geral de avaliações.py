@@ -15,18 +15,15 @@ from utils import (
 
 def general_reviews_ranking():
     st.markdown(
-        """Este gráfico mostra a quantidade de avaliações e o sentimento associado para cada empresa, ordenadas pela totalidade de avaliações.
+        """
+    Este gráfico mostra a quantidade de avaliações e o sentimento
+    associado para cada empresa, ordenadas pela diferença entre avaliações
+    positivas e negativas. Essa visualização mostra que:
 
-**Metodologia**
-
-As avaliações neutras não foram consideradas na relação entre avaliações positivas e negativas.
-
-**Resultados**
-
-- 15 das 22 empresas analisadas têm mais avaliações positivas do que negativas.
-- 4 empresas apresentam um número maior de avaliações negativas.
-- 3 empresas têm um número igual de avaliações positivas e negativas.
-
+    - 18 das 22 empresas analisadas têm mais avaliações positivas do que
+    negativas.
+    - 2 empresas apresentam um número maior de avaliações negativas.
+    - 2 empresas têm um número igual de avaliações positivas e negativas.
 """
     )
 

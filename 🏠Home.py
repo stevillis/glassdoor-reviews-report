@@ -56,12 +56,11 @@ def introduction():
     | Ambiente de Desenvolvimento       | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white) Google Colab |
 
     <br/>
-    As seções a seguir apresentam as predições realizadas pelo modelo treinado
-    para todas as avaliações. Nelas, é possível comparar os dados reais com
-    as previsões geradas pelo Modelo, permitindo uma avaliação clara da
-    eficácia do modelo na tarefa proposta.
 
-    <br/>
+    As seções a seguir apresentam as **predições realizadas pelo Modelo
+    treinado para todas as 2532 avaliações**. Nelas, é possível comparar os
+    dados reais com as previsões geradas pelo Modelo, permitindo uma avaliação
+    clara de sua eficácia para tarefa proposta.
     """,
         unsafe_allow_html=True,
     )
@@ -72,10 +71,10 @@ def positive_reviews_ranking():
 
     st.markdown(
         """
-    Este gráfico ilustra as cinco empresas que apresentam um número de
-    avaliações positivas superior ao de avaliações negativas. Para garantir
-    a relevância dos dados, foram consideradas apenas as empresas que
-    possuem pelo menos 21 avaliações, um critério que representa a metade da
+    Este gráfico ilustra as cinco empresas que apresentam **número de
+    avaliações positivas superior ao de avaliações negativas**. Para garantir
+    a relevância dos dados, **foram consideradas apenas as empresas que
+    possuem pelo menos 21 avaliações**, um critério que representa a metade da
     mediana de avaliações de todas as empresas analisadas.
 """
     )
@@ -162,8 +161,8 @@ def negative_reviews_ranking():
 
     st.markdown(
         """
-    Este gráfico mostra as empresas que apresentam um número de
-    avaliações negativas superior ao de avaliações positivas, seguindo
+    Este gráfico mostra as empresas que apresentam **número de
+    avaliações negativas superior ao de avaliações positivas**, seguindo
     os mesmos critérios do gráfico anterior.
 """
     )
@@ -249,8 +248,6 @@ def negative_reviews_ranking():
         O ranking completo de avaliações por empresa pode ser visualizado no
         menu <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking
         geral de avaliações</a>.
-
-        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -261,7 +258,9 @@ def company_analisys():
 
     st.markdown(
         """
-    A visualização da distribuição de avaliações e emoções em todas as empresas permite uma comparação rápida e uma visão abrangente do panorama geral.
+    A visualização da distribuição de avaliações e emoções em todas as
+    empresas permite uma comparação rápida e uma visão abrangente do panorama
+    geral.
 """
     )
 
@@ -319,8 +318,6 @@ def sentiment_reviews_along_time():
      frequentes do que as negativas e neutras. O ano de 2022 destacou-se como
      o período com o maior número total de avaliações, apresentando também a
      maior disparidade entre as avaliações positivas e negativas.
-
-    <br/>
 """,
         unsafe_allow_html=True,
     )
@@ -442,13 +439,12 @@ def rating_star_analysis():
 
     st.markdown(
         """
-        Este gráfico ilustra que:
-        - As avaliações de 1 a 3 estrelas apresentam um sentimento
-        predominantemente negativo.
-        - Por outro lado, as avaliações de 4 estrelas mostram uma distribuição
-        equilibrada entre sentimentos positivos e negativos.
-        - Já as avaliações de 5 estrelas são majoritariamente positivas,
-        destacando-se também um número significativo de avaliações neutras.
+        - As **avaliações de 1 a 3 estrelas** apresentam **sentimento
+        predominantemente negativo**.
+        - Por outro lado, as **avaliações de 4 estrelas** mostram uma
+        **distribuição equilibrada entre sentimentos positivos e negativos**.
+        - Já as **avaliações de 5 estrelas** são **majoritariamente positivas**,
+        destacando-se também um **número significativo de avaliações neutras**.
 
         Essa predominância de avaliações neutras em avaliações de 5 estrelas
         pode ser atribuída à exigência no Glassdoor de preencher as seções
@@ -570,31 +566,27 @@ def rating_star_analysis():
         empresa pode ser visualizada no menu
         <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
         📊Avaliações por quantidade de estrelas</a>.
-
-        <br/>
     """,
         unsafe_allow_html=True,
     )
 
 
 def wordcloud_analysis():
-    st.subheader("Word Cloud de todas as avaliações")
+    st.subheader("Nuvem de Palavras")
 
     st.markdown(
         """
-    A Word Cloud (Nuvem de Palavras) é uma representação visual que ilustra as
-    palavras mais frequentemente utilizadas no conjunto de avaliações. Neste
+    A Nuvem de Palavras ([Word Cloud](https://techner.com.br/glossario/o-que-e-word-cloud/ "Word Cloud")) **é uma representação visual que ilustra as
+    palavras mais frequentemente utilizadas no conjunto de avaliações**. Neste
     gráfico, as palavras aparecem em tamanhos variados, refletindo sua
     frequência de uso: quanto maior a palavra, mais vezes ela foi mencionada
-    nas avaliações.
+    nas avaliações. É importante ressaltar que as stopwords, que são palavras
+    comuns e geralmente sem significado relevante para a análise (como "e", "a", "o",
+    "de") foram excluídas desta visualização.
 
-    É importante ressaltar que as stopwords, que são palavras comuns e
-    geralmente sem significado relevante para a análise (como "e", "a", "o",
-    "de"), foram excluídas desta visualização.
-
-    Essa abordagem permite uma análise mais clara e focada, facilitando a
-    identificação rápida dos tópicos mais relevantes e das percepções
-    predominantes dos usuários.
+    A Nuvem de Palavras mostrada a seguir permite a identificação rápida dos
+    tópicos mais relevantes demonstrados nas avaliações, onde `empresa` e
+    `trabalho` são visivelmente as palavras mais comuns.
 """
     )
 
@@ -642,21 +634,17 @@ def most_common_words_analysis():
 
     st.markdown(
         """
-        Embora a Word Cloud ofereça uma visão geral interessante das
+        Embora a Nuvem de Palavras ofereça uma visão geral interessante das
         palavras mais utilizadas nas avaliações, ela pode não ser a melhor
         opção para destacar de forma clara e precisa a palavra mais frequente.
         Para complementar essa análise, é mostrado o gráfico de barras que
         apresenta as 10 palavras mais frequentemente utilizadas nas avaliações
         analisadas.
 
-        Este gráfico segue os mesmos critérios da Word Cloud, garantindo que
+        Este gráfico segue os mesmos critérios da Nuvem de Palavras, garantindo que
         as palavras selecionadas sejam relevantes e significativas. Com a
         disposição em barras, é possível visualizar facilmente a frequência de
         cada palavra, permitindo uma comparação direta entre elas.
-
-        Essa abordagem torna a interpretação dos dados mais intuitiva e
-        acessível, facilitando a identificação dos temas mais recorrentes nas
-        avaliações.
 """
     )
 
@@ -724,8 +712,6 @@ def most_common_words_analysis():
         """
         As Top 10 palavras mais frequentes nas avaliações por empresa e por
         sentimento podem ser visualizadas no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
-
-        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -744,16 +730,16 @@ def ngram_analysis():
     pode aparecer frequentemente, mas sem o contexto, como em `oportunidade de
     crescimento`, seu significado pode ser ambíguo.
 
-    Os N-Gramas são sequências contíguas de "n" itens (palavras ou
-    caracteres) e são essenciais para uma análise mais profunda, pois permitem
-    identificar padrões e temas recorrentes nas avaliações.
+    Os [N-Gramas](https://pt.wikipedia.org/wiki/N-grama) são sequências
+    contíguas de "n" itens (palavras ou caracteres) e são essenciais para uma
+    análise mais profunda, pois permitem identificar padrões e temas
+    recorrentes nas avaliações. Ao considerar as combinações de palavras, é
+    possível entender melhor as percepções dos funcionários e os aspectos mais
+    relevantes de suas experiências.
 
-    Ao considerar as combinações de palavras, é possível entender melhor as
-    percepções dos funcionários e os aspectos mais relevantes de suas
-    experiências. Essa análise revelou que as combinações de palavras mais
-    frequentes, considerando todas as avaliações, foram: `ambiente de
-    trabalho`, `plano de carreira`, `plano de saúde` e `oportunidade de
-    crescimento`.
+    Essa análise mostra que as combinações de palavras mais
+    frequentes foram: `ambiente de trabalho`, `plano de carreira`,
+    `plano de saúde` e `oportunidade de crescimento`.
 """
     )
 
@@ -817,8 +803,6 @@ def ngram_analysis():
         """
         Os Top 10 NGrams mais frequentes nas avaliações de cada empresa pode
         ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
-
-        <br/>
     """,
         unsafe_allow_html=True,
     )
@@ -829,14 +813,13 @@ def conclusion():
 
     st.markdown(
         """
-    **A análise de sentimentos das avaliações no Glassdoor de 22 empresas de
-    Tecnologia em Cuiabá** revelou que o modelo de IA, baseado na técnica de
-    Transfer Learning com BERTimbau, **demonstrou uma alta acurácia de 95% na
-    classificação das avaliações**, evidenciando a eficácia metodologia aplicada.
-
-    Os resultados indicam que **15 das 22 empresas analisadas possuem mais
-    avaliações positivas do que negativas**, refletindo um ambiente de trabalho
-    predominantemente favorável.
+    A análise de sentimentos das avaliações no Glassdoor de 22 empresas de
+    Tecnologia em Cuiabá revelou que o Modelo desenvolvido demonstrou alta
+    precisão na classificação das categorias de sentimentos presentes nas
+    avaliações. Nos dados de teste, **o Modelo obteve uma acurácia alta
+    acurácia de 0,99 para a classe Neutro, 0,97 para a classe Positivo e 0,98
+    para a  classe Negativo**. Esses resultados evidenciam a eficácia da
+    metodologia aplicada.
 
     As **avaliações positivas** frequentemente mencionam temas como **ambiente
     de trabalho**, **plano de saúde** e **oportunidade de crescimento**,
