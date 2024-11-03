@@ -825,7 +825,6 @@ def ngram_analysis():
 
 
 def conclusion():
-    # TODO: fix the final description
     st.subheader("Conclusão")
 
     st.markdown(

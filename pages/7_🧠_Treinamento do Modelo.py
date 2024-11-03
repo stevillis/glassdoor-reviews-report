@@ -7,137 +7,85 @@ from report_config import ReportConfig
 from utils import get_ranking_positive_negative_companies
 
 
-def model_implementation():
-    st.subheader("Treinamento do Modelo")
+def data_extraction():
+    st.subheader("Extração de Dados")
 
     st.markdown(
         """
-       **Metodologia**
-
-        Antes de treinar o modelo de aprendizado de máquina para classificar
-        os sentimentos das avaliações extraídas no Glassdoor, foi necessário
-        preparar os dados. Essa preparação envolveu:
-
-
-        *Extrair as avaliações do Glassdoor*
-
-        Para isto, criou-se um **scraper** para baixar as páginas HTML de
-        avaliações no Glassdoor das empresas pré-selecionadas e,
-        posteriormente, extrair dados relevantes desssas páginas, como
-        **texto da avaliação**, **cargo do avaliador**, **quantidade de
-        estrelas da avaliação**, etc.
-
-        A partir destes dados extraídos, criou-se um
-        dataset com todas as informações extraídas, onde cada avaliação
-        foi classificada como **Positiva** ou **Negativa**, de acordo com a
-        seção onde esta se encontrava na página, onde avaliações da seção
-        **Prós** foram classificadas como **Positivas** e avaliações da seção
-        **Contras** foram classificadas como **Negativas**.
-
-        *Classificação manual das avaliações*
-
-        Durante a **Análise Exploratória dos Dados**, identificou-se a
-        necessidade de criação de uma nova classe de sentimento para as
-        avaliações, pois haviam casos onde nem o sentimento Positivo ou o
-        Negativo eram apropriados. Assim, optou-se pela criação da classe
-        **Neutro**.
-
-        Com o auxílio do modelo pré-treinado
-        [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
-        que classifica sentimentos em texto de diversos idiomas, incluindo o
-        Português, foi possível classificar as avaliações com sentimento
-        Neutro. Posteriormente, essas avaliações Neutras precisaram ser
-        revisadas  manualmente, o que foi feito com o auxílio de uma
-        ferramenta de anotação de dados criada pelo próprio autor.
-
-        *Tratamento do desequilíbrio de classes*
-
-        Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio
-        significativo entre as classes de sentimento. Avaliações classificadas
-        como Neutro representavam quase 5 vezes menos do que as demais classes
-        (Positivo e Negativo). Para lidar com esse problema, foi aplicada a
-        técnica de oversampling na classe Neutro, replicando aleatoriamente
-        algumas amostras dessa classe durante o treinamento. Isso ajudou a
-        balancear a distribuição das classes e melhorar o desempenho do modelo
-        na identificação correta de avaliações neutras.
-
-        **Resultados**
-
-        *Arquitetura do Modelo*
-
-        Para identificar a melhor configuração na classificação das três
-        classes de sentimento (Neutro, Positivo e Negativo), diversas
-        abordagens foram testadas. As configurações incluem:
-        - Modelo sem congelamento das camadas do BERTimbau.
-        - Modelo com congelamento das camadas do BERTimbau.
-        - Oversampling sem congelamento do BERTimbau.
-        - Oversampling com congelamento do BERTimbau.
-
-        Dentre todas as configurações testadas, a combinação que apresentou a
-        melhor acurácia foi a do modelo com Oversampling e congelamento das
-        camadas do BERTimbau.
-
-        A arquitetura do modelo consiste em:
-        - Camada de Entrada: Conectada ao BERTimbau com suas camadas
-        congeladas.
-        - Camadas Ocultas:
-            - Primeira camada oculta com 300 neurônios.
-            - Segunda camada oculta com 100 neurônios.
-            - Terceira camada oculta com 50 neurônios.
-
-        A última camada oculta é conectada a uma função Softmax, que
-        classifica a entrada em uma das três classes de sentimento: Neutro,
-        Positivo ou Negativo.
-
-        ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetura do Modelo")
-
-        *Treinamento do Modelo*
-
-        O modelo foi treinado utilizando 80% dos dados disponíveis, enquanto
-        os 20% restantes foram reservados para testes. A tabela a seguir
-        apresenta as métricas de desempenho do modelo treinado.
-
-        |              | precision | recall | f1-score | support |
-        | ------------ | --------- | ------ | -------- | ------- |
-        | Neutro       | 0.96      | 0.98   | 0.97     | 197     |
-        | Positivo     | 0.92      | 0.98   | 0.95     | 256     |
-        | Negativo     | 0.98      | 0.88   | 0.93     | 199     |
-        | accuracy     |           |        | 0.95     | 652     |
-        | macro avg    | 0.96      | 0.95   | 0.95     | 652     |
-        | weighted avg | 0.95      | 0.95   | 0.95     | 652     |
-
-        $~$
-
-        *Comparação entre dados anotados e classificados pelo modelo*
-
-        As barras do gráfico são divididas em duas categorias: uma
-        representando os dados anotados manualmente e a outra representando as
-        previsões do modelo.
-        - Classificação Positiva: O modelo identificou 1257 avaliações como
-        positivas, o que é apenas 12 a menos do que a anotação manual. Isso
-        indica uma alta precisão na detecção de sentimentos positivos.
-        - Classificação Negativa: O modelo classificou 1052 avaliações como
-        negativas, superando a anotação manual em 31 casos. Essa leve
-        discrepância sugere que o modelo pode estar identificando um número
-        maior de sentimentos negativos do que realmente existe nos dados
-        anotados.
-        - Classificação Neutra: O modelo identificou 223 avaliações como
-        neutras, o que representa uma diferença de 19 casos a menos em
-        comparação com as anotações manuais. Essa discrepância evidencia a
-        conhecida dificuldade do modelo em reconhecer sentimentos neutros,
-        atribuída ao desbalanceamento em relação às classes positivas e
-        negativas.
-
-            Entretanto, a aplicação da técnica de Oversampling demonstrou ser
-            eficaz, uma vez que, sem essa abordagem, o modelo apresentava
-            dificuldades significativas em identificar as classes neutras
-            durante o treinamento.
+        Para obter os dados, foi utilizada a técnica de
+        [Raspagem de dados](https://pt.wikipedia.org/wiki/Raspagem_de_dados)
+        para baixar as páginas HTML de avaliações no Glassdoor das 22 empresas
+        pré-selecionadas e, posteriormente, extrair dados relevantes desssas
+        páginas, como **texto da avaliação**, **cargo do avaliador**,
+        **quantidade de estrelas da avaliação**, etc. Ao final deste processo,
+        **2532 avaliações** foram extraídas.
 """
+    )
+
+
+def data_preparation():
+    st.subheader("Preparação dos Dados")
+
+    st.markdown(
+        """
+    A partir dos dados extraídos, foi criado um **dataset** que consolidou
+    todas as informações extraídas, onde cada avaliação foi classificada como
+    **Positiva** ou **Negativa**. Essa classificação baseou-se na seção em que
+    a avaliação estava localizada na página de avaliações do Glassdoor.
+    Avaliações da seção *Prós* foram categorizadas como **Positivas**,
+    enquanto aquelas da seção *Contras* foram consideradas **Negativas**.
+
+    ##### Classificação das Avaliações
+
+    Durante a [Análise Exploratória dos Dados](https://pt.wikipedia.org/wiki/An%C3%A1lise_explorat%C3%B3ria_de_dados),
+    foi identificada a necessidade de criar uma nova classe de sentimento,
+    pois alguns casos não se enquadravam nem como Positivos nem como Negativos.
+    Assim, decidiu-se pela inclusão da classe **Neutra**.
+
+    O dataset original foi, então, dividido em dois conjuntos de 1266
+    avaliações: um contendo avaliações positivas e outro com avaliações
+    negativas. O objetivo era aplicar um modelo pré-treinado de classificação
+    de sentimentos para identificar as avaliações neutras. Para isso,
+    utilizou-se o modelo pré-treinado [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
+    que é capaz de classificar sentimentos em textos em diversos idiomas,
+    incluindo o Português.
+
+    Os resultados obtidos após a aplicação do modelo a cada um dos datasets
+    mostraram que no conjunto de avaliações positivas, **650** foram
+    classificadas de forma diferente da classificação original. No caso do
+    conjunto de avaliações negativas, **821** receberam uma classificação
+    distinta da original.
+
+    ##### Anotação Manual de Dados
+    Para corrigir as predições não positivas e não negativas, foi criada
+    uma **ferramenta de anotação de sentimentos**. A ferramenta permite o
+    carregamento do conjunto de dados a ser anotado, além de visualizar as
+    avaliações com seu respectivo sentimento associado e o sentimento inferido
+    pela predição, juntamente com o score associado. Além disso, a ferramenta
+    permite realizar o download do conjunto de dados com as anotações
+    corrigidas. A ferramenta de anotação criada é exibida a seguir:
+
+    <img src="https://github.com/stevillis/glassdoor-reviews-analysis-nlp/raw/master/data_preparation/annotation_tool_preview.png" alt="Ferramenta de Anotação de Sentimentos" width="600"/>
+
+    <br/>
+    <br/>
+
+    A correção manual das 650 avaliações não positivas preditas pelo modelo
+    revelou que 33 avaliações eram neutras e 15 eram negativas. Já na correção
+    das 821 avaliações não negativas inferidas, foram classificadas 247
+    avaliações como neutras, 49 como positivas e 17 como negativas. Após a
+    correção manual das predições, estas foram combinadas ao conjunto de dados
+    original.
+
+    O gráfico a seguir mostra a distribuição de sentimentos das avaliações após
+    a anotação dos dados.
+    """,
+        unsafe_allow_html=True,
     )
 
     reviews_df = st.session_state.get("reviews_df")
 
-    fig, ax = plt.subplots(2, 1, figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(8, 4))
 
     # Annotated sentiment
     sentiment_counts = reviews_df["sentiment"].value_counts().reset_index()
@@ -156,15 +104,15 @@ def model_implementation():
             ReportConfig.NEGATIVE_SENTIMENT_COLOR,
             ReportConfig.NEUTRAL_SENTIMENT_COLOR,
         ],
-        ax=ax[0],
+        ax=ax,
     )
 
-    ax[0].spines["top"].set_visible(False)
-    ax[0].spines["right"].set_visible(False)
-    ax[0].spines["bottom"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
 
-    for p in ax[0].patches:
-        ax[0].annotate(
+    for p in ax.patches:
+        ax.annotate(
             f"{int(p.get_width())}",
             (p.get_width(), p.get_y() + p.get_height() / 2.0),
             ha="center",
@@ -175,109 +123,103 @@ def model_implementation():
             textcoords="offset points",
         )
 
-    ax[0].set_xticks([])
-    ax[0].set_xlabel("")
-    ax[0].set_ylabel("")
-    ax[0].set_title(
+    ax.set_xticks([])
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+    ax.set_title(
         "Distribuição de sentimentos anotados",
         loc="center",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
     )
 
-    # Predicted sentiment
-    predicted_sentiment_counts = (
-        reviews_df["predicted_sentiment"].value_counts().reset_index()
-    )
-    predicted_sentiment_counts.columns = ["predicted_sentiment", "count"]
-
-    predicted_sentiment_counts["predicted_sentiment"] = predicted_sentiment_counts[
-        "predicted_sentiment"
-    ].map(lambda x: ReportConfig.SENTIMENT_DICT[x])
-
-    sns.barplot(
-        data=predicted_sentiment_counts,
-        y="predicted_sentiment",
-        x="count",
-        palette=[
-            ReportConfig.POSITIVE_SENTIMENT_COLOR,
-            ReportConfig.NEGATIVE_SENTIMENT_COLOR,
-            ReportConfig.NEUTRAL_SENTIMENT_COLOR,
-        ],
-        ax=ax[1],
-    )
-
-    for p in ax[1].patches:
-        ax[1].annotate(
-            f"{int(p.get_width())}",
-            (p.get_width() - 50, p.get_y() + p.get_height() / 2.0),
-            ha="center",
-            va="center",
-            fontsize=11,
-            color="white",
-            xytext=(0, 0),
-            textcoords="offset points",
-        )
-
-    ax[1].set_xticks([])
-    ax[1].set_xlabel("")
-    ax[1].set_ylabel("")
-    ax[1].set_title(
-        "Distribuição de sentimentos classificados pelo modelo",
-        loc="center",
-        fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
-    )
-
-    ax[1].spines["top"].set_visible(False)
-    ax[1].spines["right"].set_visible(False)
-    ax[1].spines["bottom"].set_visible(False)
-
     plt.tight_layout()
     st.pyplot(fig)
 
-    st.subheader("Avaliação Geral do Modelo")
 
-    st.write(
+def model_development():
+    st.subheader("Desenvolvimento do Modelo")
+
+    st.markdown(
         """
-        *Matriz de Confusão*
+    ##### Tratamento do desequilíbrio de classes
 
-        A matriz de confusão é uma ferramenta fundamental na avaliação do
-        desempenho de modelos de classificação, permitindo uma análise
-        detalhada dos acertos e erros do modelo em relação às classes reais.
+    Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio
+    significativo entre as classes de sentimento. Avaliações classificadas
+    como Neutro representavam quase 5 vezes menos do que as demais classes.
+    Para lidar com esse problema, foi aplicada a técnica de [Oversampling](https://www.escoladnc.com.br/blog/entendendo-oversampling-tecnicas-e-metodos-para-balanceamento-de-dados/#:~:text=O%20que%20%C3%A9%20Oversampling%3F,cada%20classe%20durante%20o%20treinamento.),
+    na classe Neutro, **replicando aleatoriamente 3 vezes o número de amostras**
+    dessa classe durante o treinamento. Isso ajudou a balancear a distribuição
+    das classes e melhorar o desempenho do modelo na identificação correta de
+    avaliações neutras.
 
-        ![Matriz de Confusão](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true "Matriz de Confusão")
+    ##### Arquitetura do Modelo
 
-        A matriz de confusão apresentada mostra o desempenho geral do modelo,
-        permitindo uma interpretação clara dos resultados obtidos em relação
-        aos sentimentos classificados:
+    Para identificar a melhor configuração na classificação das três
+    classes de sentimento (Neutro, Positivo e Negativo), diversas
+    abordagens foram testadas. As configurações incluíram:
+    - Modelo sem congelamento das camadas do BERTimbau.
+    - Modelo com congelamento das camadas do BERTimbau.
+    - Oversampling sem congelamento do BERTimbau.
+    - Oversampling com congelamento do BERTimbau.
 
-        - Sentimento Neutro (Linha 1):
-            - O modelo **corretamente** previu **216** avaliações como neutras.
-            - O modelo incorretamente previu 9 avaliações como positivas.
-            - O modelo incorretamente previu 17 avaliações como negativas.
+    Dentre todas as configurações testadas, a combinação que apresentou
+    melhor [F1-Score](https://pt.wikipedia.org/wiki/Precis%C3%A3o_e_revoca%C3%A7%C3%A3o#F-measure)
+    em todas as classes foi a do modelo com **Oversampling e congelamento das
+    camadas do BERTimbau**.
 
-        - Sentimento Positivo (Linha 2):
-            - O modelo incorretamente previu 5 avaliações como neutras.
-            - O modelo **corretamente** previu **1246** avaliações como
-            positivas.
-            - O modelo incorretamente previu 18 avaliações como negativas.
+    A arquitetura do modelo consiste em:
+    - Camada de Entrada: Conectada ao BERTimbau com suas camadas
+    congeladas.
+    - Camadas Ocultas:
+        - Primeira camada oculta com 300 neurônios.
+        - Segunda camada oculta com 100 neurônios.
+        - Terceira camada oculta com 50 neurônios.
 
-        - Sentimento Negativo (Linha 3):
-            - O modelo incorretamente previu 2 avaliações como neutras.
-            - O modelo incorretamente previu 2 avaliações como positivas.
-            - O modelo **corretamente** previu **1017** avaliações como
-            negativas.
+    A última camada oculta é conectada a uma função Softmax, que
+    classifica a entrada em uma das três classes de sentimento: Neutro,
+    Positivo ou Negativo.
 
-        À partir da Matriz de Confusão, foram calculadas as métricas do modelo,
-        apresentadas as seguir, que evidenciam sua eficácia na classificação
-        de sentimentos, destacando especialmente a acurácia, que superou os
-        resultados obtidos durante a fase de treinamento. Essa melhoria indica
-        um desempenho robusto e confiável do modelo em situações reais.
-        |            | precision | recall | accuracy | f1-score |
-        |------------|-----------|--------|----------|----------|
-        | Neutro     | 0.97      | 0.89   | 0.99     | 0.93     |
-        | Positivo   | 0.99      | 0.98   | 0.99     | 0.99     |
-        | Negativo   | 0.97      | 1.00   | 0.98     | 0.98     |
-    """
+    ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetura do Modelo")
+
+    ##### Treinamento Modelo
+
+    O modelo foi treinado utilizando 80% dos dados, enquanto os 20% restantes
+    foram reservados para testes. Os parâmetros de treinamento foram os
+    seguintes:
+    - **Épocas**: 5
+    - **Batch Size**: 16
+    - **Learning Ratio**: $2\\times 10^{-5}$
+    - **Loss Function**: CrossEntropyLoss
+    - **Otimizador**: Adam
+
+    O gráfico de perda nos dados de treino e de teste mostram que na
+    segunda época o modelo se saiu melhor nos dados de teste, mas no
+    restante das épocas, essa perda aumentou levemente. Ao analisar
+    a evolução de perda nos dados de treino, é posssível observar que
+    o Modelo praticamente decorou os dados de treino.
+
+    ![Loss de treinamento e teste ao longo das épocas](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss.png?raw=true "Loss de treinamento e teste ao longo das épocas")
+
+    ##### Métricas do Modelo
+
+    As métricas do modelo após as 5 épocas de treinamento foram:
+    |              | precision | recall | f1-score | support |
+    | ------------ | --------- | ------ | -------- | ------- |
+    | Neutro       | 0.97      | 0.98   | 0.98     | 197     |
+    | Positivo     | 0.95      | 0.98   | 0.96     | 256     |
+    | Negativo     | 0.98      | 0.93   | 0.96     | 199     |
+    | accuracy     |           |        | 0.97     | 652     |
+    | macro avg    | 0.97      | 0.97   | 0.97     | 652     |
+    | weighted avg | 0.97      | 0.97   | 0.97     | 652     |
+
+    <br/>
+
+    A [Matriz de Confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o#:~:text=Em%20an%C3%A1lise%20preditiva%2C%20a%20matriz,verdadeiros%20positivos%20e%20verdadeiros%20negativos%20.)
+    nos dados de teste após as 5 épocas é mostrada a seguir:
+
+    ![Matriz de Confusão](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true "Matriz de Confusão")
+    """,
+        unsafe_allow_html=True,
     )
 
 
@@ -312,8 +254,6 @@ if __name__ == "__main__":
             st.session_state["top_positive_companies_df"] = top_positive_companies_df
             st.session_state["top_negative_companies_df"] = top_negative_companies_df
 
-    # TODO: refact model implementation description
-    # TODO: add metrics for each class
-    # TODO: replace general confusion matrix and to confusion matrix of each class
-    # TODO: make a table comparing the four model configuration used in model development
-    model_implementation()
+    data_extraction()
+    data_preparation()
+    model_development()
