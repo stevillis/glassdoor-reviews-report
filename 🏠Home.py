@@ -245,7 +245,7 @@ def negative_reviews_ranking():
 
     # plt.savefig(
     #     "negative_reviews_by_company.png",
-    #     transparent=True,
+    #     transparent=False,
     #     dpi=300,
     #     bbox_inches="tight",
     # )
@@ -452,7 +452,7 @@ def sentiment_reviews_along_time():
 
     # plt.savefig(
     #     "sentiments_reviews_along_time.png",
-    #     transparent=True,
+    #     transparent=False,
     #     dpi=300,
     #     bbox_inches="tight",
     # )
@@ -577,7 +577,7 @@ def rating_star_analysis():
 
         # plt.savefig(
         #     "sentiment_by_rating_star.png",
-        #     transparent=True,
+        #     transparent=False,
         #     dpi=300,
         #     bbox_inches="tight",
         # )
