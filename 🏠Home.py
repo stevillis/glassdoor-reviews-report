@@ -754,7 +754,7 @@ def most_common_words_analysis():
 
 
 def ngram_analysis():
-    st.subheader("Top 10 NGrams mais frequentes nas avaliações")
+    st.subheader("Top 10 N-Grams mais frequentes nas avaliações")
 
     st.markdown(
         """
@@ -824,7 +824,7 @@ def ngram_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 NGrams mais frequentes nas avaliações",
+        "Top 10 N-Grams mais frequentes nas avaliações",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )
@@ -837,7 +837,7 @@ def ngram_analysis():
 
     st.markdown(
         """
-        Os Top 10 NGrams mais frequentes nas avaliações de cada empresa pode
+        Os Top 10 N-Grams mais frequentes nas avaliações de cada empresa pode
         ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
     """,
         unsafe_allow_html=True,
@@ -854,7 +854,7 @@ def conclusion():
     precisão na classificação das categorias de sentimentos presentes nas
     avaliações. Nos dados de teste, **o Modelo demonstrou bons resultados de
     acurácia, apresentando 99% para a classe Neutro, 97% para a classe
-    Positivo 98% para a classe Negativo**. Esses resultados evidenciam a
+    Positivo e 98% para a classe Negativo**. Esses resultados evidenciam a
     eficácia da metodologia aplicada.
 
     As **avaliações positivas** frequentemente mencionam temas como **ambiente
@@ -870,7 +870,7 @@ def conclusion():
     houve um grande aumento no número de avaliações entre 2020 e 2022, período
     da Pandemia de Covid-19, onde as empresas contrataram mais.
 
-    Esses insights são fundamentais para as empresas, pois proporcionam uma
+    Essas percepções são fundamentais para as empresas, pois proporcionam uma
     visão clara das áreas que precisam de melhorias e das que já estão
     apresentando resultados positivos. Com base nessas informações, as
     organizações podem desenvolver estratégias eficazes para aprimorar o

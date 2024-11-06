@@ -15,7 +15,7 @@ def data_extraction():
         Para obter os dados, foi utilizada a técnica de
         [Raspagem de dados](https://pt.wikipedia.org/wiki/Raspagem_de_dados)
         para baixar as páginas HTML de avaliações no Glassdoor das 22 empresas
-        pré-selecionadas e, posteriormente, extrair dados relevantes desssas
+        pré-selecionadas e, posteriormente, extrair dados relevantes dessas
         páginas, como **texto da avaliação**, **cargo do avaliador**,
         **quantidade de estrelas da avaliação**, etc. Ao final deste processo,
         **2532 avaliações** foram extraídas.
@@ -39,8 +39,8 @@ def data_preparation():
 
     Durante a [Análise Exploratória dos Dados](https://pt.wikipedia.org/wiki/An%C3%A1lise_explorat%C3%B3ria_de_dados),
     foi identificada a necessidade de criar uma nova classe de sentimento,
-    pois alguns casos não se enquadravam nem como Positivos nem como Negativos.
-    Assim, decidiu-se pela inclusão da classe **Neutra**.
+    pois alguns casos não se enquadravam nem como Positivos, nem como
+    Negativos. Assim, decidiu-se pela inclusão da classe **Neutra**.
 
     O dataset original foi, então, dividido em dois conjuntos de 1266
     avaliações: um contendo avaliações positivas e outro com avaliações
@@ -48,7 +48,7 @@ def data_preparation():
     de sentimentos para identificar as avaliações neutras. Para isso,
     utilizou-se o modelo pré-treinado [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
     que é capaz de classificar sentimentos em textos em diversos idiomas,
-    incluindo o Português.
+    incluindo o português.
 
     Os resultados obtidos após a aplicação do modelo a cada um dos datasets
     mostraram que no conjunto de avaliações positivas, **650** foram
@@ -195,7 +195,7 @@ def model_development():
     O gráfico de perda nos dados de treino e de teste mostram que na
     segunda época o modelo se saiu melhor nos dados de teste, mas no
     restante das épocas, essa perda aumentou levemente. Ao analisar
-    a evolução de perda nos dados de treino, é posssível observar que
+    a evolução de perda nos dados de treino, é possível observar que
     o Modelo praticamente decorou os dados de treino.
 
     <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss.png?raw=true" alt="Loss de treinamento e teste ao longo das épocas" width="600"/>
@@ -215,7 +215,7 @@ def model_development():
     <br/>
 
     A [Matriz de Confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o#:~:text=Em%20an%C3%A1lise%20preditiva%2C%20a%20matriz,verdadeiros%20positivos%20e%20verdadeiros%20negativos%20.)
-    das predições do Modelo nos dados de teste após as 5 épocas é mostrada a 
+    das predições do Modelo nos dados de teste após as 5 épocas é mostrada a
     seguir:
 
     <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true" alt="Matriz de Confusão" width="600"/>

@@ -20,7 +20,7 @@ def rating_star_analysis():
     st.markdown(
         """
         Esta análise mostra a relação entre as avaliações e o número de
-        estrelas atribuídas de acordo com a empresa selecionada.
+        estrelas atribuídas, conforme a empresa selecionada.
     """
     )
 

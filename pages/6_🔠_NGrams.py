@@ -107,7 +107,7 @@ def n_gram_by_company():
         ax.set_ylabel("")
 
         ax.set_title(
-            "Top 10 NGrams por empresa",
+            "Top 10 N-Grams por empresa",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.0,
         )
@@ -149,23 +149,23 @@ if __name__ == "__main__":
         "Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"
     )
 
-    st.subheader("Top 10 NGrams por empresa")
+    st.subheader("Top 10 N-Grams por empresa")
 
     st.markdown(
         """
-    A análise de NGrams nas avaliações positivas revela os tópicos mais
+    A análise de N-Grams nas avaliações positivas revela os tópicos mais
     recorrentes, que incluem:
     - Ambiente de trabalho
     - Plano de saúde
     - Oportunidade de crescimento
 
-    Por outro lado, os NGrams nas avaliações negativas destacam os seguintes
+    Por outro lado, os N-Grams nas avaliações negativas destacam os seguintes
     temas:
     - Plano de carreira
     - Plano de saúde
     - Salário abaixo do mercado
 
-    As análises de NGrams nas avaliações neutras indicam que os avaliadores
+    As análises de N-Grams nas avaliações neutras indicam que os avaliadores
     não conseguiram identificar aspectos negativos a serem destacados na seção
     "Contras" do Glassdoor, mesmo quando obrigados a fornecer uma resposta.
     Isso sugere que, para muitos colaboradores, a experiência de trabalho é
