@@ -72,7 +72,7 @@ def data_preparation():
 
     A correção manual das 650 avaliações não positivas preditas pelo modelo
     revelou que 33 avaliações eram neutras e 15 eram negativas. Já na correção
-    das 821 avaliações não negativas inferidas, foram classificadas 247
+    das 821 avaliações não negativas inferidas, foram classificadas 209
     avaliações como neutras, 49 como positivas e 17 como negativas. Após a
     correção manual das predições, estas foram combinadas ao conjunto de dados
     original.
