@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     st.header(
         """
-        Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá
+        Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá
     """
     )
 

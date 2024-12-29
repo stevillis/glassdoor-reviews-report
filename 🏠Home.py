@@ -849,7 +849,7 @@ def conclusion():
 
     st.markdown(
         """
-    A análise de sentimentos das avaliações no Glassdoor de 22 empresas de
+    A análise de sentimento das avaliações no Glassdoor de 22 empresas de
     Tecnologia em Cuiabá revelou que o Modelo desenvolvido demonstrou alta
     precisão na classificação das categorias de sentimentos presentes nas
     avaliações. Nos dados de teste, **o Modelo demonstrou bons resultados de
@@ -900,7 +900,7 @@ if __name__ == "__main__":
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     st.header(
-        "Análise de sentimentos nas avaliações do Glassdoor: Um estudo sobre empresas de Tecnologia em Cuiabá"
+        "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )
 
     if "reviews_df" not in st.session_state:
