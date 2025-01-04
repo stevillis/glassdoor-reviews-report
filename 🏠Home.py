@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import streamlit as st
-import streamlit.components.v1 as components
 from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
@@ -899,10 +898,6 @@ if __name__ == "__main__":
     )
 
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
-
-    with st.sidebar:
-        with open("adsense.html", "r", encoding="utf-8") as f:
-            components.html(f.read())
 
     st.header(
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
