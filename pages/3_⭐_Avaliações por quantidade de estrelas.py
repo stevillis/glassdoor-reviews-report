@@ -151,6 +151,8 @@ if __name__ == "__main__":
         unsafe_allow_html=True,
     )
 
+    st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
+
     st.header(
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )

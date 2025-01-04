@@ -5,6 +5,7 @@ import pandas as pd
 import streamlit as st
 from wordcloud import WordCloud
 
+from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
     STOPWORDS,
@@ -117,6 +118,8 @@ if __name__ == "__main__":
         ReportConfig.CUSTOM_CSS,
         unsafe_allow_html=True,
     )
+
+    st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     st.header(
         """
