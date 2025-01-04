@@ -22,40 +22,26 @@ from utils import (
 def introduction():
     st.markdown(
         """
-   As avaliações de funcionários no Glassdoor proporcionam uma visão valiosa
-   sobre a cultura e o ambiente de trabalho de uma empresa. No contexto do
-   setor de Tecnologia, entender as emoções expressas nessas avaliações é
-   crucial para atrair e reter talentos.
+   Esta ferramenta foi criada para ajudar profissionais da área de Tecnologia
+   da Informação (TI) a avaliarem empresas com base nas avaliações de
+   funcionários disponíveis no Glassdoor. Ao oferecer uma análise aprofundada
+   das emoções expressas nessas avaliações, pretende-se fornecer insights
+   valiosos que auxiliem na escolha do local ideal para trabalhar.
 
-   Além disso, essas percepções podem  servir como base para reestruturações
-   necessárias, especialmente em resposta a comentários negativos. Ao
-   valorizar o feedback dos colaboradores, as organizações podem não apenas
-   melhorar seu ambiente interno, mas também garantir um caminho sólido para o
-   sucesso a longo prazo.
+   Além disso, esse insights podem servir para identificar áreas que
+   necessitam de reestruturações, especialmente em resposta a feedbacks
+   negativos. Ao valorizar as opiniões dos colaboradores, as empresas não
+   apenas melhoram seu ambiente interno, mas também estabelecem um caminho
+   sólido para o sucesso a longo prazo.
 
-    Esse trabalho mostra uma **análise das emoções expressas nas avaliações
+    Esse trabalho apresenta uma **análise das emoções expressas nas avaliações
     no Glassdoor de 22 empresas de Tecnologia de Cuiabá**, com dados de **05 de
     outubro de 2014 a 16 de março de 2024** e um total de **2532 avaliações**.
     Para isso, foi treinado um Modelo de [Inteligência Artificial (IA)](https://pt.wikipedia.org/wiki/Intelig%C3%AAncia_artificial)
     baseado na técnica de [Transfer Learning](https://pt.wikipedia.org/wiki/Aprendizado_por_transfer%C3%AAncia)
-    com [BERTimbau](https://neuralmind.ai/bert/).
-
-    Os detalhes de treinamento e avaliação do Modelo podem ser acessados no
-    menu
+    com [BERTimbau](https://neuralmind.ai/bert/). Os detalhes de treinamento e
+    avaliação do Modelo podem ser acessados no menu
     <a target="_self" href="./Treinamento_do_Modelo">🧠Treinamento do Modelo</a>.
-
-    #### Tecnologias e ferramentas usadas
-
-    | **Categoria**                     | **Ferramentas e Tecnologias**                                                                                                                                           |
-    |-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | Extração de Dados                 | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white) BeautifulSoup                           |
-    | Manipulação e Análise de Dados    | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) |
-    | Treinamento e Avaliação do Modelo | ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) |
-    | Visualização de Dados             | ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black) ![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white) Seaborn |
-    | Versionamento                     | ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
-    | Ambiente de Desenvolvimento       | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white) Google Colab |
-
-    <br/>
 
     As seções a seguir apresentam as **predições realizadas pelo Modelo
     treinado para todas as 2532 avaliações**. Nelas, é possível comparar os
@@ -880,7 +866,20 @@ def conclusion():
     **A reputação positiva, refletida nas avaliações, pode ser um diferencial
     decisivo na escolha de uma empresa por candidatos qualificados**,
     impactando diretamente o sucesso e a competitividade no mercado.
-"""
+
+    #### Tecnologias e ferramentas usadas
+
+    | **Categoria**                     | **Tecnologia/Ferramenta**                                                                                                                                           |
+    |-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | Extração de Dados                 | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white) BeautifulSoup                           |
+    | Manipulação e Análise de Dados    | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) |
+    | Treinamento e Avaliação do Modelo | ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) |
+    | Visualização de Dados             | ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black) ![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white) Seaborn |
+    | Versionamento                     | ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
+    | Ambiente de Desenvolvimento       | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white) Google Colab |
+
+""",
+        unsafe_allow_html=True,
     )
 
 
