@@ -901,9 +901,8 @@ if __name__ == "__main__":
     st.sidebar.warning(AppMessages.WARNING_PLOT_NOT_WORKING)
 
     with st.sidebar:
-        components.html(
-            '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6245390957232527" crossorigin="anonymous"></script>'
-        )
+        with open("adsense.html", "r", encoding="utf-8") as f:
+            components.html(f.read())
 
     st.header(
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
