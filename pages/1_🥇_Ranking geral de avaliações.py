@@ -19,7 +19,8 @@ def general_reviews_ranking():
         """
     Este gráfico mostra a quantidade de avaliações e o sentimento
     associado para cada empresa, ordenadas pela diferença entre avaliações
-    positivas e negativas. Essa visualização mostra que:
+    positivas e negativas. Essa visualização das predições do modelo mostra
+    que:
 
     - 18 das 22 empresas analisadas têm mais avaliações positivas do que
     negativas.

@@ -46,7 +46,7 @@ def introduction():
     As seções a seguir apresentam as **predições realizadas pelo Modelo
     treinado para todas as 2532 avaliações**. Nelas, é possível comparar os
     dados reais com as previsões geradas pelo Modelo, permitindo uma avaliação
-    clara de sua eficácia para tarefa proposta.
+    clara de sua eficácia para a tarefa proposta.
     """,
         unsafe_allow_html=True,
     )
@@ -456,15 +456,16 @@ def rating_star_analysis():
         predominantemente negativo**.
         - Por outro lado, as **avaliações de 4 estrelas** mostram uma
         **distribuição equilibrada entre sentimentos positivos e negativos**.
-        - Já as **avaliações de 5 estrelas** são **majoritariamente positivas**,
-        destacando-se também um **número significativo de avaliações neutras**.
+        - Já as **avaliações de 5 estrelas** são
+        **majoritariamente positivas**, destacando-se também um
+        **número significativo de avaliações neutras**.
 
         Essa predominância de avaliações neutras em avaliações de 5 estrelas
-        pode ser atribuída à exigência no Glassdoor de preencher as seções
-        *Prós* e *Contras*. Em diversas avaliações, os usuários não encontram
-        aspectos negativos a serem mencionados na seção *Contras*, resultando
-        em comentários neutros como `Não há nada a ser apontado` ou `Não tenho
-        nada a reclamar`.
+        pode ser atribuída à exigência ao usuário do Glassdoor de preencher as
+        seções *Prós* e *Contras* ao avaliarem uma empresa. Em diversas
+        avaliações, os usuários não encontram aspectos negativos a serem
+        mencionados na seção *Contras*, resultando em comentários neutros como
+        `Não há nada a ser apontado` ou `Não tenho nada a reclamar`.
     """
     )
 
