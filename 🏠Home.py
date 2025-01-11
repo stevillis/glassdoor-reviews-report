@@ -587,7 +587,7 @@ def rating_star_analysis():
 
     st.markdown(
         """
-        A distribuição de sentimentos por quantidades de estrelas para cada
+        A distribuição de sentimentos por quantidade de estrelas para cada
         empresa pode ser visualizada no menu
         <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
         📊Avaliações por quantidade de estrelas</a>.
@@ -605,16 +605,16 @@ def employee_role_analysis():
 
     st.markdown(
         """
-        Este gráfico revela que as **avaliações positivas são predominantes**, 
-        independentemente do grupo de funcionários. A maioria das 
-        avaliações provém de profissionais de outras áreas, com destaque para 
-        os seguintes dados:
+        Este gráfico revela que as **avaliações positivas são predominantes**,
+        independentemente do grupo de funcionários. A maioria das
+        avaliações provém de profissionais de outras áreas, com destaque para
+        os seguintes dados (considerando os dados originais):
 
-        - Cerca de **64% das avaliações** são provenientes de profissionais de 
+        - Cerca de **64% das avaliações** são provenientes de profissionais de
         áreas não relacionadas à TI.
-        - Os **profissionais de TI representam cerca de 25%** do total de 
+        - Os **profissionais de TI representam cerca de 25%** do total de
         avaliações.
-        - Aproximadamente **11% das avaliações** foram emitidas por 
+        - Aproximadamente **11% das avaliações** foram emitidas por
         profissionais que optaram por não revelar seus cargos.
     """
     )
@@ -734,7 +734,7 @@ def employee_role_analysis():
 
     st.markdown(
         """
-        A distribuição de sentimentos por quantidades de estrelas para cada
+        A distribuição de sentimentos por grupo de funcionários para cada
         empresa pode ser visualizada no menu
         <a target="_self" href="./Avaliações_por_grupo_de_funcionários">
         📊Avaliações por grupo de funcionários</a>.
