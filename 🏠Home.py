@@ -41,9 +41,10 @@ def introduction():
     outubro de 2014 a 16 de março de 2024** e um total de **2532 avaliações**.
     Para isso, foi treinado um Modelo de [Inteligência Artificial (IA)](https://pt.wikipedia.org/wiki/Intelig%C3%AAncia_artificial)
     baseado na técnica de [Transfer Learning](https://pt.wikipedia.org/wiki/Aprendizado_por_transfer%C3%AAncia)
-    com [BERTimbau](https://neuralmind.ai/bert/). Os detalhes de treinamento e
-    avaliação do Modelo podem ser acessados no menu
-    <a target="_self" href="./Treinamento_do_Modelo">🧠Treinamento do Modelo</a>.
+    com [BERTimbau](https://neuralmind.ai/bert/). Os detalhes sobre o
+    **treinamento e avaliação do Modelo** estão disponíveis no menu
+    [🧠 Treinamento do Modelo](./Treinamento_do_Modelo). Você pode utilizar o
+    modelo acessando [este link](https://huggingface.co/spaces/stevillis/bertimbau-finetuned-glassdoor-reviews).
 
     As seções a seguir apresentam as **predições realizadas pelo Modelo
     treinado para todas as 2532 avaliações**. Nelas, é possível comparar os
