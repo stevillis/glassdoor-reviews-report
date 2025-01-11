@@ -18,6 +18,147 @@ STOPWORDS.extend(
     ]
 )
 
+IT_ROLES = [
+    "ANALISTA SAP",
+    "Administrador De Redes",
+    "Analista De BI",
+    "Analista De Conversão De Dados",
+    "Analista De Desenvolvimento Júnior",
+    "Analista De Desenvolvimento Pleno",
+    "Analista De Implantação Pleno",
+    "Analista De Implantação Sênior",
+    "Analista De Infraestrutura Pleno",
+    "Analista De Negócios",
+    "Analista De Negócios De TI Pleno",
+    "Analista De Negócios Júnior",
+    "Analista De Negócios Pleno",
+    "Analista De Negócios Sênior",
+    "Analista De Projetos II",
+    "Analista De Projetos Pleno",
+    "Analista De Qualidade Pleno",
+    "Analista De Redes",
+    "Analista De Redes Júnior",
+    "Analista De Requisitos",
+    "Analista De Requisitos Pleno",
+    "Analista De Requisitos Sênior",
+    "Analista De Sistemas",
+    "Analista De Sistemas Desenvolvedor",
+    "Analista De Sistemas Júnior",
+    "Analista De Sistemas N2",
+    "Analista De Sistemas Pleno",
+    "Analista De Sistemas Sênior",
+    "Analista De Sistemas Sênior I",
+    "Analista De Suporte",
+    "Analista De Suporte De Sistemas",
+    "Analista De Suporte E Infraestrutura Em TI",
+    "Analista De Suporte I",
+    "Analista De Suporte Júnior",
+    "Analista De Suporte Pleno",
+    "Analista De Suporte Técnico",
+    "Analista De TI II",
+    "Analista De TI Pleno",
+    "Analista De TI Sênior",
+    "Analista De Tecnologia Da Informação (TI)",
+    "Analista De Teste",
+    "Analista De Teste Junior",
+    "Analista De Testes",
+    "Analista De Testes Pleno",
+    "Analista De Testes Sênior",
+    "Analista Desenvolvedor",
+    "Analista Desenvolvedor .NET",
+    "Analista Desenvolvedor .NET Sênior",
+    "Analista Desenvolvedor De Sistemas",
+    "Analista Desenvolvedor Pleno",
+    "Analista Desenvolvedor Sênior",
+    "Analista Programador",
+    "Analista Service Desk",
+    "Analista de Infraestrutura e Suporte",
+    "Analista de Negócios",
+    "Analista de Negócios Pleno",
+    "Analista de Sistemas Júnior",
+    "Analista de Sistemas Sênior",
+    "Analista de Suporte Técnico",
+    "Arquiteto Desenvolvedor Java Sênior",
+    "Auxiliar De Analista De Sistemas",
+    "Business Analyst",
+    "Cientista De Dados",
+    "Consultor De Implantação De Sistemas",
+    "Consultor De Implantação Júnior",
+    "Consultor De Implementação Pleno",
+    "Consultor De Suporte Técnico",
+    "Consultor SAP",
+    "Consultor SAP B1",
+    "Consultor SAP Júnior",
+    "Consultor TI",
+    "Coordenador De Desenvolvimento De Software",
+    "Coordenador De Service Desk",
+    "Desenvolvedor",
+    "Desenvolvedor C#",
+    "Desenvolvedor C++ Pleno",
+    "Desenvolvedor De Programas",
+    "Desenvolvedor De Sistemas",
+    "Desenvolvedor De Software",
+    "Desenvolvedor De Software Pleno",
+    "Desenvolvedor Front End Angular Junior",
+    "Desenvolvedor Genexus",
+    "Desenvolvedor Júnior",
+    "Desenvolvedor Júnior I",
+    "Desenvolvedor Pleno",
+    "Desenvolvedor React Native",
+    "Desenvolvedor Sênior",
+    "Desenvolvedor de Java Senior - PJ",
+    "Desenvolvedor.NET",
+    "Especialista De Sistemas",
+    "Especialista Em Sistemas",
+    "Estagiário De Desenvolvimento",
+    "Estagiário De TI",
+    "Estágio Desenvolvimento Java",
+    "Gerente De Projetos De TI",
+    "Gerente De Serviços De TI",
+    "Gerente De TI",
+    "IT Consultant",
+    "Information Technology Analyst",
+    "Product Owner",
+    "Programador",
+    "Programador De Sistemas Pleno",
+    "Programador Delphi",
+    "Programador I Júnior",
+    "Programador Júnior",
+    "Programador Pleno",
+    "Programador Pleno V",
+    "Programador Sênior",
+    "Programador Trainee",
+    "Programador treinee",
+    "QA Analyst",
+    "QAssurance",
+    "Quality Assurance",
+    "Senior Analyst Developer",
+    "Software Developer",
+    "Sofware Developer",
+    "Supervisor De Infraestrutura De TI",
+    "Suporte Técnico",
+    "Suporte técnico",
+    "System Analyst",
+    "Technical Support Engineer",
+    "Técnico De Informática",
+    "Técnico De Informática II",
+    "Técnico De Suporte",
+    "Técnico De Suporte II",
+    "Técnico De Suporte Júnior",
+    "Técnico Em Informática",
+    "Técnico Em Sistemas Da Informação",
+    "Técnico Em Suporte Técnico",
+    "Técnico Em Suporte Técnico N2",
+    "Técnico Em Suporte Técnico Pleno",
+    "Técnico Suporte N2",
+    "Técnico suporte informática",
+    "UX Designer",
+    "Web Designer",
+    "dev junior 2",
+]
+
+ROLE_GROUPS = {0: "Outros", 1: "Profissionais de TI", 2: "Funcionário confidencial"}
+
 # Translation table for replacing any special character from a word.
 TRANSLATION_TABLE_SPECIAL_CHARACTERS = str.maketrans("", "", punctuation)
 
@@ -98,6 +239,49 @@ def create_predicted_sentiment_plot(df: pd.DataFrame) -> pd.DataFrame:
     sentiment_mapping = {0: 3, 1: 1, 2: 2}
     df["predicted_sentiment_plot"] = df["predicted_sentiment"].map(sentiment_mapping)
 
+    return df
+
+
+def categorize_role(role: str) -> int:
+    """
+    Categorizes the given role into a specific group.
+
+    The function assigns roles to one of three groups:
+    - Other roles (returns 0)
+    - IT roles (returns 1)
+    - Confidential roles (returns 2)
+
+    Parameters:
+    role (str): The role to be categorized.
+
+    Returns:
+    int: The group number corresponding to the role.
+    """
+    if role in IT_ROLES:
+        return 1
+    elif role == "Funcionário confidencial":
+        return 2
+    else:
+        return 0
+
+
+def create_role_group(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds a new column 'role_group' to the DataFrame based on the 'employee_role' column.
+
+    The function categorizes each role into one of three groups using the categorize_role function:
+    - Other roles (0)
+    - IT roles (1)
+    - Confidential roles (2)
+
+    Parameters:
+    df (pd.DataFrame): The input DataFrame containing the 'employee_role' column.
+
+    Returns:
+
+    pd.DataFrame: A DataFrame with an additional column 'role_group' with categorized roles.
+    """
+    df["role_group"] = df["employee_role"].apply(categorize_role)
     return df
 
 
