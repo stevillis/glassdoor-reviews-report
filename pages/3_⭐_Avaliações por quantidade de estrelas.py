@@ -2,16 +2,12 @@ import math
 import warnings
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import (
-    create_predicted_sentiment_plot,
-    get_ranking_positive_negative_companies,
-)
+from utils import load_reviews_df, set_companies_raking_to_session
 
 
 def rating_star_analysis():
@@ -25,8 +21,7 @@ def rating_star_analysis():
     """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
-    reviews_df = create_predicted_sentiment_plot(reviews_df)
+    reviews_df = load_reviews_df()
 
     company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
     company = st.selectbox(
@@ -44,7 +39,7 @@ def rating_star_analysis():
             "review_text",
             "review_date",
             "star_rating",
-            "predicted_sentiment_plot",
+            "sentiment_plot",
             "sentiment_label",
         ]
     ]
@@ -53,7 +48,7 @@ def rating_star_analysis():
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            filtered_df.groupby(["star_rating", "predicted_sentiment_plot"])
+            filtered_df.groupby(["star_rating", "sentiment_plot"])
             .size()
             .reset_index(name="count")
         )
@@ -64,7 +59,7 @@ def rating_star_analysis():
             data=sentiment_counts,
             x="star_rating",
             y="count",
-            hue="predicted_sentiment_plot",
+            hue="sentiment_plot",
             ax=ax,
             palette=[
                 ReportConfig.POSITIVE_SENTIMENT_COLOR,
@@ -130,7 +125,7 @@ def rating_star_analysis():
         st.pyplot(fig)
 
         st.write("Avaliações filtradas")
-        filtered_print_df = filtered_df.drop(labels="predicted_sentiment_plot", axis=1)
+        filtered_print_df = filtered_df.drop(labels="sentiment_plot", axis=1)
         st.dataframe(filtered_print_df)
     else:
         st.error(
@@ -158,18 +153,7 @@ if __name__ == "__main__":
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     rating_star_analysis()

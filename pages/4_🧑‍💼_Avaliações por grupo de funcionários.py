@@ -2,18 +2,12 @@ import math
 import warnings
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import (
-    ROLE_GROUPS,
-    create_predicted_sentiment_plot,
-    create_role_group,
-    get_ranking_positive_negative_companies,
-)
+from utils import ROLE_GROUPS, load_reviews_df, set_companies_raking_to_session
 
 
 def employee_role_analysis():
@@ -26,9 +20,7 @@ def employee_role_analysis():
     """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
-    reviews_df = create_predicted_sentiment_plot(reviews_df)
-    reviews_df = create_role_group(reviews_df)
+    reviews_df = load_reviews_df()
 
     company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
     company = st.selectbox(
@@ -46,7 +38,7 @@ def employee_role_analysis():
             "review_text",
             "review_date",
             "star_rating",
-            "predicted_sentiment_plot",
+            "sentiment_plot",
             "sentiment_label",
             "role_group",
         ]
@@ -56,7 +48,7 @@ def employee_role_analysis():
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            filtered_df.groupby(["role_group", "predicted_sentiment_plot"])
+            filtered_df.groupby(["role_group", "sentiment_plot"])
             .size()
             .reset_index(name="sentiment_count")
         )
@@ -67,7 +59,7 @@ def employee_role_analysis():
             data=sentiment_counts,
             x="sentiment_count",
             y="role_group",
-            hue="predicted_sentiment_plot",
+            hue="sentiment_plot",
             palette=[
                 ReportConfig.POSITIVE_SENTIMENT_COLOR,
                 ReportConfig.NEGATIVE_SENTIMENT_COLOR,
@@ -135,7 +127,7 @@ def employee_role_analysis():
         st.pyplot(fig)
 
         st.write("Avaliações filtradas")
-        filtered_print_df = filtered_df.drop(labels="predicted_sentiment_plot", axis=1)
+        filtered_print_df = filtered_df.drop(labels="sentiment_plot", axis=1)
         st.dataframe(filtered_print_df)
     else:
         st.error(
@@ -163,18 +155,7 @@ if __name__ == "__main__":
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     employee_role_analysis()

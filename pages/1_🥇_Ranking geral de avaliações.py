@@ -1,16 +1,15 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
-    create_predicted_sentiment_plot,
     get_bad_rating_companies,
     get_good_rating_companies,
     get_neutral_rating_companies,
-    get_ranking_positive_negative_companies,
+    load_reviews_df,
+    set_companies_raking_to_session,
 )
 
 
@@ -29,7 +28,7 @@ def general_reviews_ranking():
 """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     reviews_df["company"] = reviews_df["company"].apply(
         lambda x: (
@@ -39,51 +38,43 @@ def general_reviews_ranking():
         )
     )
 
-    reviews_df = create_predicted_sentiment_plot(reviews_df)
-
-    predicted_sentiment_plot_by_company_df = (
-        reviews_df.groupby(["company", "predicted_sentiment_plot"])
-        .size()
-        .unstack(fill_value=0)
+    sentiment_plot_by_company_df = (
+        reviews_df.groupby(["company", "sentiment_plot"]).size().unstack(fill_value=0)
     )
 
-    predicted_sentiment_plot_by_company_df_reset = (
-        predicted_sentiment_plot_by_company_df.reset_index()
-    )
-    predicted_sentiment_plot_by_company_df_reset.columns = [
+    sentiment_plot_by_company_df_reset = sentiment_plot_by_company_df.reset_index()
+    sentiment_plot_by_company_df_reset.columns = [
         "company",
         "1positive",
         "2negative",
         "3neutral",
     ]
 
-    predicted_sentiment_plot_by_company_df_reset["sentiment_diff"] = (
-        predicted_sentiment_plot_by_company_df_reset["1positive"]
-        - predicted_sentiment_plot_by_company_df_reset["2negative"]
+    sentiment_plot_by_company_df_reset["sentiment_diff"] = (
+        sentiment_plot_by_company_df_reset["1positive"]
+        - sentiment_plot_by_company_df_reset["2negative"]
     )
 
-    bad_rating_companies = get_bad_rating_companies(
-        predicted_sentiment_plot_by_company_df_reset
-    )
+    bad_rating_companies = get_bad_rating_companies(sentiment_plot_by_company_df_reset)
     good_rating_companies = get_good_rating_companies(
-        predicted_sentiment_plot_by_company_df_reset
+        sentiment_plot_by_company_df_reset
     )
     neutral_rating_companies = get_neutral_rating_companies(
-        predicted_sentiment_plot_by_company_df_reset
+        sentiment_plot_by_company_df_reset
     )
 
     fig, ax = plt.subplots(1, figsize=(8, 10))
 
     # Plot
 
-    sorted_companies_df = predicted_sentiment_plot_by_company_df_reset.sort_values(
+    sorted_companies_df = sentiment_plot_by_company_df_reset.sort_values(
         by="sentiment_diff", ascending=False
     )["company"]
 
     sns.countplot(
         data=reviews_df,
         y="company",
-        hue="predicted_sentiment_plot",
+        hue="sentiment_plot",
         order=sorted_companies_df,
         ax=ax,
         palette=[
@@ -163,15 +154,6 @@ def general_reviews_ranking():
     #     bbox_inches="tight",
     # )
 
-    show_real_general_sentiment_reviews_rank = st.checkbox(
-        "Mostrar Ranking geral de avaliações (dados originais)"
-    )
-
-    if show_real_general_sentiment_reviews_rank:
-        st.image(
-            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_general_sentiment_reviews_rank.png?raw=true"
-        )
-
 
 if __name__ == "__main__":
     st.set_page_config(
@@ -192,18 +174,7 @@ if __name__ == "__main__":
 
     st.subheader("Ranking geral de avaliações")
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     general_reviews_ranking()

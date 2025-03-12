@@ -5,7 +5,7 @@ import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import get_ranking_positive_negative_companies
+from utils import load_reviews_df, set_companies_raking_to_session
 
 if __name__ == "__main__":
     st.set_page_config(
@@ -34,20 +34,8 @@ if __name__ == "__main__":
 """
     )
 
-    if "reviews_df" not in st.session_state:
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
-    else:
-        reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     company_options = ["Todas"] + sorted(reviews_df["company"].unique().tolist())
     company = st.selectbox(
@@ -61,7 +49,7 @@ if __name__ == "__main__":
         [
             "company",
             "review_date",
-            "predicted_sentiment",
+            "sentiment",
         ]
     ]
 
@@ -76,9 +64,7 @@ if __name__ == "__main__":
     max_year = filtered_df["review_date"].max().year
 
     sentiment_counts = (
-        filtered_df.groupby(["year", "predicted_sentiment"])
-        .size()
-        .reset_index(name="count")
+        filtered_df.groupby(["year", "sentiment"]).size().reset_index(name="count")
     )
 
     fig, ax = plt.subplots(1, figsize=(12, 6))
@@ -86,7 +72,7 @@ if __name__ == "__main__":
         data=sentiment_counts,
         x="year",
         y="count",
-        hue="predicted_sentiment",
+        hue="sentiment",
         palette=ReportConfig.SENTIMENT_PALETTE,
         ax=ax,
     )

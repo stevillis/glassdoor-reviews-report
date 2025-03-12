@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import get_ranking_positive_negative_companies
+from utils import load_reviews_df, set_companies_raking_to_session
 
 
 def data_extraction():
@@ -19,7 +18,8 @@ def data_extraction():
         pré-selecionadas e, posteriormente, extrair dados relevantes dessas
         páginas, como **texto da avaliação**, **cargo do avaliador**,
         **quantidade de estrelas da avaliação**, etc. Ao final deste processo,
-        **2532 avaliações** foram extraídas.
+        **2532 avaliações** com data entre **05 de outubro de
+        2014 e 16 de março de 2024** foram extraídas
 """
     )
 
@@ -84,7 +84,7 @@ def data_preparation():
         unsafe_allow_html=True,
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     fig, ax = plt.subplots(figsize=(8, 4))
 
@@ -244,19 +244,8 @@ if __name__ == "__main__":
     """
     )
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     data_extraction()
     data_preparation()

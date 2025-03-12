@@ -3,9 +3,11 @@ import warnings
 from collections import Counter
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+from PIL import Image
 from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
@@ -15,41 +17,45 @@ from utils import (
     ROLE_GROUPS,
     STOPWORDS,
     TRANSLATION_TABLE_SPECIAL_CHARACTERS,
-    create_predicted_sentiment_plot,
-    create_role_group,
-    get_ranking_positive_negative_companies,
+    load_reviews_df,
+    set_companies_raking_to_session,
 )
 
 
 def introduction():
     st.markdown(
         """
-   Esta ferramenta foi criada para ajudar profissionais da área de Tecnologia
-   da Informação (TI) a avaliarem empresas com base nas avaliações de
-   funcionários disponíveis no Glassdoor. Ao oferecer uma análise aprofundada
-   das emoções expressas nessas avaliações, pretende-se fornecer insights
-   valiosos que auxiliem na escolha do local ideal para trabalhar.
+    Se você é um profissional de Tecnologia da Informação (TI) e está buscando
+    a primeira experiência ou mesmo uma recolocação, já deve ter analisado o
+    perfil de algumas empresas para entender se estas seriam um bom fit para
+    você. Plataformas como o **Glassdoor** são uma boa fonte para entender como
+    ex-funcionários e funcionários atuais avaliam as empresas. Mas analisar
+    centenas ou milhares de avaliações nessas plataformas pode ser
+    um desafio enorme.
 
-   Além disso, esse insights podem servir para identificar áreas que
-   necessitam de reestruturações, especialmente em resposta a feedbacks
-   negativos. Ao valorizar as opiniões dos colaboradores, as empresas não
-   apenas melhoram seu ambiente interno, mas também estabelecem um caminho
-   sólido para o sucesso a longo prazo.
-
-    Esse trabalho apresenta uma **análise das emoções expressas nas avaliações
-    no Glassdoor de 22 empresas de Tecnologia de Cuiabá**, com dados de **05 de
-    outubro de 2014 a 16 de março de 2024** e um total de **2532 avaliações**.
-    Para isso, foi treinado um Modelo de [Inteligência Artificial (IA)](https://pt.wikipedia.org/wiki/Intelig%C3%AAncia_artificial)
+    Pensando em resolver um problema pessoal de entender como empresas de TI
+    de Cuiabá eram avaliadas no Glassdoor e também ajudar profissionais com o
+    mesmo desafio, treinei um Modelo de [Inteligência Artificial (IA)](https://pt.wikipedia.org/wiki/Intelig%C3%AAncia_artificial)
     baseado na técnica de [Transfer Learning](https://pt.wikipedia.org/wiki/Aprendizado_por_transfer%C3%AAncia)
-    com [BERTimbau](https://neuralmind.ai/bert/). Os detalhes sobre o
-    **treinamento e avaliação do Modelo** estão disponíveis no menu
-    [🧠 Treinamento do Modelo](./Treinamento_do_Modelo). Você pode utilizar o
-    modelo acessando [este link](https://huggingface.co/spaces/stevillis/bertimbau-finetuned-glassdoor-reviews).
+    com [BERTimbau](https://neuralmind.ai/bert/). O Modelo foi treinado para
+    classificar as avaliações da plataforma em três classes: **Positivo**,
+    **Negativo** e **Neutro**. Os detalhes de **treinamento e avaliação do
+    Modelo** estão disponíveis no menu [🧠 Treinamento do Modelo](./Treinamento_do_Modelo).
+    Você pode utilizar o modelo acessando o [Hugging Face Spaces](https://huggingface.co/spaces/stevillis/bertimbau-finetuned-glassdoor-reviews).
 
-    As seções a seguir apresentam as **predições realizadas pelo Modelo
-    treinado para todas as 2532 avaliações**. Nelas, é possível comparar os
-    dados reais com as previsões geradas pelo Modelo, permitindo uma avaliação
-    clara de sua eficácia para a tarefa proposta.
+    Ao explorar as seções subsequentes, você poderá entender melhor como as
+    empresas de TI em Cuiabá são percebidas pelos funcionários e
+    ex-funcionários. As análises dos dados gerais busca responder as seguintes
+    questões:
+    - Quais as empresas com melhor relação entre avaliações positivas e
+    negativas? E quais seriam as piores nesse critério?
+    - Ao longo do tempo, houve alguma mudança na quantidade de avaliações por
+    sentimento?
+    - Qual a distribuição de sentimentos de acordo com a nota atribuída
+    para cada avaliação?
+    - Avaliações de profissionais de TI são predominantes?
+    - Quais as palavras mais frequentes nas avaliações?
+    - Quais palavras aparecem com mais frequência juntas?
     """,
         unsafe_allow_html=True,
     )
@@ -60,11 +66,11 @@ def positive_reviews_ranking():
 
     st.markdown(
         """
-    Este gráfico ilustra as cinco empresas que apresentam **número de
+    Este gráfico ilustra as 5 empresas que apresentam **número de
     avaliações positivas superior ao de avaliações negativas**. Para garantir
-    a relevância dos dados, **foram consideradas apenas as empresas que
-    possuem pelo menos 21 avaliações**, um critério que representa a metade da
-    mediana de avaliações de todas as empresas analisadas.
+    a relevância dos dados, **foram consideradas apenas as empresas com pelo
+    menos 21 avaliações**, que representa a metade da mediana de avaliações de
+    todas as empresas analisadas.
 """
     )
 
@@ -76,7 +82,7 @@ def positive_reviews_ranking():
         data=top_positive_companies_df,
         x="sentiment_count",
         y="company",
-        hue="predicted_sentiment_plot",
+        hue="sentiment_plot",
         palette=[
             ReportConfig.POSITIVE_SENTIMENT_COLOR,
             ReportConfig.NEGATIVE_SENTIMENT_COLOR,
@@ -144,15 +150,6 @@ def positive_reviews_ranking():
 
     st.pyplot(fig)
 
-    show_real_positive_reviews = st.checkbox(
-        "Mostrar Ranking de avaliações positivas por empresa (dados originais)"
-    )
-
-    if show_real_positive_reviews:
-        st.image(
-            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_positive_reviews_by_company.png?raw=true"
-        )
-
 
 def negative_reviews_ranking():
     st.subheader("Ranking de avaliações negativas por empresa")
@@ -173,7 +170,7 @@ def negative_reviews_ranking():
         data=top_negative_companies_df,
         x="sentiment_count",
         y="company",
-        hue="predicted_sentiment_plot",
+        hue="sentiment_plot",
         palette=[
             ReportConfig.POSITIVE_SENTIMENT_COLOR,
             ReportConfig.NEGATIVE_SENTIMENT_COLOR,
@@ -241,15 +238,6 @@ def negative_reviews_ranking():
 
     st.pyplot(fig)
 
-    show_real_negative_reviews = st.checkbox(
-        "Mostrar Ranking de avaliações negativas por empresa (dados originais)"
-    )
-
-    if show_real_negative_reviews:
-        st.image(
-            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_negative_reviews_by_company.png?raw=true"
-        )
-
     st.markdown(
         """
         O ranking completo de avaliações por empresa pode ser visualizado no
@@ -271,13 +259,13 @@ def company_analisys():
 """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     fig, ax = plt.subplots(1, figsize=(12, 6))
     sns.countplot(
         data=reviews_df,
         x="company",
-        hue="predicted_sentiment",
+        hue="sentiment",
         order=reviews_df["company"].value_counts().index,
         ax=ax,
         palette=ReportConfig.SENTIMENT_PALETTE,
@@ -329,7 +317,7 @@ def sentiment_reviews_along_time():
         unsafe_allow_html=True,
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     reviews_df["review_date"] = pd.to_datetime(
         reviews_df["review_date"], format="%Y-%m-%d"
@@ -337,9 +325,7 @@ def sentiment_reviews_along_time():
     reviews_df["year"] = reviews_df["review_date"].dt.year
 
     sentiment_counts = (
-        reviews_df.groupby(["year", "predicted_sentiment"])
-        .size()
-        .reset_index(name="count")
+        reviews_df.groupby(["year", "sentiment"]).size().reset_index(name="count")
     )
 
     fig, ax = plt.subplots(1, figsize=(12, 6))
@@ -347,7 +333,7 @@ def sentiment_reviews_along_time():
         data=sentiment_counts,
         x="year",
         y="count",
-        hue="predicted_sentiment",
+        hue="sentiment",
         palette=ReportConfig.SENTIMENT_PALETTE,
         ax=ax,
     )
@@ -419,15 +405,6 @@ def sentiment_reviews_along_time():
 
     st.pyplot(fig)
 
-    show_real_sentiments_reviews_along_time = st.checkbox(
-        "Mostrar Sentimento das avaliações ao longo do tempo (dados originais)"
-    )
-
-    if show_real_sentiments_reviews_along_time:
-        st.image(
-            image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiments_reviews_along_time.png?raw=true"
-        )
-
     st.markdown(
         """
         As avaliações ao longo do tempo por empresa podem ser visualizadas no
@@ -448,8 +425,7 @@ def sentiment_reviews_along_time():
 
 
 def rating_star_analysis():
-    reviews_df = st.session_state.get("reviews_df")
-    reviews_df = create_predicted_sentiment_plot(reviews_df)
+    reviews_df = load_reviews_df()
 
     st.subheader("Distribuição de sentimentos por quantidade de estrelas")
 
@@ -480,7 +456,7 @@ def rating_star_analysis():
             "review_text",
             "review_date",
             "star_rating",
-            "predicted_sentiment_plot",
+            "sentiment_plot",
             "sentiment_label",
         ]
     ]
@@ -489,7 +465,7 @@ def rating_star_analysis():
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            filtered_df.groupby(["star_rating", "predicted_sentiment_plot"])
+            filtered_df.groupby(["star_rating", "sentiment_plot"])
             .size()
             .reset_index(name="count")
         )
@@ -500,7 +476,7 @@ def rating_star_analysis():
             data=sentiment_counts,
             x="star_rating",
             y="count",
-            hue="predicted_sentiment_plot",
+            hue="sentiment_plot",
             ax=ax,
             palette=[
                 ReportConfig.POSITIVE_SENTIMENT_COLOR,
@@ -572,14 +548,6 @@ def rating_star_analysis():
         #     bbox_inches="tight",
         # )
 
-        show_real_sentiment_by_rating_star = st.checkbox(
-            "Mostrar Distribuição de sentimentos por quantidade de estrelas (dados originais)"
-        )
-
-        if show_real_sentiment_by_rating_star:
-            st.image(
-                image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiment_by_rating_star.png?raw=true"
-            )
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -598,9 +566,7 @@ def rating_star_analysis():
 
 
 def employee_role_analysis():
-    reviews_df = st.session_state.get("reviews_df")
-    reviews_df = create_predicted_sentiment_plot(reviews_df)
-    reviews_df = create_role_group(reviews_df)
+    reviews_df = load_reviews_df()
 
     st.subheader("Distribuição de sentimentos por grupo de funcionários")
 
@@ -609,7 +575,7 @@ def employee_role_analysis():
         Este gráfico revela que as **avaliações positivas são predominantes**,
         independentemente do grupo de funcionários. A maioria das
         avaliações provém de profissionais de outras áreas, com destaque para
-        os seguintes dados (considerando os dados originais):
+        os seguintes dados:
 
         - Cerca de **64% das avaliações** são provenientes de profissionais de
         áreas não relacionadas à TI.
@@ -628,7 +594,7 @@ def employee_role_analysis():
             "review_text",
             "review_date",
             "star_rating",
-            "predicted_sentiment_plot",
+            "sentiment_plot",
             "sentiment_label",
             "role_group",
         ]
@@ -638,7 +604,7 @@ def employee_role_analysis():
 
     if len(filtered_df) > 0:
         sentiment_counts = (
-            reviews_df.groupby(["role_group", "predicted_sentiment_plot"])
+            reviews_df.groupby(["role_group", "sentiment_plot"])
             .size()
             .reset_index(name="sentiment_count")
         )
@@ -649,7 +615,7 @@ def employee_role_analysis():
             data=sentiment_counts,
             x="sentiment_count",
             y="role_group",
-            hue="predicted_sentiment_plot",
+            hue="sentiment_plot",
             palette=[
                 ReportConfig.POSITIVE_SENTIMENT_COLOR,
                 ReportConfig.NEGATIVE_SENTIMENT_COLOR,
@@ -719,14 +685,6 @@ def employee_role_analysis():
         #     bbox_inches="tight",
         # )
 
-        show_real_sentiment_by_role_group = st.checkbox(
-            "Mostrar Distribuição de sentimentos por grupo de funcionários (dados originais)"
-        )
-
-        if show_real_sentiment_by_role_group:
-            st.image(
-                image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/real_sentiment_by_role_group.png?raw=true"
-            )
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -749,21 +707,22 @@ def wordcloud_analysis():
 
     st.markdown(
         """
-    A Nuvem de Palavras ([Word Cloud](https://techner.com.br/glossario/o-que-e-word-cloud/ "Word Cloud")) **é uma representação visual que ilustra as
-    palavras mais frequentemente utilizadas no conjunto de avaliações**. Neste
-    gráfico, as palavras aparecem em tamanhos variados, refletindo sua
-    frequência de uso: quanto maior a palavra, mais vezes ela foi mencionada
-    nas avaliações. É importante ressaltar que as stopwords, que são palavras
-    comuns e geralmente sem significado relevante para a análise (como "e", "a", "o",
+    A Nuvem de Palavras ([Word Cloud](https://techner.com.br/glossario/o-que-e-word-cloud/ "Word Cloud"))
+    **é uma representação visual que ilustra as palavras mais frequentemente
+    utilizadas no conjunto de avaliações**. Neste gráfico, as palavras
+    aparecem em tamanhos variados, refletindo sua frequência de uso: quanto
+    maior a palavra, mais vezes ela foi mencionada nas avaliações. É
+    importante ressaltar que as *stopwords*, que são palavras comuns e
+    geralmente sem significado relevante para a análise (como "e", "a", "o",
     "de") foram excluídas desta visualização.
 
-    A Nuvem de Palavras mostrada a seguir permite a identificação rápida dos
-    tópicos mais relevantes demonstrados nas avaliações, onde `empresa` e
-    `trabalho` são visivelmente as palavras mais comuns.
+    A Nuvem de Palavras a seguir mostra as 50 palavras mais frequentes nas
+    avaliações e permite a identificação rápida dos tópicos mais relevantes,
+    onde `empresa` e `trabalho` são visivelmente as palavras mais comuns.
 """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
 
@@ -777,12 +736,16 @@ def wordcloud_analysis():
     counter = Counter(non_stopwords_corpus)
     most_common_words = counter.most_common(n=50)
 
+    mask = np.array(Image.open("./img/black_jaguar.jpg"))
     wordcloud = WordCloud(
         background_color="white",
+        mask=mask,
         random_state=ReportConfig.RANDOM_SEED,
         # max_words=50,
         width=1024,
         height=768,
+        contour_color="black",
+        contour_width=1,
     )
 
     fig, ax = plt.subplots(1, figsize=(10, 6))
@@ -810,18 +773,17 @@ def most_common_words_analysis():
         Embora a Nuvem de Palavras ofereça uma visão geral interessante das
         palavras mais utilizadas nas avaliações, ela pode não ser a melhor
         opção para destacar de forma clara e precisa a palavra mais frequente.
-        Para complementar essa análise, é mostrado o gráfico de barras que
-        apresenta as 10 palavras mais frequentemente utilizadas nas avaliações
-        analisadas.
+        Para complementar essa análise e oferecer uma visão mais quantitativa,
+        é apresentado um gráfico com as 10 palavras mais utilizadas nas
+        avaliações analisadas, junto como suas respectivas frequências.
 
-        Este gráfico segue os mesmos critérios da Nuvem de Palavras, garantindo que
-        as palavras selecionadas sejam relevantes e significativas. Com a
-        disposição em barras, é possível visualizar facilmente a frequência de
-        cada palavra, permitindo uma comparação direta entre elas.
+        Este gráfico segue os mesmos critérios da Nuvem de Palavras,
+        garantindo que as palavras selecionadas sejam relevantes e
+        significativas.
 """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
 
@@ -910,13 +872,13 @@ def ngram_analysis():
     possível entender melhor as percepções dos funcionários e os aspectos mais
     relevantes de suas experiências.
 
-    Essa análise mostra que as combinações de palavras mais
-    frequentes foram: `ambiente de trabalho`, `plano de carreira`,
-    `plano de saúde` e `oportunidade de crescimento`.
+    Ao analisar os Top 10 Trigramas mais frequentes, conclui-se que as
+    combinações de palavras mais frequentes foram: `ambiente de trabalho`,
+    `plano de carreira` e `plano de saúde`.
 """
     )
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     review_text = reviews_df["review_text"]
 
@@ -986,14 +948,6 @@ def conclusion():
 
     st.markdown(
         """
-    A análise de sentimento das avaliações no Glassdoor de 22 empresas de
-    Tecnologia em Cuiabá revelou que o Modelo desenvolvido demonstrou alta
-    precisão na classificação das categorias de sentimentos presentes nas
-    avaliações. Nos dados de teste, **o Modelo demonstrou bons resultados de
-    acurácia, apresentando 99% para a classe Neutro, 97% para a classe
-    Positivo e 98% para a classe Negativo**. Esses resultados evidenciam a
-    eficácia da metodologia aplicada.
-
     As **avaliações positivas** frequentemente mencionam temas como **ambiente
     de trabalho**, **plano de saúde** e **oportunidade de crescimento**,
     enquanto as **avaliações negativas** destacam preocupações com **plano de
@@ -1007,13 +961,6 @@ def conclusion():
     houve um grande aumento no número de avaliações entre 2020 e 2022, período
     da Pandemia de Covid-19, onde as empresas contrataram mais.
 
-    Essas percepções são fundamentais para as empresas, pois proporcionam uma
-    visão clara das áreas que precisam de melhorias e das que já estão
-    apresentando resultados positivos. Com base nessas informações, as
-    organizações podem desenvolver estratégias eficazes para aprimorar o
-    ambiente de trabalho, focar em benefícios que realmente importam para os
-    colaboradores e, assim, não apenas aumentar a retenção de talentos, mas
-    também atrair profissionais que buscam ambientes com melhores avaliações.
     **A reputação positiva, refletida nas avaliações, pode ser um diferencial
     decisivo na escolha de uma empresa por candidatos qualificados**,
     impactando diretamente o sucesso e a competitividade no mercado.
@@ -1053,23 +1000,10 @@ if __name__ == "__main__":
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-
-        # TODO:check where the "sentiment" column is used and if it is being
-        # used instead of "predicted_sentiment"
-
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(
+        reviews_df
+    )  # TODO: maybe this can be done in load_reviews_df
 
     introduction()
 

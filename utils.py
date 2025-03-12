@@ -4,10 +4,13 @@ from typing import List
 import nltk
 import numpy as np
 import pandas as pd
+import streamlit as st
 
 from report_config import ReportConfig
 
 nltk.download("stopwords")
+
+REVIEWS_DF_PATH = "./glassdoor_reviews_predicted.csv"
 
 MIN_REVIEWS = 42 / 2  # (reviews median) / 2
 
@@ -163,6 +166,25 @@ ROLE_GROUPS = {0: "Outros", 1: "Profissionais de TI", 2: "Funcionário confidenc
 TRANSLATION_TABLE_SPECIAL_CHARACTERS = str.maketrans("", "", punctuation)
 
 
+@st.cache_data
+def load_reviews_df() -> pd.DataFrame:
+    reviews_df = pd.read_csv(REVIEWS_DF_PATH)
+    reviews_df = create_role_group(reviews_df)
+
+    return reviews_df
+
+
+def set_companies_raking_to_session(reviews_df):
+    # Top Companies Reviews DF
+    if "top_positive_companies_df" not in st.session_state:
+        top_positive_companies_df, top_negative_companies_df = (
+            get_ranking_positive_negative_companies(reviews_df)
+        )
+
+        st.session_state["top_positive_companies_df"] = top_positive_companies_df
+        st.session_state["top_negative_companies_df"] = top_negative_companies_df
+
+
 def get_sentiment_key_from_value(value):
     key_list = list(ReportConfig.SENTIMENT_DICT.keys())
     val_list = list(ReportConfig.SENTIMENT_DICT.values())
@@ -223,25 +245,6 @@ def get_neutral_rating_companies(df: pd.DataFrame) -> list:
     return list(positive_equal_to_negative["company"].values)
 
 
-def create_predicted_sentiment_plot(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Creates a new column 'predicted_sentiment_plot' in the DataFrame based on the 'predicted_sentiment' column.
-
-    The function converts sentiments to be in the following order: Positive, Negative, Neutral.
-
-    Parameters:
-    df (pd.DataFrame): The input DataFrame containing the 'predicted_sentiment' column.
-
-    Returns:
-    pd.DataFrame: A DataFrame with an additional column 'predicted_sentiment_plot' with converted sentiments.
-    """
-
-    sentiment_mapping = {0: 3, 1: 1, 2: 2}
-    df["predicted_sentiment_plot"] = df["predicted_sentiment"].map(sentiment_mapping)
-
-    return df
-
-
 def categorize_role(role: str) -> int:
     """
     Categorizes the given role into a specific group.
@@ -287,23 +290,16 @@ def create_role_group(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_ranking_positive_negative_companies(df: pd.DataFrame) -> List[pd.DataFrame]:
     """
-    Calculate the ranking of companies based on the difference between positive and negative sentiment counts.
+    Calculate the ranking of companies based on the difference between
+    positive and negative sentiment counts.
 
     Parameters:
     - df (DataFrame): Input DataFrame containing sentiment analysis data.
 
     Returns:
-    - Tuple: Two DataFrames representing the top positive and top negative companies based on sentiment difference and review counts.
+    - Tuple: Two DataFrames representing the top positive and top negative
+    companies based on sentiment difference and review counts.
     """
-    df["predicted_sentiment_plot"] = np.select(
-        condlist=[
-            (df["predicted_sentiment"] == 0),
-            (df["predicted_sentiment"] == 1),
-            (df["predicted_sentiment"] == 2),
-        ],
-        choicelist=[3, 1, 2],
-    )
-
     reviews_count_df = df.groupby(["company"])["review_text"].count()
 
     reviews_count_df = reviews_count_df.reset_index()
@@ -319,49 +315,41 @@ def get_ranking_positive_negative_companies(df: pd.DataFrame) -> List[pd.DataFra
         how="left",
     )
 
-    predicted_sentiment_plot_by_company_df = (
-        df.groupby(["company", "predicted_sentiment_plot"])["review_text"]
+    sentiment_plot_by_company_df = (
+        df.groupby(["company", "sentiment_plot"])["review_text"]
         .count()
         .unstack(fill_value=0)
     )
 
-    predicted_sentiment_plot_by_company_df = (
-        predicted_sentiment_plot_by_company_df.reset_index()
-    )
+    sentiment_plot_by_company_df = sentiment_plot_by_company_df.reset_index()
 
-    predicted_sentiment_plot_by_company_df.columns = [
+    sentiment_plot_by_company_df.columns = [
         "company",
         "1positive",
         "2negative",
         "3neutral",
     ]
 
-    predicted_sentiment_plot_by_company_df["sentiment_diff"] = (
-        predicted_sentiment_plot_by_company_df["1positive"]
-        - predicted_sentiment_plot_by_company_df["2negative"]
+    sentiment_plot_by_company_df["sentiment_diff"] = (
+        sentiment_plot_by_company_df["1positive"]
+        - sentiment_plot_by_company_df["2negative"]
     )
 
-    predicted_sentiment_plot_by_company_df = (
-        predicted_sentiment_plot_by_company_df.sort_values(
-            by="sentiment_diff", ascending=False
-        ).reset_index()
+    sentiment_plot_by_company_df = sentiment_plot_by_company_df.sort_values(
+        by="sentiment_diff", ascending=False
+    ).reset_index()
+
+    sentiment_plot_by_company_df = sentiment_plot_by_company_df.drop(
+        labels="index", axis=1
     )
 
-    predicted_sentiment_plot_by_company_df = (
-        predicted_sentiment_plot_by_company_df.drop(labels="index", axis=1)
-    )
+    bad_rating_companies = get_bad_rating_companies(sentiment_plot_by_company_df)
 
-    bad_rating_companies = get_bad_rating_companies(
-        predicted_sentiment_plot_by_company_df
-    )
-
-    good_rating_companies = get_good_rating_companies(
-        predicted_sentiment_plot_by_company_df
-    )
+    good_rating_companies = get_good_rating_companies(sentiment_plot_by_company_df)
 
     reviews_30_plus_df = pd.merge(
         left=df,
-        right=predicted_sentiment_plot_by_company_df,
+        right=sentiment_plot_by_company_df,
         on="company",
         how="left",
     )
@@ -376,9 +364,9 @@ def get_ranking_positive_negative_companies(df: pd.DataFrame) -> List[pd.DataFra
 
     reviews_30_plus_df["sentiment_count"] = np.select(
         condlist=[
-            (reviews_30_plus_df["predicted_sentiment_plot"] == 1),  # Positive
-            (reviews_30_plus_df["predicted_sentiment_plot"] == 2),  # Negative
-            (reviews_30_plus_df["predicted_sentiment_plot"] == 3),  # Neutral
+            (reviews_30_plus_df["sentiment_plot"] == 1),  # Positive
+            (reviews_30_plus_df["sentiment_plot"] == 2),  # Negative
+            (reviews_30_plus_df["sentiment_plot"] == 3),  # Neutral
         ],
         choicelist=[
             reviews_30_plus_df["1positive"],

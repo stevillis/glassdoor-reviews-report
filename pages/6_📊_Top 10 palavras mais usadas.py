@@ -11,15 +11,16 @@ from report_config import ReportConfig
 from utils import (
     STOPWORDS,
     TRANSLATION_TABLE_SPECIAL_CHARACTERS,
-    get_ranking_positive_negative_companies,
     get_sentiment_key_from_value,
+    load_reviews_df,
+    set_companies_raking_to_session,
 )
 
 
 def top_10_most_common_words_analysis():
     st.subheader("Top 10 palavras mais frequentes por empresa")
 
-    reviews_df = st.session_state.get("reviews_df")
+    reviews_df = load_reviews_df()
 
     col1, col2 = st.columns(2)
     with col1:
@@ -47,7 +48,7 @@ def top_10_most_common_words_analysis():
 
     if sentiment != "Todos":
         sentiment_key = get_sentiment_key_from_value(sentiment)
-        filtered_df = filtered_df[filtered_df["predicted_sentiment"] == sentiment_key]
+        filtered_df = filtered_df[filtered_df["sentiment"] == sentiment_key]
 
     review_text = filtered_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
@@ -128,18 +129,7 @@ if __name__ == "__main__":
         "Análise de sentimento em avaliações no Glassdoor: Um estudo sobre empresas de Tecnologia da Informação em Cuiabá"
     )
 
-    if "reviews_df" not in st.session_state:
-        # Reviews DF
-        reviews_df = pd.read_csv("./glassdoor_reviews_predicted.csv")
-        st.session_state["reviews_df"] = reviews_df
-
-        # Top Companies Reviews DF
-        if "top_positive_companies_df" not in st.session_state:
-            top_positive_companies_df, top_negative_companies_df = (
-                get_ranking_positive_negative_companies(reviews_df)
-            )
-
-            st.session_state["top_positive_companies_df"] = top_positive_companies_df
-            st.session_state["top_negative_companies_df"] = top_negative_companies_df
+    reviews_df = load_reviews_df()
+    set_companies_raking_to_session(reviews_df)
 
     top_10_most_common_words_analysis()
