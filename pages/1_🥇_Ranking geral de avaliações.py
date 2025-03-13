@@ -16,15 +16,15 @@ from utils import (
 def general_reviews_ranking():
     st.markdown(
         """
-    Este gráfico mostra a quantidade de avaliações e o sentimento
-    associado para cada empresa, ordenadas pela diferença entre avaliações
-    positivas e negativas. Essa visualização das predições do modelo mostra
-    que:
-
-    - 18 das 22 empresas analisadas têm mais avaliações positivas do que
+    Uma hipótese levantada antes de analisar as avaliações de todas as
+    empresas foi a de que a maioria delas teria mais avaliações negativas do
+    que positivas, considerando experiência própria e relatada. Porém, o
+    gráfico a seguir mostra o seguinte cenário:
+    - **18 das 22 empresas** analisadas têm mais avaliações positivas do que
     negativas.
-    - 2 empresas apresentam um número maior de avaliações negativas.
-    - 2 empresas têm um número igual de avaliações positivas e negativas.
+    - **3 empresas** têm a mesma quantidade de avaliações positivas e
+    negativas.
+    - **1 empresa** apresenta mais avaliações negativas do que positivas.
 """
     )
 
@@ -64,8 +64,6 @@ def general_reviews_ranking():
     )
 
     fig, ax = plt.subplots(1, figsize=(8, 10))
-
-    # Plot
 
     sorted_companies_df = sentiment_plot_by_company_df_reset.sort_values(
         by="sentiment_diff", ascending=False
@@ -122,7 +120,7 @@ def general_reviews_ranking():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Ranking geral de avaliações",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )

@@ -20,6 +20,14 @@ from utils import (
 def top_10_most_common_words_analysis():
     st.subheader("Top 10 palavras mais frequentes por empresa")
 
+    st.write(
+        """
+    Essa visualização permite uma análise interativa das palavras mais
+    frequentes encontradas nas avaliações de forma quantitativa. Ela permite
+    que você personalize a análise filtrando por empresa e tipo de sentimento.
+"""
+    )
+
     reviews_df = load_reviews_df()
 
     col1, col2 = st.columns(2)
@@ -36,7 +44,7 @@ def top_10_most_common_words_analysis():
 
     with col2:
         sentiment = st.selectbox(
-            label="Sentimento das Avaliações",
+            label="Sentimento",
             options=(
                 "Todos",
                 "Positivo",
@@ -98,7 +106,7 @@ def top_10_most_common_words_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 palavras mais frequentes por empresa",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )

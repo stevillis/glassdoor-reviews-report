@@ -193,6 +193,21 @@ def get_sentiment_key_from_value(value):
     return key_list[position]
 
 
+def get_role_group_keys_from_values(values):
+    key_list = list(ROLE_GROUPS.keys())
+    val_list = list(ROLE_GROUPS.values())
+
+    print(values)
+    print(key_list)
+    print(val_list)
+    role_group_keys = []
+    for value in values:
+        position = val_list.index(value)
+        role_group_keys.append(key_list[position])
+
+    return role_group_keys
+
+
 def get_good_rating_companies(df: pd.DataFrame) -> list:
     """
     Get companies with more positive ratings than negative ratings.

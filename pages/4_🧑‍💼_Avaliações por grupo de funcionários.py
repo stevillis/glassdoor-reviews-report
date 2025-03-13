@@ -7,7 +7,12 @@ import streamlit as st
 
 from app_messages import AppMessages
 from report_config import ReportConfig
-from utils import ROLE_GROUPS, load_reviews_df, set_companies_raking_to_session
+from utils import (
+    ROLE_GROUPS,
+    get_role_group_keys_from_values,
+    load_reviews_df,
+    set_companies_raking_to_session,
+)
 
 
 def employee_role_analysis():
@@ -16,7 +21,7 @@ def employee_role_analysis():
     st.markdown(
         """
         Esta análise mostra avaliações por grupo de funcionários, conforme a
-        empresa selecionada. **Apenas dados preditos pelo modelo**.
+        empresa selecionada.
     """
     )
 
@@ -26,7 +31,7 @@ def employee_role_analysis():
     company = st.selectbox(
         label="Empresa",
         options=company_options,
-        key="role_group_input",
+        key="company_input",
         index=0,
     )
 
@@ -87,7 +92,7 @@ def employee_role_analysis():
             )
 
         ax.set_title(
-            "Distribuição de sentimentos por grupo de funcionários",
+            label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.1,
         )
@@ -125,10 +130,6 @@ def employee_role_analysis():
         )
 
         st.pyplot(fig)
-
-        st.write("Avaliações filtradas")
-        filtered_print_df = filtered_df.drop(labels="sentiment_plot", axis=1)
-        st.dataframe(filtered_print_df)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,

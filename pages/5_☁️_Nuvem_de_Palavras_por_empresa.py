@@ -46,21 +46,6 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
 
     st.pyplot(fig)
 
-    # counter = Counter(non_stopwords_corpus)
-    # most_common_words = counter.most_common(n=max_words)
-
-    # most_common_words_formatted = "\n".join(
-    #     [f"{word}: {count}" for word, count in most_common_words[:10]]
-    # )
-
-    # st.markdown(
-    #     f"""
-    # Top 10 palavras mais presentes nas avaliações:
-
-    # {most_common_words_formatted}
-    #     """
-    # )
-
 
 def wordcloud_by_company():
     reviews_df = load_reviews_df()
@@ -80,7 +65,7 @@ def wordcloud_by_company():
 
     with col2:
         sentiment = st.selectbox(
-            label="Sentimento das Avaliações",
+            label="Sentimento",
             options=(
                 "Todos",
                 "Positivo",
@@ -110,7 +95,7 @@ def wordcloud_by_company():
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="Word Cloud",
+        page_title="Nuvem de Palavras por empresa",
         page_icon=":cloud:",
     )
 
@@ -127,12 +112,15 @@ if __name__ == "__main__":
     """
     )
 
-    st.subheader("Word Cloud de avaliações por empresa")
+    st.subheader("Nuvem de Palavras por empresa")
 
     st.markdown(
         """
-        A Word Cloud destaca as palavras mais frequentemente associadas a cada
-        tipo de sentimento nas avaliações.
+        Essa visualização permite uma análise interativa das palavras mais 
+        frequentes encontradas nas avaliações. Ela permite que você 
+        personalize a análise filtrando por empresa, tipo de sentimento e 
+        ajustando a quantidade de palavras mais frequentes que deseja 
+        visualizar.
 """
     )
 

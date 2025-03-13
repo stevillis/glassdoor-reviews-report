@@ -19,7 +19,7 @@ def data_extraction():
         páginas, como **texto da avaliação**, **cargo do avaliador**,
         **quantidade de estrelas da avaliação**, etc. Ao final deste processo,
         **2532 avaliações** com data entre **05 de outubro de
-        2014 e 16 de março de 2024** foram extraídas
+        2014 e 16 de março de 2024** foram extraídas.
 """
     )
 
@@ -43,19 +43,21 @@ def data_preparation():
     pois alguns casos não se enquadravam nem como Positivos, nem como
     Negativos. Assim, decidiu-se pela inclusão da classe **Neutra**.
 
-    O dataset original foi, então, dividido em dois conjuntos de 1266
-    avaliações: um contendo avaliações positivas e outro com avaliações
-    negativas. O objetivo era aplicar um modelo pré-treinado de classificação
-    de sentimentos para identificar as avaliações neutras. Para isso,
-    utilizou-se o modelo pré-treinado [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
+    O dataset original foi então dividido em dois conjuntos de 1266
+    avaliações: um composto somente por avaliações positivas e outro com
+    apenas avaliações negativas. Essa divisão teve como objetivo utilizar um
+    modelo pré-treinado de classificação de sentimentos para identificar as
+    avaliações neutras.
+
+    Para isso, utilizou-se o modelo pré-treinado [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned),
     que é capaz de classificar sentimentos em textos em diversos idiomas,
     incluindo o português.
 
     Os resultados obtidos após a aplicação do modelo a cada um dos datasets
-    mostraram que no conjunto de avaliações positivas, **650** foram
-    classificadas de forma diferente da classificação original. No caso do
-    conjunto de avaliações negativas, **821** receberam uma classificação
-    distinta da original.
+    mostraram que no conjunto de avaliações positivas, **650 foram
+    classificadas de forma diferente da classificação original**. No caso do
+    conjunto de avaliações negativas, **821 receberam uma classificação
+    distinta da original**.
 
     ##### Anotação Manual de Dados
     Para corrigir as predições não positivas e não negativas, foi criada
@@ -72,11 +74,11 @@ def data_preparation():
     <br/>
 
     A correção manual das 650 avaliações não positivas preditas pelo modelo
-    revelou que 33 avaliações eram neutras e 15 eram negativas. Já na correção
-    das 821 avaliações não negativas inferidas, foram classificadas 209
-    avaliações como neutras, 49 como positivas e 25 como negativas. Após a
-    correção manual das predições, estas foram combinadas ao conjunto de dados
-    original.
+    revelou que **33 avaliações eram neutras e 15 eram negativas**. Já na
+    correção das 821 avaliações não negativas inferidas, foram classificadas
+    **209 avaliações como neutras, 49 como positivas e 25 como negativas**.
+    Após a correção manual das predições, estas foram combinadas ao conjunto
+    de dados original.
 
     O gráfico a seguir mostra a distribuição de sentimentos das avaliações após
     a anotação dos dados.
@@ -136,6 +138,40 @@ def data_preparation():
     plt.tight_layout()
     st.pyplot(fig)
 
+    st.write(
+        """
+    Ao final da anotação, obteve-se um dataset com as informações necessárias
+    para treinar um Modelo para classificar o sentimento das avaliações. As 5
+    primeiras linhas do dataset obtido são apresentadas a seguir:
+    """
+    )
+
+    reviews_df = load_reviews_df()
+    reviews_df.drop(
+        labels=[
+            "sentiment_label",
+            "sentiment_plot",
+            "role_group",
+        ],
+        axis=1,
+        inplace=True,
+    )
+
+    st.dataframe(reviews_df.head())
+
+    st.write(
+        """
+    Todas as colunas, exceto `annotated` e `predicted_sentiment` foram
+    extraídas do Glassdoor.
+    - `predicted_sentiment`: representa o sentimento inferido pelo modelo
+    pré-treinado [citizenlab/twitter-xlm-roberta-base-sentiment-finetunned](https://huggingface.co/citizenlab/twitter-xlm-roberta-base-sentiment-finetunned).
+
+    - `annotated`: indica que, durante a anotação manual, houve divergência
+    entre a classificação do modelo pré-treinado e o sentimento original, e
+    que este foi corrigido.
+    """
+    )
+
 
 def model_development():
     st.subheader("Desenvolvimento do Modelo")
@@ -145,8 +181,8 @@ def model_development():
     ##### Tratamento do desequilíbrio de classes
 
     Ao analisar o conjunto de dados anotados, observou-se um desequilíbrio
-    significativo entre as classes de sentimento. Avaliações classificadas
-    como Neutro representavam quase 5 vezes menos do que as demais classes.
+    significativo entre as classes de sentimento. **Avaliações classificadas
+    como Neutro representavam quase 5 vezes menos do que as demais classes**.
     Para lidar com esse problema, foi aplicada a técnica de [Oversampling](https://www.escoladnc.com.br/blog/entendendo-oversampling-tecnicas-e-metodos-para-balanceamento-de-dados/#:~:text=O%20que%20%C3%A9%20Oversampling%3F,cada%20classe%20durante%20o%20treinamento.),
     na classe Neutro, **replicando aleatoriamente 3 vezes o número de amostras**
     dessa classe durante o treinamento. Isso ajudou a balancear a distribuição
@@ -155,9 +191,9 @@ def model_development():
 
     ##### Arquitetura do Modelo
 
-    Para identificar a melhor configuração na classificação das três
-    classes de sentimento (Neutro, Positivo e Negativo), diversas
-    abordagens foram testadas. As configurações incluíram:
+    A fim de identificar a melhor configuração para o Modelo na classificação
+    das três classes de sentimento (Neutro, Positivo e Negativo), foram
+    testadas algumas combinações de tipos de treinamento:
     - Modelo sem congelamento das camadas do BERTimbau.
     - Modelo com congelamento das camadas do BERTimbau.
     - Oversampling sem congelamento do BERTimbau.
@@ -168,7 +204,7 @@ def model_development():
     em todas as classes foi a do modelo com **Oversampling e congelamento das
     camadas do BERTimbau**.
 
-    A arquitetura do modelo consiste em:
+    A arquitetura desse Modelo é composta por:
     - Camada de Entrada: Conectada ao BERTimbau com suas camadas
     congeladas.
     - Camadas Ocultas:

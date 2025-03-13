@@ -15,9 +15,8 @@ def rating_star_analysis():
 
     st.markdown(
         """
-        Esta análise mostra a relação entre as avaliações e o número de
-        estrelas atribuídas, conforme a empresa selecionada. **Apenas dados
-        preditos pelo modelo**.
+        Esse gráfico mostra a relação entre as avaliações e o número de
+        estrelas atribuídas nas avaliações de acordo com a empresa selecionada.
     """
     )
 
@@ -27,7 +26,7 @@ def rating_star_analysis():
     company = st.selectbox(
         label="Empresa",
         options=company_options,
-        key="rating_star_company_input2",
+        key="rating_star_company_input",
         index=0,
     )
 
@@ -85,7 +84,7 @@ def rating_star_analysis():
             )
 
         ax.set_title(
-            "Avaliações por quantidade de estrelas",
+            label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.1,
         )
@@ -123,10 +122,6 @@ def rating_star_analysis():
         )
 
         st.pyplot(fig)
-
-        st.write("Avaliações filtradas")
-        filtered_print_df = filtered_df.drop(labels="sentiment_plot", axis=1)
-        st.dataframe(filtered_print_df)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,

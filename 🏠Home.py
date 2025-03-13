@@ -114,7 +114,7 @@ def positive_reviews_ranking():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Ranking de avaliações positivas por empresa",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
@@ -202,7 +202,7 @@ def negative_reviews_ranking():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Ranking de avaliações negativas por empresa",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
@@ -384,7 +384,7 @@ def sentiment_reviews_along_time():
     ax.set_ylabel("Quantidade de avaliações")
 
     ax.set_title(
-        "Sentimento das avaliações ao longo do tempo",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
@@ -502,7 +502,7 @@ def rating_star_analysis():
             )
 
         ax.set_title(
-            "Distribuição de sentimentos por quantidade de estrelas",
+            label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.1,
         )
@@ -639,7 +639,7 @@ def employee_role_analysis():
             )
 
         ax.set_title(
-            "Distribuição de sentimentos por grupo de funcionários",
+            label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.1,
         )
@@ -759,7 +759,7 @@ def wordcloud_analysis():
         """
         A Word Cloud de avaliações por sentimento e por empresa pode ser
         visualizada no menu
-        <a target="_self" href="./Word_Cloud">☁️Word Cloud</a>.
+        <a target="_self" href="./Nuvem_de_Palavras_por_empresa">☁️Nuvem de Palavras por empresa</a>.
     """,
         unsafe_allow_html=True,
     )
@@ -832,7 +832,7 @@ def most_common_words_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 palavras mais frequentes nas avaliações",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )
@@ -923,7 +923,7 @@ def ngram_analysis():
     ax.set_ylabel("")
 
     ax.set_title(
-        "Top 10 N-Grams mais frequentes nas avaliações",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.0,
     )

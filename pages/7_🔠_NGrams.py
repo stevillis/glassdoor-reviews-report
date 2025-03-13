@@ -31,7 +31,7 @@ def n_gram_by_company():
 
     with col2:
         sentiment = st.selectbox(
-            label="Sentimento das Avaliações",
+            label="Sentimento",
             options=("Todos", "Positivo", "Negativo", "Neutro"),
             key="sentiment_input",
         )
@@ -42,7 +42,7 @@ def n_gram_by_company():
 
     with col3:
         n_gram_input = st.number_input(
-            label="Quantidade de palavras",
+            label="Tamanho do N-Gram",
             step=1,
             value=3,
             min_value=2,
@@ -108,7 +108,7 @@ def n_gram_by_company():
         ax.set_ylabel("")
 
         ax.set_title(
-            "Top 10 N-Grams por empresa",
+            label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.0,
         )
@@ -125,9 +125,6 @@ def n_gram_by_company():
         #     dpi=300,
         #     bbox_inches="tight",
         # )
-
-        st.write("Avaliações filtradas")
-        st.dataframe(filtered_df)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -156,24 +153,21 @@ if __name__ == "__main__":
 
     st.markdown(
         """
-    A análise de N-Grams nas avaliações positivas revela os tópicos mais
-    recorrentes, que incluem:
+    A análise de N-Grams nas avaliações positivas revela que entre os tópicos
+    mais frequentes estão:
     - Ambiente de trabalho
     - Plano de saúde
     - Oportunidade de crescimento
 
-    Por outro lado, os N-Grams nas avaliações negativas destacam os seguintes
+    Por outro lado, os N-Grams de avaliações negativas destacam os seguintes
     temas:
     - Plano de carreira
     - Plano de saúde
     - Salário abaixo do mercado
 
-    As análises de N-Grams nas avaliações neutras indicam que os avaliadores
-    não conseguiram identificar aspectos negativos a serem destacados na seção
-    "Contras" do Glassdoor, mesmo quando obrigados a fornecer uma resposta.
-    Isso sugere que, para muitos colaboradores, a experiência de trabalho é
-    suficientemente positiva, resultando em uma falta de críticas
-    significativas.
+    Considerando as avaliações neutras, os N-Grams estão associados ao fato de
+    que os avaliadores não conseguiram identificar aspectos negativos a serem
+    destacados.
 """
     )
 

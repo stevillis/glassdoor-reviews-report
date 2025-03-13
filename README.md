@@ -35,7 +35,7 @@ Examines how reviews correlate with star ratings for a chosen company.
 ### [🧑‍💼 Avaliações por grupo de funcionários](./pages/4_🧑‍💼_Avaliações%20por%20grupo%20de%20funcionários.py)
 Shows reviews categorized by different employee groups for a specific company.
 
-### [☁️ Word Cloud](./pages/5_☁️_Word%20Cloud.py)
+### [☁️ Word Cloud](./pages/5_☁️_Nuvem%20de%20palavras%20por%20empresa.py)
 Shows Word Cloud by company.
 
 ### [📊 Top 10 palavras mais usadas](./pages/6_📊_Top%2010%20palavras%20mais%20usadas.py)

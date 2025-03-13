@@ -28,9 +28,12 @@ if __name__ == "__main__":
 
     st.markdown(
         """
-    O gráfico apresenta uma análise de sentimentos das avaliações entre 05 de outubro de 2014 e 16 de março de 2024.
-    Além disso, permite a filtragem das avaliações por empresa, proporcionando uma visão mais clara e específica sobre
-    a percepção dos funcionários em relação a cada organização.
+    Esse gráfico apresenta uma análise de sentimentos das **avaliações entre 05
+    de outubro de 2014 e 16 de março de 2024**, agrupadas por ano. Ao filtrar
+    as avaliações por empresa, pode-se ter uma visão do comportamento das
+    avaliações ao longo do tempo. Isso é importante para constatar se empresas
+    anteriormente mal avaliadas adotaram alguma estratégia para melhorar suas
+    avaliações.
 """
     )
 
@@ -120,7 +123,7 @@ if __name__ == "__main__":
     # ax.spines["bottom"].set_visible(False)
 
     ax.set_title(
-        "Avaliações ao longo do tempo",
+        label="",
         fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
         y=1.1,
     )
