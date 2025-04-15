@@ -174,7 +174,7 @@ def data_preparation():
 
 
 def model_development():
-    st.subheader("Desenvolvimento do Modelo")
+    st.subheader("Desenvolvimento dos Modelos")
 
     st.markdown(
         """
@@ -189,57 +189,86 @@ def model_development():
     das classes e melhorar o desempenho do modelo na identificação correta de
     avaliações neutras.
 
-    ##### Arquitetura do Modelo
+    ##### Arquitetura
 
-    A fim de identificar a melhor configuração para o Modelo na classificação
-    das três classes de sentimento (Neutro, Positivo e Negativo), foram
-    testadas algumas combinações de tipos de treinamento:
-    - Modelo sem congelamento das camadas do BERTimbau.
-    - Modelo com congelamento das camadas do BERTimbau.
-    - Oversampling sem congelamento do BERTimbau.
-    - Oversampling com congelamento do BERTimbau.
+    Para identificar a melhor arquitetura de modelo que alcançasse a maior
+    média macro F1 nas três classes de sentimento (Positivo, Negativo e Neutro),
+    foram treinados três modelos com diferentes configurações:
+    - **Modelo A**: Este modelo possui três camadas ocultas com 300, 100 e 50
+    neurônios, respectivamente, sem o uso de dropout.
+    - **Modelo B**: Similar ao Modelo A, mas com dropout de 20% aplicado nas
+    camadas ocultas.
+    - **Modelo C**: Este modelo possui apenas uma camada oculta com 50
+    neurônios, sem o uso de dropout.
 
-    Dentre todas as configurações testadas, a combinação que apresentou
-    melhor [F1-Score](https://pt.wikipedia.org/wiki/Precis%C3%A3o_e_revoca%C3%A7%C3%A3o#F-measure)
-    em todas as classes foi a do modelo com **Oversampling e congelamento das
-    camadas do BERTimbau**.
+    Cada um dos modelos tem a seguinte arquitetura:
+    - **Camada de entrada**: Conectada ao BERTimbau.
+    - **Camadas ocultas**: Varia conforme o modelo.
+    - **Camada de saída**: A última camada oculta é conectada a uma função
+    Softmax, que classifica a entrada em uma das três classes de sentimento.
 
-    A arquitetura desse Modelo é composta por:
-    - Camada de Entrada: Conectada ao BERTimbau com suas camadas
-    congeladas.
-    - Camadas Ocultas:
-        - Primeira camada oculta com 300 neurônios.
-        - Segunda camada oculta com 100 neurônios.
-        - Terceira camada oculta com 50 neurônios.
-
-    A última camada oculta é conectada a uma função Softmax, que
-    classifica a entrada em uma das três classes de sentimento: Neutro,
-    Positivo ou Negativo.
+    A figura a seguir mostra a Arquitetura do **Modelo A** como exemplo.
 
     ![Arquitetura do modelo](https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/arquitetura_do_modelo.png?raw=true "Arquitetura do Modelo")
 
-    ##### Treinamento Modelo
+    ##### Treinamento
 
-    O modelo foi treinado utilizando 80% dos dados, enquanto os 20% restantes
-    foram reservados para testes. Os parâmetros de treinamento foram os
-    seguintes:
-    - **Épocas**: 5
-    - **Batch Size**: 16
-    - **Learning Ratio**: $2\\times 10^{-5}$
-    - **Loss Function**: CrossEntropyLoss
-    - **Otimizador**: Adam
+    Os modelos A, B e C foram treinados utilizando as seguintes configurações:
 
-    O gráfico de perda nos dados de treino e de teste mostram que na
-    segunda época o modelo se saiu melhor nos dados de teste, mas no
-    restante das épocas, essa perda aumentou levemente. Ao analisar
-    a evolução de perda nos dados de treino, é possível observar que
-    o Modelo praticamente decorou os dados de treino.
+    - **Divisão dos dados**: 80% para treino e 20% para teste.
+    - **Estratégias de treinamento**:
+    - Sem oversampling:
+        - Com congelamento das camadas do BERTimbau.
+        - Sem congelamento das camadas do BERTimbau.
+    - Com oversampling:
+        - Com congelamento das camadas do BERTimbau.
+        - Sem congelamento das camadas do BERTimbau.
+    - **Parâmetros de treinamento**:
+    - Número de épocas: 5
+    - Tamanho do batch: 16
+    - Taxa de aprendizado: $2\\times 10^{-5}$
+    - Função de perda: CrossEntropyLoss
+    - Otimizador: Adam
 
-    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss.png?raw=true" alt="Loss de treinamento e teste ao longo das épocas" width="600"/>
+    **Seleção dos modelos com melhor médica macro**
 
-    ##### Métricas do Modelo
+    Após o treinamento em todas as configurações mencionadas, foram
+    selecionados os modelos que apresentaram a maior média macro F1 nos
+    dados de teste:
 
-    As métricas do modelo após as 5 épocas de treinamento foram:
+    - **Modelo A**: com oversampling e congelamento das camadas do BERTimbau.
+    - **Modelo B**: com oversampling e congelamento das camadas do BERTimbau.
+    - **Modelo C**: com oversampling e sem congelamento das camadas do
+    BERTimbau.
+
+    O gráfico a seguir mostra a evolução de erro (loss) de treino e teste ao
+    longo das 5 épocas para os três modelos selecionados. Esse gráfico mostra
+    que o erro de treino diminuiu consistentemente, indicando que os modelos
+    aprenderam os padrões dos dados. Os erros de teste, embora ligeiramente
+    maiores que os de treino, indicam que os modelos conseguiram generalizar o
+    aprendizado.
+
+    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss_models.png?raw=true" alt="Loss de treinamento e teste ao longo das épocas" width="600"/>
+
+    ##### Métricas dos Modelos nos dados de teste
+
+    **Matriz de Confusão**
+
+    A [Matriz de Confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o#:~:text=Em%20an%C3%A1lise%20preditiva%2C%20a%20matriz,verdadeiros%20positivos%20e%20verdadeiros%20negativos%20.)
+    de cada modelo mostra que o Modelo A foi o que obteve melhor desempenho:
+    - Das 197 avaliações Neutras, o modelo errou 4.
+    - Das 256 avaliações Positivas, o modelo errou 5.
+    - Das 199 avaliações Negativas, o modelo errou 13.
+
+    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrices.png?raw=true" alt="Matriz de Confusão" width="600"/>
+
+    **Métricas**
+    Como mostrado a seguir, o Modelo A foi o que obteve melhor desempenho,
+    alcançando 0.97 de acurácia, enquanto os modelos B e C tiveram desempenho
+    similar, alcançando 0.96 de acurácia.
+
+    *Modelo A*
+
     |              | precision | recall | f1-score | support |
     | ------------ | --------- | ------ | -------- | ------- |
     | Neutro       | 0.97      | 0.98   | 0.98     | 197     |
@@ -251,11 +280,65 @@ def model_development():
 
     <br/>
 
-    A [Matriz de Confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o#:~:text=Em%20an%C3%A1lise%20preditiva%2C%20a%20matriz,verdadeiros%20positivos%20e%20verdadeiros%20negativos%20.)
-    das predições do Modelo nos dados de teste após as 5 épocas é mostrada a
-    seguir:
+    *Modelo B*
 
-    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrix.png?raw=true" alt="Matriz de Confusão" width="600"/>
+    |              | precision | recall | f1-score | support |
+    | ------------ | --------- | ------ | -------- | ------- |
+    | Neutro       | 0.95      | 0.98   | 0.96     | 197     |
+    | Positivo     | 0.95      | 0.95   | 0.95     | 256     |
+    | Negativo     | 0.97      | 0.93   | 0.95     | 199     |
+    | accuracy     |           |        | 0.96     | 652     |
+    | macro avg    | 0.96      | 0.96   | 0.96     | 652     |
+    | weighted avg | 0.96      | 0.96   | 0.96     | 652     |
+
+    <br/>
+
+    *Modelo C*
+
+    |              | precision | recall | f1-score | support |
+    | ------------ | --------- | ------ | -------- | ------- |
+    | Neutro       | 0.96      | 0.98   | 0.97     | 197     |
+    | Positivo     | 0.96      | 0.95   | 0.95     | 256     |
+    | Negativo     | 0.95      | 0.96   | 0.95     | 199     |
+    | accuracy     |           |        | 0.96     | 652     |
+    | macro avg    | 0.96      | 0.96   | 0.96     | 652     |
+    | weighted avg | 0.96      | 0.96   | 0.96     | 652     |
+
+    <br/>
+
+    ##### Métricas dos modelos nos dados de validação
+
+    Um conjunto de dados para validação foi elaborado com avaliações
+    totalmente anotadas manualmente, selecionando aleatoriamente 246
+    avaliações das empresas *TOTVS* e *Sankhya Gestão de Negócios*,
+    distribuídas igualmente em 82 avaliações para cada classe de sentimento.
+
+    Os modelos A, B e C foram aplicados a esse conjunto de validação para
+    comparar seu desempenho com o do modelo
+    citizenlab/Twitter-XLM-RoBERTa-base-sentiment-finetuned, utilizado para
+    auxiliar na anotação de avaliações neutras e denominado aqui como Modelo X.
+
+    Conforme ilustrado no gráfico a seguir, todos os modelos treinados
+    superaram o desempenho do Modelo X, o que era esperado, uma vez que
+    [estudos](https://mapmeld.medium.com/a-whole-world-of-bert-f20d6bd47b2f#8a7b)
+    indicam que modelos BERT treinados em uma língua específica
+    apresentam melhor performance do que modelos multilíngues em algumas
+    tarefas de NLP. Além disso, observa-se que o Modelo C obteve o segundo
+    melhor desempenho nos dados de validação, mesmo utilizando apenas uma
+    camada oculta com 50 neurônios.
+    Isso evidencia que o uso do BERTimbau como base para análise de
+    sentimentos é eficiente, dispensando a necessidade de camadas ocultas
+    volumosas.
+
+
+    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/models_performance_comparison.png?raw=true"
+    alt="Performance dos modelos nos dados de validação"
+    style="background-color: white;"
+    width="600"
+    />
+
+    <br/>
+
     """,
         unsafe_allow_html=True,
     )
