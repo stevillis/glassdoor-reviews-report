@@ -247,9 +247,17 @@ def model_development():
     aprenderam os padrões dos dados. Os erros de teste, embora ligeiramente
     maiores que os de treino, indicam que os modelos conseguiram generalizar o
     aprendizado.
+    """,
+        unsafe_allow_html=True,
+    )
 
-    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss_models.png?raw=true" alt="Loss de treinamento e teste ao longo das épocas" width="600"/>
+    st.image(
+        image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/train_and_test_loss_models.png?raw=true",
+        caption="Loss de treinamento e teste ao longo das épocas",
+    )
 
+    st.write(
+        """
     ##### Métricas dos Modelos nos dados de teste
 
     **Matriz de Confusão**
@@ -259,10 +267,19 @@ def model_development():
     - Das 197 avaliações Neutras, o modelo errou 4.
     - Das 256 avaliações Positivas, o modelo errou 5.
     - Das 199 avaliações Negativas, o modelo errou 13.
+    """,
+        unsafe_allow_html=True,
+    )
 
-    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrices.png?raw=true" alt="Matriz de Confusão" width="600"/>
+    st.image(
+        image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/confusion_matrices.png?raw=true",
+        caption="Matriz de Confusão de cada modelo",
+    )
 
+    st.write(
+        """
     **Métricas**
+
     Como mostrado a seguir, o Modelo A foi o que obteve melhor desempenho,
     alcançando 0.97 de acurácia, enquanto os modelos B e C tiveram desempenho
     similar, alcançando 0.96 de acurácia.
@@ -329,18 +346,13 @@ def model_development():
     Isso evidencia que o uso do BERTimbau como base para análise de
     sentimentos é eficiente, dispensando a necessidade de camadas ocultas
     volumosas.
-
-
-    <img src="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/models_performance_comparison.png?raw=true"
-    alt="Performance dos modelos nos dados de validação"
-    style="background-color: white;"
-    width="600"
-    />
-
-    <br/>
-
     """,
         unsafe_allow_html=True,
+    )
+
+    st.image(
+        image="https://github.com/stevillis/glassdoor-reviews-report/blob/master/img/models_performance_comparison.png?raw=true",
+        caption="Performance dos modelos nos dados de validação",
     )
 
 
