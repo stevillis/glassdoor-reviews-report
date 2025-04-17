@@ -34,22 +34,22 @@ class ReportConfig:
             }
 
             /* Positive Metrics*/
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2),
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2) p
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2),
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2) p
              {
                 color: #2ca02c !important;
             }
 
             /* Negative Metrics*/
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3),
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3) p
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3),
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3) p
             {
                 color: #ff7f0e !important;
             }
 
             /* Neutral Metrics*/
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4),
-            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4) p
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4),
+            [data-testid="stExpander"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4) p
             {
                 color: #1f77b4 !important;
             }
