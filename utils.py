@@ -5,6 +5,7 @@ import nltk
 import numpy as np
 import pandas as pd
 import streamlit as st
+from sklearn.feature_extraction.text import CountVectorizer
 
 from report_config import ReportConfig
 
@@ -164,6 +165,33 @@ ROLE_GROUPS = {0: "Outros", 1: "Profissionais de TI", 2: "Funcionário confidenc
 
 # Translation table for replacing any special character from a word.
 TRANSLATION_TABLE_SPECIAL_CHARACTERS = str.maketrans("", "", punctuation)
+
+
+def get_top_ngrams(texts, ngram_range=(3, 3), top_n=10):
+    """
+    Returns the top_n most frequent ngrams from a sequence of texts.
+
+    Args:
+        texts (Iterable[str]): The input texts.
+        ngram_range (tuple): The ngram range (min_n, max_n) for CountVectorizer.
+        top_n (int): The number of top ngrams to return.
+
+    Returns:
+        List[Tuple[str, int]]: List of (ngram, count) sorted by count descending.
+    """
+    if len(texts) == 0:
+        return []
+
+    vec = CountVectorizer(ngram_range=ngram_range, stop_words=None)
+    bag_of_words = vec.fit_transform(texts)
+    sum_words = bag_of_words.sum(axis=0)
+
+    words_freq = [
+        (word, int(sum_words[0, idx])) for word, idx in vec.vocabulary_.items()
+    ]
+    words_freq = sorted(words_freq, key=lambda x: x[1], reverse=True)
+
+    return words_freq[:top_n]
 
 
 @st.cache_data

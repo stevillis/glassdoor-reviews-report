@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from sklearn.feature_extraction.text import CountVectorizer
 
 from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
     get_sentiment_key_from_value,
+    get_top_ngrams,
     load_reviews_df,
     set_companies_raking_to_session,
 )
@@ -64,18 +64,10 @@ def n_gram_by_company():
 
     if len(filtered_df) > 0:
         review_text = filtered_df["review_text"]
-
-        vec = CountVectorizer(ngram_range=(n_gram_input, n_gram_input)).fit(review_text)
-        bag_of_words = vec.transform(review_text)
-        sum_words = bag_of_words.sum(axis=0)
-
-        words_freq = [
-            (word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()
-        ]
-        words_freq = sorted(words_freq, key=lambda x: x[1], reverse=True)
-
-        top_n_grams = words_freq[:10]
-        x, y = map(list, zip(*top_n_grams))
+        ngrams = get_top_ngrams(
+            review_text, ngram_range=(n_gram_input, n_gram_input), top_n=10
+        )
+        x, y = map(list, zip(*ngrams))
 
         fig, ax = plt.subplots(1, figsize=(10, 8))
 
@@ -102,17 +94,13 @@ def n_gram_by_company():
 
         # Axes config
         ax.set_xlabel("")
-
         ax.set_xticks([])
-
         ax.set_ylabel("")
-
         ax.set_title(
             label="",
             fontsize=ReportConfig.CHART_TITLE_FONT_SIZE,
             y=1.0,
         )
-
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
         ax.spines["bottom"].set_visible(False)

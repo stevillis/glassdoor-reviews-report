@@ -17,6 +17,7 @@ from utils import (
     ROLE_GROUPS,
     STOPWORDS,
     TRANSLATION_TABLE_SPECIAL_CHARACTERS,
+    get_top_ngrams,
     load_reviews_df,
     set_companies_raking_to_session,
 )
@@ -920,15 +921,9 @@ def ngram_analysis():
 
     review_text = reviews_df["review_text"]
 
-    vec = CountVectorizer(ngram_range=(3, 3)).fit(review_text)
-    bag_of_words = vec.transform(review_text)
-    sum_words = bag_of_words.sum(axis=0)
+    ngrams = get_top_ngrams(review_text, ngram_range=(3, 3), top_n=10)
 
-    words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
-    words_freq = sorted(words_freq, key=lambda x: x[1], reverse=True)
-
-    top_n_grams = words_freq[:10]
-    x, y = map(list, zip(*top_n_grams))
+    x, y = map(list, zip(*ngrams))
 
     fig, ax = plt.subplots(1, figsize=(10, 8))
 
