@@ -116,10 +116,10 @@ if __name__ == "__main__":
 
     st.markdown(
         """
-        Essa visualização permite uma análise interativa das palavras mais 
-        frequentes encontradas nas avaliações. Ela permite que você 
-        personalize a análise filtrando por empresa, tipo de sentimento e 
-        ajustando a quantidade de palavras mais frequentes que deseja 
+        Essa visualização permite uma análise interativa das palavras mais
+        frequentes encontradas nas avaliações. Ela permite que você
+        personalize a análise filtrando por empresa, tipo de sentimento e
+        ajustando a quantidade de palavras mais frequentes que deseja
         visualizar.
 """
     )
