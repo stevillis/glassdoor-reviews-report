@@ -63,6 +63,7 @@ def introduction():
     )
 
 
+@st.cache_data
 def positive_reviews_ranking():
     st.subheader("Ranking de avaliações positivas por empresa")
 
@@ -73,7 +74,7 @@ def positive_reviews_ranking():
     a relevância dos dados, **foram consideradas apenas as empresas com pelo
     menos 21 avaliações**, que representa a metade da mediana de avaliações de
     todas as empresas analisadas.
-"""
+    """
     )
 
     top_positive_companies_df = st.session_state.get("top_positive_companies_df")
@@ -143,16 +144,10 @@ def positive_reviews_ranking():
         ncols=3,
     )
 
-    # plt.savefig(
-    #     "positive_reviews_by_company.png",
-    #     transparent=False,
-    #     dpi=300,
-    #     bbox_inches="tight",
-    # )
-
-    st.pyplot(fig)
+    return fig
 
 
+@st.cache_data
 def negative_reviews_ranking():
     st.subheader("Ranking de avaliações negativas por empresa")
 
@@ -161,7 +156,7 @@ def negative_reviews_ranking():
     Este gráfico mostra as empresas que apresentam **número de
     avaliações negativas superior ao de avaliações positivas**, seguindo
     os mesmos critérios do gráfico anterior.
-"""
+    """
     )
 
     top_negative_companies_df = st.session_state.get("top_negative_companies_df")
@@ -231,23 +226,7 @@ def negative_reviews_ranking():
         ncols=3,
     )
 
-    # plt.savefig(
-    #     "negative_reviews_by_company.png",
-    #     transparent=False,
-    #     dpi=300,
-    #     bbox_inches="tight",
-    # )
-
-    st.pyplot(fig)
-
-    st.markdown(
-        """
-        O ranking completo de avaliações por empresa pode ser visualizado no
-        menu <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking
-        geral de avaliações</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return fig
 
 
 def company_analisys():
@@ -258,7 +237,7 @@ def company_analisys():
     A visualização da distribuição de avaliações e emoções em todas as
     empresas permite uma comparação rápida e uma visão abrangente do panorama
     geral.
-"""
+    """
     )
 
     reviews_df = load_reviews_df()
@@ -306,6 +285,7 @@ def company_analisys():
     st.pyplot(fig)
 
 
+@st.cache_data
 def sentiment_reviews_along_time():
     st.subheader("Sentimento das avaliações ao longo do tempo")
 
@@ -315,7 +295,7 @@ def sentiment_reviews_along_time():
      frequentes do que as negativas e neutras. O ano de 2022 destacou-se como
      o período com o maior número total de avaliações, apresentando também a
      maior disparidade entre as avaliações positivas e negativas.
-""",
+    """,
         unsafe_allow_html=True,
     )
 
@@ -405,27 +385,10 @@ def sentiment_reviews_along_time():
         ncols=3,
     )
 
-    st.pyplot(fig)
-
-    st.markdown(
-        """
-        As avaliações ao longo do tempo por empresa podem ser visualizadas no
-        menu <a target="_self" href="./Avaliações_ao_longo_do_tempo">
-        📉Avaliações ao longo do tempo</a>.
-
-        <br/>
-    """,
-        unsafe_allow_html=True,
-    )
-
-    # plt.savefig(
-    #     "sentiments_reviews_along_time.png",
-    #     transparent=False,
-    #     dpi=300,
-    #     bbox_inches="tight",
-    # )
+    return fig
 
 
+@st.cache_data
 def rating_star_analysis():
     reviews_df = load_reviews_df()
 
@@ -541,32 +504,12 @@ def rating_star_analysis():
             ncols=3,
         )
 
-        st.pyplot(fig)
+        return fig
 
-        # plt.savefig(
-        #     "sentiment_by_rating_star.png",
-        #     transparent=False,
-        #     dpi=300,
-        #     bbox_inches="tight",
-        # )
-
-    else:
-        st.error(
-            AppMessages.ERROR_EMPTY_DATAFRAME,
-            icon="🚨",
-        )
-
-    st.markdown(
-        """
-        A distribuição de sentimentos por quantidade de estrelas para cada
-        empresa pode ser visualizada no menu
-        <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
-        📊Avaliações por quantidade de estrelas</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return None
 
 
+@st.cache_data
 def employee_role_analysis():
     reviews_df = load_reviews_df()
 
@@ -678,32 +621,12 @@ def employee_role_analysis():
             ncols=3,
         )
 
-        st.pyplot(fig)
+        return fig
 
-        # plt.savefig(
-        #     "sentiment_by_role_group.png",
-        #     transparent=False,
-        #     dpi=300,
-        #     bbox_inches="tight",
-        # )
-
-    else:
-        st.error(
-            AppMessages.ERROR_EMPTY_DATAFRAME,
-            icon="🚨",
-        )
-
-    st.markdown(
-        """
-        A distribuição de sentimentos por grupo de funcionários para cada
-        empresa pode ser visualizada no menu
-        <a target="_self" href="./Avaliações_por_grupo_de_funcionários">
-        📊Avaliações por grupo de funcionários</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return None
 
 
+@st.cache_data
 def wordcloud_analysis():
     st.subheader("Nuvem de Palavras")
 
@@ -721,7 +644,7 @@ def wordcloud_analysis():
     A Nuvem de Palavras a seguir mostra as 50 palavras mais frequentes nas
     avaliações e permite a identificação rápida dos tópicos mais relevantes,
     onde `empresa` e `trabalho` são visivelmente as palavras mais comuns.
-"""
+    """
     )
 
     reviews_df = load_reviews_df()
@@ -755,18 +678,10 @@ def wordcloud_analysis():
 
     ax.imshow(wordcloud.generate_from_frequencies(dict(most_common_words)))
 
-    st.pyplot(fig)
-
-    st.markdown(
-        """
-        A Word Cloud de avaliações por sentimento e por empresa pode ser
-        visualizada no menu
-        <a target="_self" href="./Nuvem_de_Palavras_por_empresa">☁️Nuvem de Palavras por empresa</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return fig
 
 
+@st.cache_data
 def most_common_words_analysis():
     st.subheader("Top 10 palavras mais frequentes nas avaliações")
 
@@ -782,7 +697,7 @@ def most_common_words_analysis():
         Este gráfico segue os mesmos critérios da Nuvem de Palavras,
         garantindo que as palavras selecionadas sejam relevantes e
         significativas.
-"""
+    """
     )
 
     reviews_df = load_reviews_df()
@@ -843,17 +758,10 @@ def most_common_words_analysis():
     ax.spines["right"].set_visible(False)
     ax.spines["bottom"].set_visible(False)
 
-    st.pyplot(fig)
-
-    st.markdown(
-        """
-        As Top 10 palavras mais frequentes nas avaliações por empresa e por
-        sentimento podem ser visualizadas no menu <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return fig
 
 
+@st.cache_data
 def ngram_analysis():
     st.subheader("Top 10 N-Grams mais frequentes nas avaliações")
 
@@ -877,7 +785,7 @@ def ngram_analysis():
     Ao analisar os Top 10 Trigramas mais frequentes, conclui-se que as
     combinações de palavras mais frequentes foram: `ambiente de trabalho`,
     `plano de carreira` e `plano de saúde`.
-"""
+    """
     )
 
     reviews_df = load_reviews_df()
@@ -928,15 +836,7 @@ def ngram_analysis():
     ax.spines["right"].set_visible(False)
     ax.spines["bottom"].set_visible(False)
 
-    st.pyplot(fig)
-
-    st.markdown(
-        """
-        Os Top 10 N-Grams mais frequentes nas avaliações de cada empresa pode
-        ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
-    """,
-        unsafe_allow_html=True,
-    )
+    return fig
 
 
 def conclusion():
@@ -972,7 +872,7 @@ def conclusion():
     | Versionamento                     | ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
     | Ambiente de Desenvolvimento       | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white) Google Colab |
 
-""",
+    """,
         unsafe_allow_html=True,
     )
 
@@ -1005,20 +905,114 @@ if __name__ == "__main__":
 
     # company_analisys()
 
-    positive_reviews_ranking()
+    with st.container():
+        st.pyplot(positive_reviews_ranking())
 
-    negative_reviews_ranking()
+    with st.container():
+        st.pyplot(negative_reviews_ranking())
+        st.markdown(
+            """
+        O ranking completo de avaliações por empresa pode ser visualizado no
+        menu <a target="_self" href="./Ranking_geral_de_avaliações">🥇Ranking
+        geral de avaliações</a>.
+        """,
+            unsafe_allow_html=True,
+        )
 
-    sentiment_reviews_along_time()
+    with st.container():
+        st.pyplot(sentiment_reviews_along_time())
+        st.markdown(
+            """
+        As avaliações ao longo do tempo por empresa podem ser visualizadas no
+        menu <a target="_self" href="./Avaliações_ao_longo_do_tempo">
+        📉Avaliações ao longo do tempo</a>.
 
-    rating_star_analysis()
+        <br/>
+        """,
+            unsafe_allow_html=True,
+        )
 
-    employee_role_analysis()
+    with st.container():
+        fig = rating_star_analysis()
+        if fig:
+            st.pyplot(fig)
+        else:
+            st.error(
+                AppMessages.ERROR_EMPTY_DATAFRAME,
+                icon="🚨",
+            )
 
-    wordcloud_analysis()
+        st.markdown(
+            """
+            A distribuição de sentimentos por quantidade de estrelas para cada
+            empresa pode ser visualizada no menu
+            <a target="_self" href="./Avaliações_por_quantidade_de_estrelas">
+            📊Avaliações por quantidade de estrelas</a>.
+        """,
+            unsafe_allow_html=True,
+        )
 
-    most_common_words_analysis()
+    with st.container():
+        fig = rating_star_analysis()
+        if fig:
+            st.pyplot(fig)
+        else:
+            st.error(
+                AppMessages.ERROR_EMPTY_DATAFRAME,
+                icon="🚨",
+            )
 
-    ngram_analysis()
+    with st.container():
+        fig = employee_role_analysis()
+        if fig:
+            st.pyplot(fig)
+        else:
+            st.error(
+                AppMessages.ERROR_EMPTY_DATAFRAME,
+                icon="🚨",
+            )
 
-    conclusion()
+        st.markdown(
+            """
+            A distribuição de sentimentos por grupo de funcionários para cada
+            empresa pode ser visualizada no menu
+            <a target="_self" href="./Avaliações_por_grupo_de_funcionários">
+            📊Avaliações por grupo de funcionários</a>.
+        """,
+            unsafe_allow_html=True,
+        )
+
+    with st.container():
+        st.pyplot(wordcloud_analysis())
+        st.markdown(
+            """
+        A Word Cloud de avaliações por sentimento e por empresa pode ser
+        visualizada no menu
+        <a target="_self" href="./Nuvem_de_Palavras_por_empresa">☁️Nuvem de Palavras por empresa</a>.
+        """,
+            unsafe_allow_html=True,
+        )
+
+    with st.container():
+        st.pyplot(most_common_words_analysis())
+        st.markdown(
+            """
+        As Top 10 palavras mais frequentes nas avaliações por empresa e por
+        sentimento podem ser visualizadas no menu
+        <a target="_self" href="./Top_10_palavras_mais_usadas">📊Top 10 palavras mais frequentes</a>.
+        """,
+            unsafe_allow_html=True,
+        )
+
+    with st.container():
+        st.pyplot(ngram_analysis())
+        st.markdown(
+            """
+        Os Top 10 N-Grams mais frequentes nas avaliações de cada empresa pode
+        ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
+    """,
+            unsafe_allow_html=True,
+        )
+
+    with st.container():
+        conclusion()
