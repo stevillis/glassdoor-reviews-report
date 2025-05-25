@@ -8,7 +8,6 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 from PIL import Image
-from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
 from app_messages import AppMessages
@@ -21,42 +20,6 @@ from utils import (
     load_reviews_df,
     set_companies_raking_to_session,
 )
-
-
-def calculate_group_metrics(df):
-    total = len(df)
-    pos = (df["sentiment"] == 1).sum() / total * 100 if total else 0
-    neg = (df["sentiment"] == 2).sum() / total * 100 if total else 0
-    neu = (df["sentiment"] == 0).sum() / total * 100 if total else 0
-    return total, pos, neg, neu
-
-
-def render_group_metrics(title, total, pos, neg, neu):
-    st.caption(f"{title}")
-    cols = st.columns(4)
-    cols[0].metric("Total", total)
-
-    cols[1].metric("% Positivas", f"{pos:.1f}%")
-    cols[2].metric("% Negativas", f"{neg:.1f}%")
-    cols[3].metric("% Neutras", f"{neu:.1f}%")
-
-
-def metrics():
-    with st.expander("Visão geral das avaliações"):
-        reviews_df = load_reviews_df()
-
-        total, pos, neg, neu = calculate_group_metrics(reviews_df)
-        render_group_metrics("Geral", total, pos, neg, neu)
-
-        it_df = reviews_df[reviews_df["role_group"] == 1]
-        total_it, it_pos, it_neg, it_neu = calculate_group_metrics(it_df)
-        render_group_metrics("Profissionais de TI", total_it, it_pos, it_neg, it_neu)
-
-        other_df = reviews_df[reviews_df["role_group"] != 1]
-        total_other, other_pos, other_neg, other_neu = calculate_group_metrics(other_df)
-        render_group_metrics(
-            "Outros + Confidencial", total_other, other_pos, other_neg, other_neu
-        )
 
 
 def introduction():
@@ -1037,8 +1000,6 @@ if __name__ == "__main__":
     set_companies_raking_to_session(
         reviews_df
     )  # TODO: maybe this can be done in load_reviews_df
-
-    metrics()
 
     introduction()
 
