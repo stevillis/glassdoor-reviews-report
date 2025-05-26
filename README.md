@@ -76,6 +76,9 @@ Shows Data Preparation, Model Architecture, Model Training and Model Evaluation.
 
 ## How to Run the Application
 
+### Prerequisites
+- Python 3.11
+
 1. Clone the repository:
     ```sh
     git clone https://github.com/yourusername/glassdoor-reviews-report.git
