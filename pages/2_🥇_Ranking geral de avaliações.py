@@ -144,6 +144,7 @@ def general_reviews_ranking():
     )
 
     st.pyplot(fig)
+    plt.close(fig)
 
     # plt.savefig(
     #     "general_sentiment_reviews_rank.png",

@@ -116,6 +116,7 @@ def top_10_most_common_words_analysis():
     ax.spines["bottom"].set_visible(False)
 
     st.pyplot(fig)
+    plt.close(fig)
 
 
 if __name__ == "__main__":

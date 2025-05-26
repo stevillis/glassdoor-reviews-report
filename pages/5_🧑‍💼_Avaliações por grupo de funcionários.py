@@ -130,6 +130,7 @@ def employee_role_analysis():
         )
 
         st.pyplot(fig)
+        plt.close(fig)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,

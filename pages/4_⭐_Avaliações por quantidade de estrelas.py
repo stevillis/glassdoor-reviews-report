@@ -122,6 +122,7 @@ def rating_star_analysis():
         )
 
         st.pyplot(fig)
+        plt.close(fig)
     else:
         st.error(
             AppMessages.ERROR_EMPTY_DATAFRAME,

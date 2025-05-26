@@ -106,6 +106,7 @@ def n_gram_by_company():
         ax.spines["bottom"].set_visible(False)
 
         st.pyplot(fig)
+        plt.close(fig)
 
         # plt.savefig(
         #     "top_10_ngrams.png",

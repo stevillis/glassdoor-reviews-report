@@ -676,11 +676,17 @@ def main():
             col1, col2 = st.columns(2, gap="medium")
             with col1:
                 st.markdown("##### 🏅 Ranking de empresas com melhor avaliação")
-                st.pyplot(positive_reviews_ranking())
+
+                positive_reviews_ranking_plot = positive_reviews_ranking()
+                st.pyplot(positive_reviews_ranking_plot)
+                plt.close(positive_reviews_ranking_plot)
 
             with col2:
                 st.markdown("##### ⚠️ Ranking de empresas com pior avaliação")
-                st.pyplot(negative_reviews_ranking())
+
+                negative_reviews_ranking_plot = negative_reviews_ranking()
+                st.pyplot(negative_reviews_ranking_plot)
+                plt.close(negative_reviews_ranking_plot)
 
         with st.container():
             st.markdown("---")
@@ -689,31 +695,52 @@ def main():
             col1, col2 = st.columns(2, gap="medium")
             with col1:
                 st.markdown("#### 🔠 Top 10 palavras mais frequentes")
-                st.pyplot(most_common_words_analysis())
+
+                most_common_words_analysis_plot = most_common_words_analysis()
+                st.pyplot(most_common_words_analysis_plot)
+                plt.close(most_common_words_analysis_plot)
 
             with col2:
                 st.markdown("#### 🔤 Top 10 trigramas mais frequentes")
-                st.pyplot(ngram_analysis())
+
+                ngram_analysis_plot = ngram_analysis()
+                st.pyplot(ngram_analysis_plot)
+                plt.close(ngram_analysis_plot)
 
     with tab2:
         with st.container():
             st.markdown("### 🏢 Distribuição de sentimentos por empresa")
-            st.pyplot(company_analisys())
+
+            company_analisys_plot = company_analisys()
+            st.pyplot(company_analisys_plot)
+            plt.close(company_analisys_plot)
+
             st.markdown("---")
 
         with st.container():
             st.markdown("### 📅 Distribuição de sentimentos ao longo do tempo")
-            st.pyplot(sentiment_reviews_along_time())
+
+            sentiment_reviews_along_time_plot = sentiment_reviews_along_time()
+            st.pyplot(sentiment_reviews_along_time_plot)
+            plt.close(sentiment_reviews_along_time_plot)
+
             st.markdown("---")
 
         with st.container():
             st.markdown("### ⭐ Relação entre quantidade de estrelas e sentimento")
-            st.pyplot(rating_star_analysis())
+
+            rating_star_analysis_plot = rating_star_analysis()
+            st.pyplot(rating_star_analysis_plot)
+            plt.close(rating_star_analysis_plot)
+
             st.markdown("---")
 
         with st.container():
             st.markdown("### ☁️ Nuvem de palavras - Top 50")
-            st.pyplot(wordcloud_analysis())
+
+            wordcloud_analysis_plot = wordcloud_analysis()
+            st.pyplot(wordcloud_analysis_plot)
+            plt.close(wordcloud_analysis_plot)
 
     st.markdown("---")
     with st.container():
@@ -721,15 +748,18 @@ def main():
         st.markdown(
             """
         **Fonte:** Avaliações públicas do Glassdoor
+        <br>
         **Período analisado:** 05/10/2014 a 16/03/2024
+        <br>
         **Última atualização:** Março de 2024
 
-        **Nota:**
-        Este projeto foi desenvolvido como parte do Trabalho de Conclusão de
-        Curso da Pós-Graduação em Gestão e Ciência de Dados da UFMT.
-        A classificação das avaliações como positivas, negativas ou neutras
-        pode conter viés de interpretação subjetiva do autor.
-        """
+        **Nota**: *Este projeto foi desenvolvido como parte do Trabalho de
+        Conclusão de Curso da Pós-Graduação em Gestão e Ciência de Dados da
+        Universidade Federal de Mato Grosso - UFMT. A classificação das
+        avaliações como positivas, negativas ou neutras pode conter viés de
+        interpretação subjetiva do autor.*
+        """,
+            unsafe_allow_html=True,
         )
 
 

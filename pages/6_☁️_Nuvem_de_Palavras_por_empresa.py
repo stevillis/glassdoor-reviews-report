@@ -45,6 +45,7 @@ def print_wordcloud(corpus, title=None, max_words: int = 150):
     )
 
     st.pyplot(fig)
+    plt.close(fig)
 
 
 def wordcloud_by_company():

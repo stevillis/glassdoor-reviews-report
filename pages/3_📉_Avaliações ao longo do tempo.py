@@ -148,3 +148,4 @@ if __name__ == "__main__":
     )
 
     st.pyplot(fig)
+    plt.close(fig)

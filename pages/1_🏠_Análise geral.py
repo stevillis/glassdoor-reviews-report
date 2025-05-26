@@ -785,7 +785,9 @@ if __name__ == "__main__":
         """
         )
 
-        st.pyplot(plot_positive_reviews_ranking())
+        positive_reviews_ranking_plot = plot_positive_reviews_ranking()
+        st.pyplot(positive_reviews_ranking_plot)
+        plt.close(positive_reviews_ranking_plot)
 
     with st.container():
         st.subheader("Ranking de avaliações negativas por empresa")
@@ -798,7 +800,9 @@ if __name__ == "__main__":
         """
         )
 
-        st.pyplot(plot_negative_reviews_ranking())
+        negative_reviews_ranking_plot = plot_negative_reviews_ranking()
+        st.pyplot(negative_reviews_ranking_plot)
+        plt.close(negative_reviews_ranking_plot)
 
         st.markdown(
             """
@@ -822,7 +826,9 @@ if __name__ == "__main__":
             unsafe_allow_html=True,
         )
 
-        st.pyplot(plot_sentiment_reviews_along_time())
+        sentiment_reviews_along_time_plot = plot_sentiment_reviews_along_time()
+        st.pyplot(sentiment_reviews_along_time_plot)
+        plt.close(sentiment_reviews_along_time_plot)
 
         st.markdown(
             """
@@ -859,9 +865,10 @@ if __name__ == "__main__":
         """
         )
 
-        fig = plot_rating_star_analysis()
-        if fig:
-            st.pyplot(fig)
+        rating_star_analysis_plot = plot_rating_star_analysis()
+        if rating_star_analysis_plot:
+            st.pyplot(rating_star_analysis_plot)
+            plt.close(rating_star_analysis_plot)
         else:
             st.error(
                 AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -897,9 +904,10 @@ if __name__ == "__main__":
         """
         )
 
-        fig = plot_employee_role_analysis()
-        if fig:
-            st.pyplot(fig)
+        employee_role_analysis_plot = plot_employee_role_analysis()
+        if employee_role_analysis_plot:
+            st.pyplot(employee_role_analysis_plot)
+            plt.close(employee_role_analysis_plot)
         else:
             st.error(
                 AppMessages.ERROR_EMPTY_DATAFRAME,
@@ -937,7 +945,9 @@ if __name__ == "__main__":
         """
         )
 
-        st.pyplot(plot_wordcloud_analysis())
+        wordcloud_analysis_plot = plot_wordcloud_analysis()
+        st.pyplot(wordcloud_analysis_plot)
+        plt.close(wordcloud_analysis_plot)
 
         st.markdown(
             """
@@ -967,7 +977,9 @@ if __name__ == "__main__":
         """
         )
 
-        st.pyplot(plot_most_common_words_analysis())
+        most_common_words_analysis_plot = plot_most_common_words_analysis()
+        st.pyplot(most_common_words_analysis_plot)
+        plt.close(most_common_words_analysis_plot)
 
         st.markdown(
             """
@@ -1005,7 +1017,9 @@ if __name__ == "__main__":
         """
         )
 
-        st.pyplot(plot_ngram_analysis())
+        ngram_analysis_plot = plot_ngram_analysis()
+        st.pyplot(ngram_analysis_plot)
+        plt.close(ngram_analysis_plot)
 
         st.markdown(
             """

@@ -137,6 +137,7 @@ def data_preparation():
 
     plt.tight_layout()
     st.pyplot(fig)
+    plt.close(fig)
 
     st.write(
         """
