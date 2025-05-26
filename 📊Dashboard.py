@@ -652,7 +652,7 @@ def setup_page():
     )
 
 
-def main():
+if __name__ == "__main__":
     warnings.filterwarnings("ignore", "use_inf_as_na")
     setup_page()
 
@@ -761,7 +761,3 @@ def main():
         """,
             unsafe_allow_html=True,
         )
-
-
-if __name__ == "__main__":
-    main()
