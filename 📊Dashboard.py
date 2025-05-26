@@ -13,7 +13,6 @@ from wordcloud import WordCloud
 from app_messages import AppMessages
 from report_config import ReportConfig
 from utils import (
-    ROLE_GROUPS,
     STOPWORDS,
     TRANSLATION_TABLE_SPECIAL_CHARACTERS,
     get_top_ngrams,
@@ -32,41 +31,131 @@ def calculate_group_metrics(df):
 
 def render_group_metrics(title, total, pos, neg, neu):
     st.caption(f"{title}")
-    cols = st.columns(4)
-    cols[0].metric("Total", total)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total", total)
+    with col2:
+        st.metric("% Positivas", f"{pos:.1f}%")
+    with col3:
+        st.metric("% Negativas", f"{neg:.1f}%")
+    with col4:
+        st.metric("% Neutras", f"{neu:.1f}%")
 
-    cols[1].metric("% Positivas", f"{pos:.1f}%")
-    cols[2].metric("% Negativas", f"{neg:.1f}%")
-    cols[3].metric("% Neutras", f"{neu:.1f}%")
+
+@st.cache_data
+def get_nunique_companies(df):
+    return df["company"].nunique()
 
 
-def metrics():
-    reviews_df = load_reviews_df()
+@st.cache_data
+def get_mean_star_rating(df):
+    return df["star_rating"].mean().round(2)
 
-    st.markdown("###### Avaliações Gerais")
-    total, pos, neg, neu = calculate_group_metrics(reviews_df)
-    render_group_metrics("", total, pos, neg, neu)
 
-    st.markdown("###### Avaliações por Área de Atuação")
-    it_df = reviews_df[reviews_df["role_group"] == 1]
-    total_it, it_pos, it_neg, it_neu = calculate_group_metrics(it_df)
-    render_group_metrics("Profissionais de TI", total_it, it_pos, it_neg, it_neu)
+@st.cache_data
+def get_current_employees_count(df):
+    return df.loc[
+        df["employee_detail"] == "Funcionário(a) atual", "employee_detail"
+    ].count()
 
-    confidencial_df = reviews_df[reviews_df["role_group"] == 2]
-    total_confidencial, confidencial_pos, confidencial_neg, confidencial_neu = (
-        calculate_group_metrics(confidencial_df)
-    )
-    render_group_metrics(
-        "Funcionário confidencial",
-        total_confidencial,
-        confidencial_pos,
-        confidencial_neg,
-        confidencial_neu,
-    )
 
-    other_df = reviews_df[reviews_df["role_group"] == 0]
-    total_other, other_pos, other_neg, other_neu = calculate_group_metrics(other_df)
-    render_group_metrics("Outros", total_other, other_pos, other_neg, other_neu)
+@st.cache_data
+def get_ex_employees_count(df):
+    return df.loc[
+        df["employee_detail"] == "Ex-funcionário(a)", "employee_detail"
+    ].count()
+
+
+def general_metrics(df):
+    (
+        reviews_count,
+        pos_reviews_count,
+        neg_reviews_count,
+        neu_reviews_count,
+    ) = calculate_group_metrics(df)
+
+    with st.container():
+        st.markdown("### Visão geral dos dados")
+        col1, col2, col3, col4, col5 = st.columns(5)
+        with col1:
+            st.metric("Avaliações", reviews_count)
+        with col2:
+            st.metric("Empresas", get_nunique_companies(df))
+        with col3:
+            st.metric(
+                "Funcionários atuais",
+                get_current_employees_count(df),
+            )
+        with col4:
+            st.metric(
+                "Ex-funcionários",
+                get_ex_employees_count(df),
+            )
+        with col5:
+            st.metric("Média de estrelas", f"{get_mean_star_rating(df):.2f}/5")
+
+    with st.container():
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("% Positivas", f"{pos_reviews_count:.1f}%")
+        with col2:
+            st.metric("% Negativas", f"{neg_reviews_count:.1f}%")
+        with col3:
+            st.metric("% Neutras", f"{neu_reviews_count:.1f}%")
+
+
+def metrics_by_role(df):
+    with st.container():
+        st.markdown("### Avaliações por Área de Atuação")
+        it_df = df[df["role_group"] == 1]
+        (
+            it_reviews_count,
+            it_pos_reviews_count,
+            it_neg_reviews_count,
+            it_neu_reviews_count,
+        ) = calculate_group_metrics(it_df)
+
+        render_group_metrics(
+            "Profissionais de TI",
+            it_reviews_count,
+            it_pos_reviews_count,
+            it_neg_reviews_count,
+            it_neu_reviews_count,
+        )
+
+    with st.container():
+        confidential_df = df[df["role_group"] == 2]
+        (
+            confidential_reviews_count,
+            confidential_pos_reviews_count,
+            confidential_neg_reviews_count,
+            confidential_neu_reviews_count,
+        ) = calculate_group_metrics(confidential_df)
+
+        render_group_metrics(
+            "Funcionário confidencial",
+            confidential_reviews_count,
+            confidential_pos_reviews_count,
+            confidential_neg_reviews_count,
+            confidential_neu_reviews_count,
+        )
+
+    with st.container():
+        other_df = df[df["role_group"] == 0]
+        (
+            other_reviews_count,
+            other_pos_reviews_count,
+            other_neg_reviews_count,
+            other_neu_reviews_count,
+        ) = calculate_group_metrics(other_df)
+
+        render_group_metrics(
+            "Outros",
+            other_reviews_count,
+            other_pos_reviews_count,
+            other_neg_reviews_count,
+            other_neu_reviews_count,
+        )
 
 
 @st.cache_data
@@ -624,32 +713,33 @@ def setup_page():
         initial_sidebar_state="expanded",
     )
 
-    # Custom CSS for better styling
-    st.markdown(
-        """
-    <style>
-        /* Positive Metrics */
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2),
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2) p {
-            color: #2ca02c !important;
-        }
+    if False:
+        # Custom CSS for better styling
+        st.markdown(
+            """
+        <style>
+            /* Positive Metrics */
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2),
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2) p {
+                color: #2ca02c !important;
+            }
 
-        /* Negative Metrics */
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3),
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3) p {
-            color: #ff7f0e !important;
-        }
+            /* Negative Metrics */
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3),
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(3) p {
+                color: #ff7f0e !important;
+            }
 
-        /* Neutral Metrics */
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4),
-        [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4) p {
-            color: #1f77b4 !important;
-        }
+            /* Neutral Metrics */
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4),
+            [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(4) p {
+                color: #1f77b4 !important;
+            }
 
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+        </style>
+        """,
+            unsafe_allow_html=True,
+        )
 
 
 if __name__ == "__main__":
@@ -665,9 +755,8 @@ if __name__ == "__main__":
     tab1, tab2 = st.tabs(["📊 Visão agregada", "📈 Visão detalhada"])
 
     with tab1:
-        st.markdown("### 📊 Métricas gerais")
-        with st.container():
-            metrics()
+        general_metrics(reviews_df.copy())
+        metrics_by_role(reviews_df.copy())
 
         with st.container():
             st.markdown("---")
