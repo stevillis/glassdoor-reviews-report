@@ -64,19 +64,7 @@ def introduction():
 
 
 @st.cache_data
-def positive_reviews_ranking():
-    st.subheader("Ranking de avaliações positivas por empresa")
-
-    st.markdown(
-        """
-    Este gráfico ilustra as 5 empresas que apresentam **número de
-    avaliações positivas superior ao de avaliações negativas**. Para garantir
-    a relevância dos dados, **foram consideradas apenas as empresas com pelo
-    menos 21 avaliações**, que representa a metade da mediana de avaliações de
-    todas as empresas analisadas.
-    """
-    )
-
+def plot_positive_reviews_ranking():
     top_positive_companies_df = st.session_state.get("top_positive_companies_df")
 
     fig, ax = plt.subplots(1, figsize=(10, 8))
@@ -148,17 +136,7 @@ def positive_reviews_ranking():
 
 
 @st.cache_data
-def negative_reviews_ranking():
-    st.subheader("Ranking de avaliações negativas por empresa")
-
-    st.markdown(
-        """
-    Este gráfico mostra as empresas que apresentam **número de
-    avaliações negativas superior ao de avaliações positivas**, seguindo
-    os mesmos critérios do gráfico anterior.
-    """
-    )
-
+def plot_negative_reviews_ranking():
     top_negative_companies_df = st.session_state.get("top_negative_companies_df")
 
     fig, ax = plt.subplots(1, figsize=(10, 8))
@@ -286,19 +264,7 @@ def company_analisys():
 
 
 @st.cache_data
-def sentiment_reviews_along_time():
-    st.subheader("Sentimento das avaliações ao longo do tempo")
-
-    st.markdown(
-        """
-     Este gráfico revela que as avaliações positivas sempre foram mais
-     frequentes do que as negativas e neutras. O ano de 2022 destacou-se como
-     o período com o maior número total de avaliações, apresentando também a
-     maior disparidade entre as avaliações positivas e negativas.
-    """,
-        unsafe_allow_html=True,
-    )
-
+def plot_sentiment_reviews_along_time():
     reviews_df = load_reviews_df()
 
     reviews_df["review_date"] = pd.to_datetime(
@@ -389,29 +355,8 @@ def sentiment_reviews_along_time():
 
 
 @st.cache_data
-def rating_star_analysis():
+def plot_rating_star_analysis():
     reviews_df = load_reviews_df()
-
-    st.subheader("Distribuição de sentimentos por quantidade de estrelas")
-
-    st.markdown(
-        """
-        - As **avaliações de 1 a 3 estrelas** apresentam **sentimento
-        predominantemente negativo**.
-        - Por outro lado, as **avaliações de 4 estrelas** mostram uma
-        **distribuição equilibrada entre sentimentos positivos e negativos**.
-        - Já as **avaliações de 5 estrelas** são
-        **majoritariamente positivas**, destacando-se também um
-        **número significativo de avaliações neutras**.
-
-        Essa predominância de avaliações neutras em avaliações de 5 estrelas
-        pode ser atribuída à exigência ao usuário do Glassdoor de preencher as
-        seções *Prós* e *Contras* ao avaliarem uma empresa. Em diversas
-        avaliações, os usuários não encontram aspectos negativos a serem
-        mencionados na seção *Contras*, resultando em comentários neutros como
-        `Não há nada a ser apontado` ou `Não tenho nada a reclamar`.
-    """
-    )
 
     filtered_df = reviews_df[
         [
@@ -510,26 +455,8 @@ def rating_star_analysis():
 
 
 @st.cache_data
-def employee_role_analysis():
+def plot_employee_role_analysis():
     reviews_df = load_reviews_df()
-
-    st.subheader("Distribuição de sentimentos por grupo de funcionários")
-
-    st.markdown(
-        """
-        Este gráfico revela que as **avaliações positivas são predominantes**,
-        independentemente do grupo de funcionários. A maioria das
-        avaliações provém de profissionais de outras áreas, com destaque para
-        os seguintes dados:
-
-        - Cerca de **64% das avaliações** são provenientes de profissionais de
-        áreas não relacionadas à TI.
-        - Os **profissionais de TI representam cerca de 25%** do total de
-        avaliações.
-        - Aproximadamente **11% das avaliações** foram emitidas por
-        profissionais que optaram por não revelar seus cargos.
-    """
-    )
 
     filtered_df = reviews_df[
         [
@@ -627,26 +554,7 @@ def employee_role_analysis():
 
 
 @st.cache_data
-def wordcloud_analysis():
-    st.subheader("Nuvem de Palavras")
-
-    st.markdown(
-        """
-    A Nuvem de Palavras ([Word Cloud](https://techner.com.br/glossario/o-que-e-word-cloud/ "Word Cloud"))
-    **é uma representação visual que ilustra as palavras mais frequentemente
-    utilizadas no conjunto de avaliações**. Neste gráfico, as palavras
-    aparecem em tamanhos variados, refletindo sua frequência de uso: quanto
-    maior a palavra, mais vezes ela foi mencionada nas avaliações. É
-    importante ressaltar que as *stopwords*, que são palavras comuns e
-    geralmente sem significado relevante para a análise (como "e", "a", "o",
-    "de") foram excluídas desta visualização.
-
-    A Nuvem de Palavras a seguir mostra as 50 palavras mais frequentes nas
-    avaliações e permite a identificação rápida dos tópicos mais relevantes,
-    onde `empresa` e `trabalho` são visivelmente as palavras mais comuns.
-    """
-    )
-
+def plot_wordcloud_analysis():
     reviews_df = load_reviews_df()
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
@@ -682,24 +590,7 @@ def wordcloud_analysis():
 
 
 @st.cache_data
-def most_common_words_analysis():
-    st.subheader("Top 10 palavras mais frequentes nas avaliações")
-
-    st.markdown(
-        """
-        Embora a Nuvem de Palavras ofereça uma visão geral interessante das
-        palavras mais utilizadas nas avaliações, ela pode não ser a melhor
-        opção para destacar de forma clara e precisa a palavra mais frequente.
-        Para complementar essa análise e oferecer uma visão mais quantitativa,
-        é apresentado um gráfico com as 10 palavras mais utilizadas nas
-        avaliações analisadas, junto como suas respectivas frequências.
-
-        Este gráfico segue os mesmos critérios da Nuvem de Palavras,
-        garantindo que as palavras selecionadas sejam relevantes e
-        significativas.
-    """
-    )
-
+def plot_most_common_words_analysis():
     reviews_df = load_reviews_df()
     review_text = reviews_df["review_text"].str.split().values.tolist()
     corpus = [word for i in review_text for word in i]
@@ -762,32 +653,7 @@ def most_common_words_analysis():
 
 
 @st.cache_data
-def ngram_analysis():
-    st.subheader("Top 10 N-Grams mais frequentes nas avaliações")
-
-    st.markdown(
-        """
-    Embora o gráfico de palavras mais frequentes forneça uma visão inicial
-    sobre os termos mais utilizados nas avaliações, ele não captura a riqueza
-    dos contextos em que essas palavras aparecem. Palavras isoladas podem ter
-    significados variados e não revelam como elas se combinam para formar
-    ideias ou sentimentos mais complexos. Por exemplo, a palavra `crescimento`
-    pode aparecer frequentemente, mas sem o contexto, como em `oportunidade de
-    crescimento`, seu significado pode ser ambíguo.
-
-    Os [N-Gramas](https://pt.wikipedia.org/wiki/N-grama) são sequências
-    contíguas de "n" itens (palavras ou caracteres) e são essenciais para uma
-    análise mais profunda, pois permitem identificar padrões e temas
-    recorrentes nas avaliações. Ao considerar as combinações de palavras, é
-    possível entender melhor as percepções dos funcionários e os aspectos mais
-    relevantes de suas experiências.
-
-    Ao analisar os Top 10 Trigramas mais frequentes, conclui-se que as
-    combinações de palavras mais frequentes foram: `ambiente de trabalho`,
-    `plano de carreira` e `plano de saúde`.
-    """
-    )
-
+def plot_ngram_analysis():
     reviews_df = load_reviews_df()
 
     review_text = reviews_df["review_text"]
@@ -901,15 +767,39 @@ if __name__ == "__main__":
         reviews_df
     )  # TODO: maybe this can be done in load_reviews_df
 
-    introduction()
+    with st.container():
+        introduction()
 
     # company_analisys()
 
     with st.container():
-        st.pyplot(positive_reviews_ranking())
+        st.subheader("Ranking de avaliações positivas por empresa")
+
+        st.markdown(
+            """
+        Este gráfico ilustra as 5 empresas que apresentam **número de
+        avaliações positivas superior ao de avaliações negativas**. Para
+        garantir a relevância dos dados, **foram consideradas apenas as
+        empresas com pelo menos 21 avaliações**, que representa a metade da
+        mediana de avaliações de todas as empresas analisadas.
+        """
+        )
+
+        st.pyplot(plot_positive_reviews_ranking())
 
     with st.container():
-        st.pyplot(negative_reviews_ranking())
+        st.subheader("Ranking de avaliações negativas por empresa")
+
+        st.markdown(
+            """
+        Este gráfico mostra as empresas que apresentam **número de
+        avaliações negativas superior ao de avaliações positivas**, seguindo
+        os mesmos critérios do gráfico anterior.
+        """
+        )
+
+        st.pyplot(plot_negative_reviews_ranking())
+
         st.markdown(
             """
         O ranking completo de avaliações por empresa pode ser visualizado no
@@ -920,7 +810,20 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        st.pyplot(sentiment_reviews_along_time())
+        st.subheader("Sentimento das avaliações ao longo do tempo")
+
+        st.markdown(
+            """
+        Este gráfico revela que as avaliações positivas sempre foram mais
+        frequentes do que as negativas e neutras. O ano de 2022 destacou-se
+        como o período com o maior número total de avaliações, apresentando
+        também a maior disparidade entre as avaliações positivas e negativas.
+        """,
+            unsafe_allow_html=True,
+        )
+
+        st.pyplot(plot_sentiment_reviews_along_time())
+
         st.markdown(
             """
         As avaliações ao longo do tempo por empresa podem ser visualizadas no
@@ -933,7 +836,30 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        fig = rating_star_analysis()
+        st.subheader("Distribuição de sentimentos por quantidade de estrelas")
+
+        st.markdown(
+            """
+            - As **avaliações de 1 a 3 estrelas** apresentam **sentimento
+            predominantemente negativo**.
+            - Por outro lado, as **avaliações de 4 estrelas** mostram uma
+            **distribuição equilibrada entre sentimentos positivos e
+            negativos**.
+            - Já as **avaliações de 5 estrelas** são
+            **majoritariamente positivas**, destacando-se também um
+            **número significativo de avaliações neutras**.
+
+            Essa predominância de avaliações neutras em avaliações de 5
+            estrelas pode ser atribuída à exigência ao usuário do Glassdoor de
+            preencher as seções *Prós* e *Contras* ao avaliarem uma empresa.
+            Em diversas avaliações, os usuários não encontram aspectos
+            negativos a serem mencionados na seção *Contras*, resultando em
+            comentários neutros como `Não há nada a ser apontado` ou `Não
+            tenho nada a reclamar`.
+        """
+        )
+
+        fig = plot_rating_star_analysis()
         if fig:
             st.pyplot(fig)
         else:
@@ -953,7 +879,25 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        fig = employee_role_analysis()
+        st.subheader("Distribuição de sentimentos por grupo de funcionários")
+
+        st.markdown(
+            """
+            Este gráfico revela que as **avaliações positivas são
+            predominantes**, independentemente do grupo de funcionários. A
+            maioria das avaliações provém de profissionais de outras áreas,
+            com destaque para os seguintes dados:
+
+            - Cerca de **64% das avaliações** são provenientes de
+            profissionais de áreas não relacionadas à TI.
+            - Os **profissionais de TI representam cerca de 25%** do total de
+            avaliações.
+            - Aproximadamente **11% das avaliações** foram emitidas por
+            profissionais que optaram por não revelar seus cargos.
+        """
+        )
+
+        fig = plot_employee_role_analysis()
         if fig:
             st.pyplot(fig)
         else:
@@ -973,7 +917,28 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        st.pyplot(wordcloud_analysis())
+        st.subheader("Nuvem de Palavras")
+
+        st.markdown(
+            """
+        A Nuvem de Palavras ([Word Cloud](https://techner.com.br/glossario/o-que-e-word-cloud/ "Word Cloud"))
+        **é uma representação visual que ilustra as palavras mais
+        frequentemente utilizadas no conjunto de avaliações**. Neste gráfico,
+        as palavras aparecem em tamanhos variados, refletindo sua frequência
+        de uso: quanto maior a palavra, mais vezes ela foi mencionada nas
+        avaliações. É importante ressaltar que as *stopwords*, que são
+        palavras comuns e geralmente sem significado relevante para a análise
+        (como "e", "a", "o", "de") foram excluídas desta visualização.
+
+        A Nuvem de Palavras a seguir mostra as 50 palavras mais frequentes nas
+        avaliações e permite a identificação rápida dos tópicos mais
+        relevantes, onde `empresa` e `trabalho` são visivelmente as palavras
+        mais comuns.
+        """
+        )
+
+        st.pyplot(plot_wordcloud_analysis())
+
         st.markdown(
             """
         A Word Cloud de avaliações por sentimento e por empresa pode ser
@@ -984,7 +949,26 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        st.pyplot(most_common_words_analysis())
+        st.subheader("Top 10 palavras mais frequentes nas avaliações")
+
+        st.markdown(
+            """
+            Embora a Nuvem de Palavras ofereça uma visão geral interessante das
+            palavras mais utilizadas nas avaliações, ela pode não ser a melhor
+            opção para destacar de forma clara e precisa a palavra mais
+            frequente. Para complementar essa análise e oferecer uma visão
+            mais quantitativa, é apresentado um gráfico com as 10 palavras
+            mais utilizadas nas avaliações analisadas, junto como suas
+            respectivas frequências.
+
+            Este gráfico segue os mesmos critérios da Nuvem de Palavras,
+            garantindo que as palavras selecionadas sejam relevantes e
+            significativas.
+        """
+        )
+
+        st.pyplot(plot_most_common_words_analysis())
+
         st.markdown(
             """
         As Top 10 palavras mais frequentes nas avaliações por empresa e por
@@ -995,12 +979,39 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        st.pyplot(ngram_analysis())
+        st.subheader("Top 10 N-Grams mais frequentes nas avaliações")
+
+        st.markdown(
+            """
+        Embora o gráfico de palavras mais frequentes forneça uma visão inicial
+        sobre os termos mais utilizados nas avaliações, ele não captura a
+        riqueza dos contextos em que essas palavras aparecem. Palavras
+        isoladas podem ter significados variados e não revelam como elas se
+        combinam para formar ideias ou sentimentos mais complexos. Por exemplo,
+        a palavra `crescimento` pode aparecer frequentemente, mas sem o
+        contexto, como em `oportunidade de crescimento`, seu significado pode
+        ser ambíguo.
+
+        Os [N-Gramas](https://pt.wikipedia.org/wiki/N-grama) são sequências
+        contíguas de "n" itens (palavras ou caracteres) e são essenciais para
+        uma análise mais profunda, pois permitem identificar padrões e temas
+        recorrentes nas avaliações. Ao considerar as combinações de palavras, é
+        possível entender melhor as percepções dos funcionários e os aspectos
+        mais relevantes de suas experiências.
+
+        Ao analisar os Top 10 Trigramas mais frequentes, conclui-se que as
+        combinações de palavras mais frequentes foram: `ambiente de trabalho`,
+        `plano de carreira` e `plano de saúde`.
+        """
+        )
+
+        st.pyplot(plot_ngram_analysis())
+
         st.markdown(
             """
         Os Top 10 N-Grams mais frequentes nas avaliações de cada empresa pode
         ser visualizado no menu <a target="_self" href="./NGrams">🔠NGrams</a>.
-    """,
+        """,
             unsafe_allow_html=True,
         )
 
