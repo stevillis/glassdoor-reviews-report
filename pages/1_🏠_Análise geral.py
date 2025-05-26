@@ -953,16 +953,6 @@ if __name__ == "__main__":
         )
 
     with st.container():
-        fig = rating_star_analysis()
-        if fig:
-            st.pyplot(fig)
-        else:
-            st.error(
-                AppMessages.ERROR_EMPTY_DATAFRAME,
-                icon="🚨",
-            )
-
-    with st.container():
         fig = employee_role_analysis()
         if fig:
             st.pyplot(fig)
